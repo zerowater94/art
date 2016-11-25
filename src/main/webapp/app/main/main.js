@@ -202,6 +202,7 @@ define([ 'abstractView', 'basicInfo', 'basicUtil',  'basicTmpl'
 			BasicInfo.setMainEditor(_els.areaContents.find("#main-editor"));
 			BasicTmpl.mainBar.initialize(_els.areaMainBar);
 			BasicTmpl.mainEditor.initialize(_els.areaContents.find("#main-editor"));
+			BasicTmpl.grid.initialize();
 			_els.toggleFullSreen = _els.areaTopNav.find("#toggleFullScreen");
 			
 		};

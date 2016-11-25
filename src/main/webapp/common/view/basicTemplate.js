@@ -165,10 +165,13 @@ define(['basicInfo', 'basicUtil'
 		        }, 500 );
 				
 				setTimeout(function(){
-					if ( _this.callBackShow != null )
-						_this.callBackShow();
-				}, 500);
 
+					if ( _this.options.callBackShow != null )
+						_this.options.callBackShow();
+					
+					BasicInfo.winResize();
+				}, 500);
+				
 			},
 			hideEditor : function() {
 				var _this = basicTemplate.mainEditor;
@@ -187,14 +190,29 @@ define(['basicInfo', 'basicUtil'
 					if ( _this.options.callBackHide != null )
 						_this.options.callBackHide();
 					_this.$el.hide();
-					
+					BasicInfo.winResize();
 				}, 500);
 				
-				BasicInfo.removeWinResizeEvent("window-resize_"+_this.$el.selector);
 			},
 			getContents : function() {
 				return basicTemplate.mainEditor.els.editBody;
 			},
+		},
+		addRow : {
+			options : {
+				id : null,
+			},
+			getHtml : function( obj ) {
+				var _h  = '<div class="row">';
+				_h += '<div class="col-lg-12" id="'+obj.id+'"></div>';
+				_h += '</div>';
+				return _h;
+			},
+			render : function( el, obj ) {
+				
+				var _opt = $.extend(true, {}, this.options, obj );
+				el.append(this.getHtml(_opt));
+			}
 		},
 		dropDown : {
 			options : {
@@ -268,7 +286,7 @@ define(['basicInfo', 'basicUtil'
 				_h += '<span class="input-group-addon"> ~ </span>';
 				_h += '<input type="text" id="agentEndDate" class="form-control">';
 				_h += '</div>';
-				return getHtml ();
+				return _h;
 			},
 			render : function(el, obj){
 				
@@ -318,29 +336,22 @@ define(['basicInfo', 'basicUtil'
 				resizable:false,
 				draggable:false,
 				scrollModel: { autoFit: true },
-		        collapsible: { on: true, collapsed: false },	
+		        collapsible: { on: true, collapsed: false },
 			},
-			els : {},
 			initialize : function() {
+				var _this = this;
 				
+				requirejs(['grid', '../common/view/basicGrid'] , function(grid, BasicGrid) {
+					_this.BasicGrid = BasicGrid;
+	            });
 			},
-			render : {
-
-				var _opt =  $.extend(true, {}, options, paramObj );
+			render : function(el, obj) {
+				var _this = this;
+				var grid = new _this.BasicGrid({el:el});
+				grid.render($.extend(true, {}, this.options, obj));
 				
-				thisEl.html("<div></div>");
-				_els.grid = thisEl.find("div");
-				
-				var _g = _els.grid.pqGrid(_pm);
-				
-				_els.grid.on( "pqpagerchange", function( event, ui ) {
-					if( ui.rPP != undefined  ) {
-						_els.grid.pqGrid( "option", "pageModel.curPage", 1 );
-					}
-				} );
-				return _g;
+				return grid;
 			},
-			
 		},
 	}
 	

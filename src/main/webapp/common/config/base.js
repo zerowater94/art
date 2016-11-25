@@ -16,7 +16,7 @@ requirejs.config({
 		'amChart'			: '../libs/amcharts/amcharts',
 		'amSerial'			: '../libs/amcharts/serial',
 		'amPie' 			: '../libs/amcharts/pie',
-		'pqGrid' 			: '../libs/pq-grid/pqgrid.min',
+		'grid' 			    : '../libs/pq-grid/pqgrid.min',
 		'basicUtil' 		: '../fw/util/basicUtil',
 	    'basicValid' 		: '../fw/util/basicValidator'	,
 	    'basicView'         : '../common/view/basicView',
