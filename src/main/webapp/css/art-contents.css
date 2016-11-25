@@ -24,6 +24,7 @@
 .inner {
     border: 0px !important;
     border-radius : 4px;
+    padding : 10px;
 }
 
 #main-editor {
