@@ -306,7 +306,42 @@ define(['basicInfo', 'basicUtil'
 				if( _opt.boxClass != null )
 					el.find(".box").addClass(_opt.boxClass);
 			}
-		}
+		}, 
+		grid : {
+			options : {
+				colModel   : null,
+				dataModel  : {
+					data : null
+				},
+				width : "auto",
+				title: "No Title",
+				resizable:false,
+				draggable:false,
+				scrollModel: { autoFit: true },
+		        collapsible: { on: true, collapsed: false },	
+			},
+			els : {},
+			initialize : function() {
+				
+			},
+			render : {
+
+				var _opt =  $.extend(true, {}, options, paramObj );
+				
+				thisEl.html("<div></div>");
+				_els.grid = thisEl.find("div");
+				
+				var _g = _els.grid.pqGrid(_pm);
+				
+				_els.grid.on( "pqpagerchange", function( event, ui ) {
+					if( ui.rPP != undefined  ) {
+						_els.grid.pqGrid( "option", "pageModel.curPage", 1 );
+					}
+				} );
+				return _g;
+			},
+			
+		},
 	}
 	
 	return basicTemplate;

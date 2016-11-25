@@ -216,7 +216,6 @@ define([ 'abstractView', 'basicInfo', 'basicUtil',  'basicTmpl'
 			_f.setMainStyle();
 			_f.setBrand();
 			_f.setTopNav();
-			
 			_f.searchLeftMenu();
 			
 			if( _pm.viewName != null ) {

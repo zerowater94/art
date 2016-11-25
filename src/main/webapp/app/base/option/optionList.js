@@ -24,6 +24,7 @@ define([ 'abstractView', 'basicInfo', 'basicUtil', 'basicTmpl', '../../../common
 					callbackFunc : _f.showEditor 
 			    });
 			},
+			
 			showEditor : function(e) {
 				BasicTmpl.mainEditor.render({
 					title : "옵션 추가",
