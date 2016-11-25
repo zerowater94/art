@@ -1,0 +1,52 @@
+<!-- body { min-width:760px;} -->
+
+#menu > li.active ul > li.selected > a {background-color: #415875;font-weight:600;}
+
+@media ( min-width:768px ) {
+    .head .main-bar {background-color:#827e7e}
+    .head .main-bar h3 {color:#ffffff; }
+}
+
+.pq-grid .pq-pager {text-align:center;}
+
+.header-title {
+	background-image: linear-gradient(180deg,#fff 0,#f2f2f2);
+    background-repeat: repeat-x;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffffff',endColorstr='#fff2f2f2',GradientType=0);
+    border-bottom: 1px solid #d4d4d4;
+    box-shadow: 0 1px 4px rgba(0,0,0,.065);
+}
+
+.outer {
+    padding: 5px !important;
+}
+
+.inner {
+    border: 0px !important;
+    border-radius : 4px;
+}
+
+#main-editor {
+    position: absolute;
+    border-radius : 4px;
+    background-color: #ffffff;
+    display:none;
+}
+
+#main-editor .panel {
+    margin-bottom : 0;
+}
+
+#main-editor .panel-body {
+	color : #333;
+}
+
+@media (max-width: 768px) {
+	
+	#main-editor {
+	    position: relative;
+	    width   : 100%;
+	    border-radius : 4px;
+	    background-color: #ffffff;
+	}
+}

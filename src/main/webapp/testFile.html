@@ -1,0 +1,43 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="description" content="">
+		<meta name="author" content="">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		
+		<link rel="stylesheet" type="text/css" media="screen" href="libs/bootstrap/css/bootstrap.min.css">
+		<link rel="stylesheet" type="text/css" media="screen" href="libs/font-awesome/css/font-awesome.min.css">
+		
+		<link rel="stylesheet" type="text/css" media="screen" href="libs/fileinput/css/fileinput.min.css">
+		
+		<!-- jQuery -->
+	    <script src="libs/jquery/jquery-1.11.3.min.js"></script>
+	    
+	    <!-- Bootstrap Core JavaScript -->
+	    <script src="libs/fileinput/js/fileinput.min.js"></script>
+		
+	    <!-- Bootstrap Core JavaScript -->
+	    <script src="libs/bootstrap/js/bootstrap.min.js"></script>
+		
+		<script src="widget-file-form.js"></script>
+			
+	</head>
+	
+	<body>
+		<div id="area-form-file"></div>
+		
+		<script>
+			var wgFile = new bsFileInput($("#area-form-file"));
+			wgFile.setParams({
+				test : "aaaa"
+			});
+			wgFile.render();
+			
+			
+		</script>
+	</body>
+</html>

@@ -1,0 +1,16 @@
+CACHE MANIFEST
+# Version 1.0.0.0
+
+CACHE:
+
+
+# css Files
+css/art-common.css
+css/art-contents.css
+
+# Javascript Files
+libs/jquery/jquery-1.11.3.min.js
+common/config/base.js
+
+NETWORK:
+*

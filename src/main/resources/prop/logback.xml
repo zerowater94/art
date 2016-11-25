@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    
+    <property name="LOG_DIR" value="../uniportal_config/logs" />
+
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+        <Pattern>
+            %d{yyyy-MM-dd HH:mm:ss} %-5level %logger{0}:%line - %msg%n
+        </Pattern>
+        </layout>
+    </appender>
+    
+    <appender name="total_log" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>${LOG_DIR}/total_log.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <!-- keep 1 days' worth of history -->
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %-5level  %logger:%line %msg%n%contextName %caller{1, DISP_CALLER_EVAL}</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="access_log" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>${LOG_DIR}/access_log.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <!-- keep 1 days' worth of history -->
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="app_log" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>${LOG_DIR}/app_log.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <!-- keep 1 days' worth of history -->
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %-5level %logger{0}:%line %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="mail_log" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>${LOG_DIR}/mail_log.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <!-- keep 1 days' worth of history -->
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %-5level %logger{0}:%line %msg%n</pattern>
+        </encoder>
+    </appender>
+    
+    <logger name="org.springframework" level="INFO">
+        <appender-ref ref="console" />
+    </logger>
+
+    
+    <logger name="com.uniportal" level="DEBUG">
+        <appender-ref ref="app_log" />
+    </logger>
+
+    <logger name="com.uniportal.fw.interceptor" level="INFO">
+        <appender-ref ref="access_log" />
+    </logger>
+
+    
+
+    <logger name="com.uniportal.app.mail" level="DEBUG">
+        <appender-ref ref="mail_log" />
+    </logger>
+     
+    <root level="DEBUG">
+        <appender-ref ref="console" />
+        <appender-ref ref="total_log" />
+    </root>
+
+</configuration>
