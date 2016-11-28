@@ -24,7 +24,6 @@ define([ 'abstractView', 'basicInfo', 'basicUtil'
 				
 				BasicInfo.addWinResizeEvent("resize-"+thisEl.selector+"-grid", function(){
 					
-					console.log("execute grid resize : " + thisEl.width());
 					_els.grid.pqGrid('option', 'width', thisEl.width()).pqGrid('refresh');
 				});
 				

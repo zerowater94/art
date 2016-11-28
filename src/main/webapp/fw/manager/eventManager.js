@@ -21,6 +21,14 @@ define(['jquery'], function ($) {
 		});
 	};
 	
+	var _clearResizeEvent = function() {
+		
+		$.each(_winResize, function(key, func) {
+		    if ( !key.startsWith("WIN-MAIN") )
+		    	delete _winResize[key];
+		});
+	};
+	
 	var _startWinResize = function() {
 		
 		$(window).resize(function()
@@ -37,6 +45,7 @@ define(['jquery'], function ($) {
 		addWinResizeEvent : _addWinResize,
 		removeWinResizeEvent : _rmResizeEvent,
 		execWinResize : _execWinResize,
-		startWindResize : _startWinResize
+		startWinResize : _startWinResize,
+		clearWinResize : _clearResizeEvent
 	}
 });

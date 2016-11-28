@@ -38,13 +38,13 @@
 		<property name="configLocation" value="classpath:prop/mybatis-config.xml" />
 	</bean>
 	
-	<bean id="sessionTemplate-basic" class="org.mybatis.spring.SqlSessionTemplate">
-		<constructor-arg name="sqlSessionFactory" ref="sessionFactory-basic" />
+	<bean id="sessionTemplate_basic" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg ref="sessionFactory-basic" />
 	</bean>
 	
 	<bean id="mapperConfig-basic" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-		<property name="basePackage" value="com.art.fw.**.mapper,com.fw.app.**.mapper" />
-        <property name="sqlSessionFactoryBeanName" value="sessionTemplate-basic" />
+		<property name="basePackage" value="com.art.fw.**.dao,com.art.app.**.dao" />
+        <property name="sqlSessionFactoryBeanName" value="sessionFactory-basic" />
 	</bean>	
 	
 </beans>

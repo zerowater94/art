@@ -15,6 +15,7 @@ public abstract class AbstractVO
 	// server name 
 	private String serverName = "";
 	private int serverPort = 0;
+	
 	// portal 기본 변수
 	private String siteId = "";
 	private String compId = "";

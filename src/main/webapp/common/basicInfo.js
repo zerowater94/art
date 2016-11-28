@@ -137,7 +137,7 @@ define(['alertify', 'blockUi', 'basicUtil', '../fw/manager/eventManager' , '../f
 					cancel : _dts.msg.common["lbl.cancle"], // 취소
 				}});
 				_f.execuRouter();
-				MngEvent.startWindResize();
+				MngEvent.startWinResize();
 			},
 			reloadCode : function( group ) {
 				
@@ -470,13 +470,15 @@ define(['alertify', 'blockUi', 'basicUtil', '../fw/manager/eventManager' , '../f
 		
 		_this.winResize = function()
 		{
-			
 			MngEvent.execWinResize();
 		};
 		
-		_this.winResizeStart = function() {
+		/**
+		 * WIN_MAIN으로 시작 하는 event 이외의 event 삭제.
+		 */
+		_this.clearWinResizeEvent = function() {
 			
-			MngEvent.startWindResize();
+			MngEvent.clearWinResize();
 		};
 		
 		_this.winScrollTop = function(){

@@ -50,6 +50,8 @@ define([ 'abstractView', 'basicInfo', 'basicUtil', 'basicTmpl', '../../../common
 		};
 		
 		_this.createPage = function() {
+			
+			thisEl.html("this is code page..");
 		};
 		
 		_this.setElVariable = function() {

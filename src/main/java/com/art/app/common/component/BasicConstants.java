@@ -65,7 +65,7 @@ public class BasicConstants
 		GENERAL_USER("GENERAL");
 		
 		public String code;
-       private SYS_ROLE(String value) { this.code = value; }
+        private SYS_ROLE(String value) { this.code = value; }
 	} 
 	
 	
@@ -80,6 +80,13 @@ public class BasicConstants
 	}
 	
 	
-	
-	
+	/***************************************************************
+	 * 구분자 
+	 ****************************************************************/
+	public enum DELIMITER
+	{
+		D1("~|_"), D2("-|_"), D3("=|_");
+		public String code ; 
+        private DELIMITER(String value) {this.code = value; }
+	}
 }

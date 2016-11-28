@@ -1,5 +1,6 @@
 define([ 'abstractView', 'basicInfo', 'basicUtil', 'basicTmpl'
-       ], function ( AbstractView , BasicInfo, BasicUtil, BasicTmpl) {
+         , 'text!base/config/optionList.html'
+       ], function ( AbstractView , BasicInfo, BasicUtil, BasicTmpl, _tmpl) {
 	
 
 	'use strict';
@@ -16,6 +17,7 @@ define([ 'abstractView', 'basicInfo', 'basicUtil', 'basicTmpl'
 				
 		} ; // elements
 		
+		
 		var _f = {
 			setTitle : function(){
 
@@ -25,9 +27,9 @@ define([ 'abstractView', 'basicInfo', 'basicUtil', 'basicTmpl'
 			    });
 			},
 			showEditor : function(e) {
-
+				
 				BasicTmpl.mainEditor.render({
-					title : "옵션 추가",
+					title : BasicInfo.getMsg("lbl.addOption"),
 					callBackHide : function() {
 						$(e.target).show();
 					},
@@ -39,10 +41,53 @@ define([ 'abstractView', 'basicInfo', 'basicUtil', 'basicTmpl'
 				
 				BasicTmpl.mainEditor.showEditor();
 			},
+			makeSearchArea : function() {
+				
+				_els.areaSearchBody = BasicTmpl.rowBox.render(_els.areaSearch,{
+					title   : BasicInfo.getMsg("lbl.search"),
+					buttons : [{name :BasicInfo.getMsg("lbl.search"), callbackFunc : function(){
+						console.log(_els.searhcForm.searchData());
+					} }]
+				});
+				_els.areaSearchBody.addClass("search-area");
+				var searchCategory = [];
+				searchCategory.push({
+					id:"category", 
+					type:"select", 
+					label:{
+						text:BasicInfo.getMsg("lbl.category")
+					},
+					blankOption:true
+				});
+				searchCategory.push({
+					id:"optionValue", 
+					type:"text",  
+					label:{
+						text:BasicInfo.getMsg("lbl.value")
+					}
+				});
+				
+				_els.searhcForm = BasicTmpl.search.render(_els.areaSearchBody,{
+					formList     : searchCategory
+				});
+				
+				
+			},
+			searchOptionList : function() {
+				
+				BasicInfo.send({
+					url : BasicInfo.getDefaultUrl()+"/base/config/option/list",
+					type : "get",
+					success : function(data) {
+						
+						console.log(data);
+					}
+				});
+				
+			},
 			makeGrid : function() {
 				
-				BasicTmpl.addRow.render(thisEl, {id:'grid-order-list'});
-				_els.dataGrid = BasicTmpl.grid.render(thisEl.find("#grid-order-list"), {
+				_els.gridList = BasicTmpl.grid.render(_els.areaGridOption, {
 					title    : "임시 그리드",
 					colModel : [{ dataIndx : 0, title: "Rank", width: "20%", dataType: "integer", editable: false   },
 					            { dataIndx : 1, title: "Company", width: "20%", dataType: "string", editable: false  },
@@ -84,10 +129,14 @@ define([ 'abstractView', 'basicInfo', 'basicUtil', 'basicTmpl'
 		
 		_this.createPage = function() {
 			
+			var tmpl = _.template(_tmpl);
+			thisEl.html(tmpl());
 		};
 		
 		_this.setElVariable = function() {
 			
+			_els.areaSearch     = thisEl.find("#area-search");
+			_els.areaGridOption = thisEl.find("#grid-order-list");
 		};
 		
 		_this.setEvent = function() {
@@ -97,7 +146,10 @@ define([ 'abstractView', 'basicInfo', 'basicUtil', 'basicTmpl'
 		_this.reloadContents = function() {
 			
 			_f.setTitle();
+			_f.makeSearchArea();
 			_f.makeGrid();
+			
+			_f.searchOptionList();
 		};
 		
 		_this.returns = {

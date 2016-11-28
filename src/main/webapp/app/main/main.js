@@ -17,7 +17,15 @@ define([ 'abstractView', 'basicInfo', 'basicUtil',  'basicTmpl'
 				
 		} ; // elements
 		var _f = {
-			
+			setMainInitialize : function(){
+				
+				BasicTmpl.mainBar.initialize(_els.areaMainBar);
+				BasicTmpl.mainEditor.initialize(_els.areaContents.find("#main-editor"));
+				BasicTmpl.formHtml.initialize({
+					blankStr : BasicInfo.getMsg("lbl.blankStr")
+				});
+				BasicTmpl.grid.initialize();
+			},
 			setMainStyle : function() {
 				
 				var topBottomHeight = 164;
@@ -25,7 +33,7 @@ define([ 'abstractView', 'basicInfo', 'basicUtil',  'basicTmpl'
 					topBottomHeight = 114;
 				
 				var _editPanel = BasicInfo.getMainEditor().find(".panel");
-				BasicInfo.addWinResizeEvent("resize-main-contents", function(){
+				BasicInfo.addWinResizeEvent("WIN-MAIN_resize-contents", function(){
 
 					_els.areaContent.css({
 						minHeight : $(window).height()-topBottomHeight
@@ -97,8 +105,8 @@ define([ 'abstractView', 'basicInfo', 'basicUtil',  'basicTmpl'
 					menuId   : "menu-id-4",
 					menuName : "설정",
 					menuType : null,
-					subMenus : [{iconCss  : "fa fa-h-square",menuName : "옵션", maneId : "menu-4-1", menuLvl  : 2, url:"base/option/optionList"},
-					            {iconCss  : "fa fa-h-square",menuName : "코드", maneId : "menu-4-2", menuLvl  : 2, url:"base/code/codeList"}
+					subMenus : [{iconCss  : "fa fa-h-square",menuName : BasicInfo.getMsg("lbl.manageOption"), maneId : "menu-4-1", menuLvl  : 2, url:"base/config/optionList"},
+					            {iconCss  : "fa fa-h-square",menuName : "코드", maneId : "menu-4-2", menuLvl  : 2, url:"base/config/codeList"}
 					,]
 				}];
 				
@@ -158,6 +166,7 @@ define([ 'abstractView', 'basicInfo', 'basicUtil',  'basicTmpl'
 					title    : obj.menuName
 				});
 				
+				BasicInfo.clearWinResizeEvent();
 				BasicTmpl.mainEditor.hideEditor();
 				
 				var _param = {
@@ -200,9 +209,6 @@ define([ 'abstractView', 'basicInfo', 'basicUtil',  'basicTmpl'
 			
 			BasicInfo.setMainArea(_els.areaContents.find("#main-area"));
 			BasicInfo.setMainEditor(_els.areaContents.find("#main-editor"));
-			BasicTmpl.mainBar.initialize(_els.areaMainBar);
-			BasicTmpl.mainEditor.initialize(_els.areaContents.find("#main-editor"));
-			BasicTmpl.grid.initialize();
 			_els.toggleFullSreen = _els.areaTopNav.find("#toggleFullScreen");
 			
 		};
@@ -214,6 +220,7 @@ define([ 'abstractView', 'basicInfo', 'basicUtil',  'basicTmpl'
 		
 		_this.reloadContents = function() {
 			
+			_f.setMainInitialize();
 			_f.setMainStyle();
 			_f.setBrand();
 			_f.setTopNav();

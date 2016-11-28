@@ -276,6 +276,58 @@ define(['basicInfo', 'basicUtil'
 				});
 			}
 		},
+		formHtml : {
+			options : {
+				id : null,
+				name : null, // 검색 일경우 text field에 보여줄 데이터의 Key
+				label : {
+					text : null,
+					css : "",
+				},
+				jsonReader : {
+					code : "code",
+					value : "value"
+				},
+				optionList : null,
+				blankOption : false,
+				blankStr   : "::::::",
+				placeholder : "",
+				searchModalView : null, // search 일 경우 modal View ( 필히 callbackfunc 정의 되어야 함. dblCallbackFunc, callParentElement는 옵션 
+				paramObj : null
+			},
+			initialize : function( obj ) {
+				
+				$.extend(true, this.options, obj );
+			},
+			text : function( el, obj ) {
+				var _opt = $.extend(true,{},this.options, obj );
+				var html = '';
+				
+				if( _opt.label.text != null ) 
+					html += '<span class="'+_opt.label.css+'">'+_opt.label.text+'</span>';
+				html    += '<input type="text" class="" placeholder="'+_opt.placeholder+'">';
+				el.append(html);
+			},
+			select : function(el, obj) {
+				var _opt = $.extend(true,{},this.options, obj );
+				var html = "", elSelect;
+				if( _opt.label.text != null ) 
+					html += '<span class="'+_opt.label.css+'">'+_opt.label.text+'</span>';
+				html += '<select></select>';
+				el.append(html);
+				elSelect = el.find("select");
+				if( _opt.blankOption ) {
+					elSelect.append("<option value=''>"+_opt.blankStr+"</option>");
+				}
+				if( _opt.optionList != null ) {
+					var _obj;
+					for( var idx = 0 ; idx < _opt.optionList.length; idx++ ) {
+						_obj = _opt.optionList[idx];
+						elSelect.append("<option value='"+_obj[_opt.jsonReader.code]+"'>"+_obj[_opt.jsonReader.value]+"</option>");
+					}
+				}
+			}
+		},
 		date : {
 			options : {
 				
@@ -295,20 +347,36 @@ define(['basicInfo', 'basicUtil'
 		},
 		rowBox : {
 			options : {
-				colClass : 'col-lg-12',
 				boxClass : null,
 				title : null,
-				id    : $.guid, 
+				buttons : []
 			},
 			render : function(el, obj) {
 				
 				var _opt = $.extend(true,{},this.options, obj );
-				el.html('<div class="row"><div class="'+_opt.colClass+'" id="'+_opt.id+'"> <div class="box"><header><h5>'+_opt.title+'</h5></header><div class="body"></div><div><div></div>');
-				if( _opt.title == null )
-					el.find("#"+_opt.id).find("header").remove();
+				var _elHeader, _elBtnGroup, _elBody;
+				el.html('<div class="box"><header><div class="pull-left"><h5></h5></div><div class="pull-right"></div></header><div class="body"></div><div>');
+				
+				_elHeader = el.find(".box").find("header");
+				_elBtnGroup = _elHeader.find(".pull-right");
+				_elBody = el.find(".box").find(".body");
 				
 				if( _opt.boxClass != null )
 					el.find(".box").addClass(_opt.boxClass);
+				
+				if( _opt.title == null && _opt.buttons.length == 0 )
+					_elHeader.remove();
+				else {
+					
+					if( _opt.title != null )
+						_elHeader.find("h5").html(_opt.title);
+					
+					for( var idx = 0; idx < _opt.buttons.length; idx++ ) {
+						basicTemplate.button.render(_elBtnGroup, $.extend(true, {btnCls:"btn-default btn-xs"}, _opt.buttons[idx]));
+					}
+				}
+
+				return _elBody;
 			}
 		},
 		toolbar : {
@@ -352,6 +420,60 @@ define(['basicInfo', 'basicUtil'
 				
 				return grid;
 			},
+		},
+		search : {
+			options : {
+				formList     : null,
+				callbackFunc : null
+			},
+			formObj : {
+				id   : null,
+				type : "text" // text / select / checkbox, radio , 
+			},
+			render : function(thisEl, obj){
+				
+				var _pm = $.extend(true,{},this.options, obj );
+				var _els = {};
+				
+				var _f = {
+					execute : function() {
+						
+						thisEl.empty();
+						thisEl.append("<div class='form-body'></div>");
+						_els.areaBody = thisEl.find(".form-body");
+						
+						var obj, areaForm;
+						for( var idx = 0 ; idx < _pm.formList.length; idx++ ) {
+							obj = _pm.formList[idx];
+							_els.areaBody.append("<div id='"+obj.id+"' class='form-group'></div>");
+							areaForm = _els.areaBody.children(".form-group").last();
+							if ( obj.type == 'select' )
+								basicTemplate.formHtml.select(areaForm, obj);
+							else
+								basicTemplate.formHtml.text(areaForm, obj);
+						}
+						
+					},
+					searchData : function() {
+						var rtnObj = {};
+						var obj;
+						for( var idx = 0 ; idx < _pm.formList.length; idx++ ) {
+							obj = _pm.formList[idx];
+							if ( obj.type == 'select' )
+								rtnObj[obj.id] = _els.areaBody.find("#"+obj.id).find("select").val();
+							else
+								rtnObj[obj.id] = _els.areaBody.find("#"+obj.id).find("input").val();
+						}
+						return rtnObj;
+					}
+				};
+				
+				_f.execute();
+				
+				return {
+					searchData : _f.searchData
+				};
+			}
 		},
 	}
 	

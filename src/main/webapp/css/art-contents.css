@@ -2,11 +2,6 @@
 
 #menu > li.active ul > li.selected > a {background-color: #415875;font-weight:600;}
 
-@media ( min-width:768px ) {
-    .head .main-bar {background-color:#827e7e}
-    .head .main-bar h3 {color:#ffffff; }
-}
-
 .pq-grid .pq-pager {text-align:center;}
 
 .header-title {
@@ -17,37 +12,30 @@
     box-shadow: 0 1px 4px rgba(0,0,0,.065);
 }
 
-.outer {
-    padding: 5px !important;
-}
+.outer { padding: 5px !important;}
+.inner {border: 0px !important;border-radius : 4px; padding : 10px;}
 
-.inner {
-    border: 0px !important;
-    border-radius : 4px;
-    padding : 10px;
-}
+#main-editor { position: absolute;border-radius : 4px;background-color: #ffffff;display:none;}
+#main-editor .panel { margin-bottom : 0;}
+#main-editor .panel-body {color : #333; }
 
-#main-editor {
-    position: absolute;
-    border-radius : 4px;
-    background-color: #ffffff;
-    display:none;
-}
+.box header h5 { padding:5px; }
+.box .pull-right { padding:2px; } 
 
-#main-editor .panel {
-    margin-bottom : 0;
-}
+.search-area {display:inline-block;padding-bottom:5px !important;}
+.search-area .form-group { position:relative; float:left; width: 33.33333333%; min-height: 1px; margin-bottom:0px !important; padding-right: 10px; padding-left: 10px;}
+.search-area .form-group span {padding: 6px 12px;font-weight: 500;}
+.search-area .form-group input {min-width:50%; border-radius: 4px;color: #555;border: 1px solid #ccc;padding: 3px 6px;}
+.search-area .form-group select {min-width:50%; border-radius: 4px;color: #555;border: 1px solid #ccc;padding: 3px 6px;}
 
-#main-editor .panel-body {
-	color : #333;
-}
-
-@media (max-width: 768px) {
-	
-	#main-editor {
-	    position: relative;
-	    width   : 100%;
-	    border-radius : 4px;
-	    background-color: #ffffff;
-	}
+@media ( min-width:768px ) {
+    .head .main-bar {background-color:#827e7e}
+    .head .main-bar h3 {color:#ffffff; }
+    
+    #main-editor {
+        position: relative;
+        width   : 100%;
+        border-radius : 4px;
+        background-color: #ffffff;
+    }
 }
