@@ -30,13 +30,6 @@ define([ 'abstractView', 'basicInfo', 'basicUtil',
 			thisEl.html("########################### menu ");
 		};
 		
-		_this.setElVariable = function() {
-			
-		};
-		
-		_this.setEvent = function() {
-		};
-		
 		_this.reloadContents = function() {
 			
 		};

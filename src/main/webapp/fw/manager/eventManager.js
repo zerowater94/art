@@ -41,11 +41,17 @@ define(['jquery'], function ($) {
 		});
 	};
 	
+	var _addEvent = function(el, type, func) {
+		
+		el.off().on(type, func);
+	}
+	
 	return {
 		addWinResizeEvent : _addWinResize,
 		removeWinResizeEvent : _rmResizeEvent,
 		execWinResize : _execWinResize,
 		startWinResize : _startWinResize,
-		clearWinResize : _clearResizeEvent
+		clearWinResize : _clearResizeEvent,
+		addEvent : _addEvent,
 	}
 });

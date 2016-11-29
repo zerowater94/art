@@ -1,5 +1,8 @@
-define(['alertify', 'blockUi', 'basicUtil', '../fw/manager/eventManager' , '../fw/manager/routerManager'
-        ], function (Alertify, BlockUi, BasicUtil, MngEvent, MngRouter) 
+define(['alertify', 'blockUi', 'basicUtil', 
+        '../fw/manager/eventManager' , 
+        '../fw/manager/routerManager', 
+        '../fw/manager/templateManager'
+        ], function (Alertify, BlockUi, BasicUtil, MngEvent, MngRouter, MngTmpl) 
 {
 	'use strict';
 	
@@ -457,6 +460,9 @@ define(['alertify', 'blockUi', 'basicUtil', '../fw/manager/eventManager' , '../f
 		 * browser manager..
 		 * 
 		 ********************************************************/
+		
+		_this.e = MngEvent;
+		_this.t = MngTmpl;
 		
 		_this.addWinResizeEvent = function(name, callbackFunc){
 			

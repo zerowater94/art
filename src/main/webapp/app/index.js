@@ -1,9 +1,9 @@
 define([ 'abstractView', 'basicInfo', 'basicUtil'
-       ], function ( AbstractView , BasicInfo, BasicUtil) {
+       ], function ( AbstractView , $a, $aUtil) {
 	
 
 	'use strict';
-		
+	
 	var _funcs = function( thisEl ) {
 		
 		var _this = this;
@@ -24,7 +24,7 @@ define([ 'abstractView', 'basicInfo', 'basicUtil'
 		var _f = {
 			initialize : function() {
 				
-				$(document).attr("title", BasicInfo.getMsg("document.title"));
+				$(document).attr("title", $a.getMsg("document.title"));
 				
 				$(document.body).css({
 					minWidth : "770px"
@@ -33,21 +33,21 @@ define([ 'abstractView', 'basicInfo', 'basicUtil'
 			// 세션을 체크 한다.
 			chkSessionInfo : function() {
 				var _param = {
-					url:BasicInfo.getDefaultUrl() + "/base/login/session",
+					url:$a.getDefaultUrl() + "/base/login/session",
 					type : "GET",
 					success : function(data) {
 						if( typeof data == 'object' ) {
-							BasicInfo.setSessionInfo(data);
+							$a.setSessionInfo(data);
 						}
 					}
 				};
-				BasicInfo.send(_param);
+				$a.send(_param);
 			},
 			parseLocation : function() {
 				
 				var wl = window.location;
 				_dts.callParam.hash = wl.hash;
-				_dts.callParam.search = BasicUtil.getUrlParams(wl.search);
+				_dts.callParam.search = $aUtil.getUrlParams(wl.search);
 				// hash url 삭제
 				history.replaceState({}, document.title, wl.pathname);
 				
@@ -64,7 +64,7 @@ define([ 'abstractView', 'basicInfo', 'basicUtil'
 				Backbone.on("historyLocation", function(event){
 					
 					if (event.state && _.keys(event.state).length > 0) {
-						BasicInfo.goPage(event.state);
+						$a.goPage(event.state);
 					}
 				} );
 				
@@ -85,7 +85,7 @@ define([ 'abstractView', 'basicInfo', 'basicUtil'
 				} else {
 					_p.callbackFunc = _f.goMainPage;
 				}
-				BasicInfo.goPage({
+				$a.goPage({
 					viewName : 'base/login/login',
 					el       : $(document.body)  ,
 					paramData : _p
@@ -93,14 +93,14 @@ define([ 'abstractView', 'basicInfo', 'basicUtil'
 			},
 			goSetupPage : function() {
 
-				BasicInfo.goPage({
+				$a.goPage({
 					viewName : 'base/setup/setupApp',
 					el       : $(document.body)  ,
 				});
 				
 			},
 			goMainPage : function( param ) {
-				BasicInfo.goPage({
+				$a.goPage({
 					viewName  : 'main/main',
 					paramData : param ,
 					el        : $(document.body)  ,
@@ -108,7 +108,7 @@ define([ 'abstractView', 'basicInfo', 'basicUtil'
 			},
 			loadCustomCss : function() {
 				
-				var customCss = BasicInfo.getDefaultUrl()+'/common/initialize/getCustomCss/'+BasicInfo.getTheme()+'/art-custom.css';
+				var customCss = $a.getDefaultUrl()+'/common/initialize/getCustomCss/'+$a.getTheme()+'/art-custom.css';
 				$('head').append('<link rel="stylesheet" href="'+customCss+'" type="text/css" />');
 			},
 		}; // functions..
@@ -123,10 +123,6 @@ define([ 'abstractView', 'basicInfo', 'basicUtil'
 		
 		 _this.createPage = function() {};
 
-		 _this.setElVariable = function() {};
-		 
-		 _this.setEvent = function() {};
-		
 		 _this.reloadContents = function() {
 
 			_f.initialize();
@@ -143,17 +139,17 @@ define([ 'abstractView', 'basicInfo', 'basicUtil'
 		        console.log(e.target.textContent);
 		    });
 			
-			if(_dts.callParam.search.type ==  BasicInfo.getConstants("LOGIN_TYPE","SETUP")  ) {
+			if(_dts.callParam.search.type ==  $a.getConstants("LOGIN_TYPE","SETUP")  ) {
 				_dts.isCallSetup = true;
 			}
 
-			if( BasicInfo.getSessionInfo() == null ) {
+			if( $a.getSessionInfo() == null ) {
 				
 //				_f.goLoginPage();
 				_f.goMainPage();
 			} else {
 				
-				if ( _dts.isCallSetup && BasicInfo.getSessionInfo("SYS_ROLE") == BasicInfo.getConstants("SYS_ROLE","SETUPADM") ) {
+				if ( _dts.isCallSetup && $a.getSessionInfo("SYS_ROLE") == $a.getConstants("SYS_ROLE","SETUPADM") ) {
 					_f.goSetupPage();
 				} else {
 					_f.goMainPage();
@@ -170,8 +166,8 @@ define([ 'abstractView', 'basicInfo', 'basicUtil'
 	
 	return AbstractView.extend({
 		initialize : function(){
-			BasicInfo.initializeResource('ko');
-			BasicInfo.initializeApp();
+			$a.initializeResource('ko');
+			$a.initializeApp();
 		},
 		executor : _funcs
 	});

@@ -1,7 +1,7 @@
-define([ 'abstractView', 'basicInfo', 'basicUtil',  'basicTmpl'
+define([ 'abstractView', 'basicInfo'
          ,'text!main/main.html'
          ,'../../libs/screenfull/screenfull'
-       ], function ( AbstractView , BasicInfo, BasicUtil, BasicTmpl, Tmpl ) {
+       ], function ( AbstractView , $a, Tmpl ) {
 	
 
 	'use strict';
@@ -19,12 +19,20 @@ define([ 'abstractView', 'basicInfo', 'basicUtil',  'basicTmpl'
 		var _f = {
 			setMainInitialize : function(){
 				
-				BasicTmpl.mainBar.initialize(_els.areaMainBar);
-				BasicTmpl.mainEditor.initialize(_els.areaContents.find("#main-editor"));
-				BasicTmpl.formHtml.initialize({
-					blankStr : BasicInfo.getMsg("lbl.blankStr")
+				$a.setMainArea(_els.areaContents.find("#main-area"));
+				$a.setMainEditor(_els.areaContents.find("#main-editor"));
+				
+				$a.t.initialize({
+					els : {
+						areaMain : $a.getMainArea(),
+						areaEditor : $a.getMainEditor(),
+						areaMainBar : _els.areaMainBar
+					},
+					msg : {
+						blankStr : $a.getMsg("lbl.blankStr"),
+						search   : $a.getMsg("lbl.search")
+					}
 				});
-				BasicTmpl.grid.initialize();
 			},
 			setMainStyle : function() {
 				
@@ -32,9 +40,9 @@ define([ 'abstractView', 'basicInfo', 'basicUtil',  'basicTmpl'
 				if( _els.areaTop.find("nav").hasClass("navbar-fixed-top"))
 					topBottomHeight = 114;
 				
-				var _editPanel = BasicInfo.getMainEditor().find(".panel");
-				BasicInfo.addWinResizeEvent("WIN-MAIN_resize-contents", function(){
-
+				var _editPanel = $a.getMainEditor().find(".panel");
+				$a.e.addWinResizeEvent("WIN-MAIN_resize-contents", function(){
+					
 					_els.areaContent.css({
 						minHeight : $(window).height()-topBottomHeight
 					});
@@ -42,31 +50,34 @@ define([ 'abstractView', 'basicInfo', 'basicUtil',  'basicTmpl'
 						minHeight : $(window).height()-topBottomHeight
 					});
 				});
-				BasicInfo.winResize();
 				
+				$a.winResize();
 			},
 			setBrand : function() {
 				var _elBrand = _els.areaTopBrand.find(".navbar-brand");
-				_elBrand.find("img").attr("src", BasicInfo.getDefaultUrl()+'/common/initialize/getCustomCss/'+BasicInfo.getTheme()+'/logo.png');
+				_elBrand.find("img").attr("src", $a.getDefaultUrl()+'/common/initialize/getCustomCss/'+$a.getTheme()+'/logo.png');
 				_elBrand.off().click(function(e){
-					BasicInfo.goHome();
+					$a.goHome();
 				}).addClass("pointers");
 				
 			},
 			setTopNav : function() {
 				
-				BasicTmpl.nvButton.add(_els.areaTopNav, {
+				$a.t.nvButton.add(_els.areaTopNav, {
 					id      : "toggleFullScreen" ,
 					linkCss : "btn-default btn-sm",
 					title   : "Fullscreen",
 					btnCss  : "glyphicon glyphicon-fullscreen"
 				});
 				
-				BasicTmpl.nvButton.add(_els.areaTopNav, {
+				$a.t.nvButton.add(_els.areaTopNav, {
 					linkCss : "btn-metis-1 btn-sm",
 					title   : "Logout",
 					btnCss  : "fa fa-power-off"
 				});
+				
+				_els.toggleFullSreen = _els.areaTopNav.find("#toggleFullScreen");
+				$a.e.addEvent(_els.toggleFullSreen, "click", _f.execFullScreen );
 
 			},
 			execFullScreen : function(e) {
@@ -105,7 +116,7 @@ define([ 'abstractView', 'basicInfo', 'basicUtil',  'basicTmpl'
 					menuId   : "menu-id-4",
 					menuName : "설정",
 					menuType : null,
-					subMenus : [{iconCss  : "fa fa-h-square",menuName : BasicInfo.getMsg("lbl.manageOption"), maneId : "menu-4-1", menuLvl  : 2, url:"base/config/optionList"},
+					subMenus : [{iconCss  : "fa fa-h-square",menuName : $a.getMsg("lbl.manageOption"), maneId : "menu-4-1", menuLvl  : 2, url:"base/config/optionList"},
 					            {iconCss  : "fa fa-h-square",menuName : "코드", maneId : "menu-4-2", menuLvl  : 2, url:"base/config/codeList"}
 					,]
 				}];
@@ -118,7 +129,7 @@ define([ 'abstractView', 'basicInfo', 'basicUtil',  'basicTmpl'
 				for( var idx = 0 ; idx < _menus.length; idx++ ) {
 					
 					_menuObj = _menus[idx];
-					BasicTmpl.mainMenu.addMenu(_els.areaMenuUl , _menuObj);
+					$a.t.mainMenu.addMenu(_els.areaMenuUl , _menuObj);
 					_elLi = _els.areaMenuUl.find("#"+_menuObj.menuId);
 					_f.addEventMenuShow(_elLi, _menuObj);
 					
@@ -128,7 +139,7 @@ define([ 'abstractView', 'basicInfo', 'basicUtil',  'basicTmpl'
 						for( var jdx = 0 ; jdx < _menuObj.subMenus.length; jdx++ ) {
 							
 							_subMenuObj = _menuObj.subMenus[jdx];
-							BasicTmpl.mainMenu.addMenuSub(_elSubUl , _subMenuObj);
+							$a.t.mainMenu.addMenuSub(_elSubUl , _subMenuObj);
 							_f.addEventMenu(_elSubUl.find("li").eq(jdx), _subMenuObj);
 						}
 					}
@@ -138,7 +149,7 @@ define([ 'abstractView', 'basicInfo', 'basicUtil',  'basicTmpl'
 			}, 
 			addEventMenuShow : function(el, obj) {
 				
-				BasicInfo.addEvent(el.find("a"), "click", function() {
+				$a.addEvent(el.find("a"), "click", function() {
 					
 					el.toggleClass("active");
 
@@ -153,7 +164,7 @@ define([ 'abstractView', 'basicInfo', 'basicUtil',  'basicTmpl'
 			},
 			addEventMenu : function( el, obj ) {
 				
-				BasicInfo.addEvent(el, "click", function() {
+				$a.addEvent(el, "click", function() {
 					_els.areaMenuUl.find(".selected").removeClass("selected");
 					el.addClass("selected");
 					_f.goMainPage(obj);
@@ -161,13 +172,14 @@ define([ 'abstractView', 'basicInfo', 'basicUtil',  'basicTmpl'
 			}, 
 			goMainPage : function( obj ) {
 				
-				BasicTmpl.mainBar.render({
+				$a.t.mainBar.render({
 					iconCss  : obj.iconCss,
 					title    : obj.menuName
 				});
 				
-				BasicInfo.clearWinResizeEvent();
-				BasicTmpl.mainEditor.hideEditor();
+				$a.clearWinResizeEvent();
+				
+				$a.t.mainEditor.hideEditor();
 				
 				var _param = {
 					viewName : obj.url,
@@ -175,7 +187,7 @@ define([ 'abstractView', 'basicInfo', 'basicUtil',  'basicTmpl'
 				}
 				
 				history.pushState(_param, _param.viewName, '');
-				BasicInfo.goPage(_param);
+				$a.goPage(_param);
 			},
 		}; // functions..
 		
@@ -202,20 +214,6 @@ define([ 'abstractView', 'basicInfo', 'basicUtil',  'basicTmpl'
 			_els.areaTopLeftNav = _els.areaTop.find(".navbar-ex1-collapse");
 			_els.areaMenuUl     = thisEl.find("#menu");
 			
-			
-		};
-		
-		_this.setElVariable = function() {
-			
-			BasicInfo.setMainArea(_els.areaContents.find("#main-area"));
-			BasicInfo.setMainEditor(_els.areaContents.find("#main-editor"));
-			_els.toggleFullSreen = _els.areaTopNav.find("#toggleFullScreen");
-			
-		};
-		
-		_this.setEvent = function() {
-			
-			BasicInfo.addEvent(_els.toggleFullSreen, "click", _f.execFullScreen );
 		};
 		
 		_this.reloadContents = function() {
@@ -227,7 +225,7 @@ define([ 'abstractView', 'basicInfo', 'basicUtil',  'basicTmpl'
 			_f.searchLeftMenu();
 			
 			if( _pm.viewName != null ) {
-				BasicInfo.goPage(_pm);
+				$a.goPage(_pm);
 			}
 		};
 		

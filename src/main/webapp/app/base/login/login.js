@@ -123,22 +123,11 @@ define([ 'abstractView', 'basicInfo', 'basicUtil', 'basicValid'
 				lbl_login      : "로그인",  //로그인
 				lbl_forgetPwd  : "비밀번호찾기"  //비밀번호 찾기
 			}));
-		};
-		
-		_this.setElVariable = function() {
 			
 			// setElment.
 			_els.btnLogin  = thisEl.find("#btn-login");
 			_els.fmLoginId = thisEl.find("#fm-login");
 			_els.fmPassword = thisEl.find("#fm-password");
-			
-		};
-		
-		_this.setEvent = function() {
-			
-			BasicInfo.addEvent(_els.btnLogin, "click", _f.executeLogin);
-			BasicInfo.addEvent(_els.fmLoginId, "keypress", _f.addEnterId);
-			BasicInfo.addEvent(_els.fmPassword, "keypress", _f.addEnterPwd);
 		};
 		
 		_this.reloadContents = function() {
@@ -147,6 +136,10 @@ define([ 'abstractView', 'basicInfo', 'basicUtil', 'basicValid'
 			_els.fmLoginId.focus();
 			
 			thisEl.find("#login").find("label").addClass("text-temp-css");
+			
+			BasicInfo.addEvent(_els.btnLogin, "click", _f.executeLogin);
+			BasicInfo.addEvent(_els.fmLoginId, "keypress", _f.addEnterId);
+			BasicInfo.addEvent(_els.fmPassword, "keypress", _f.addEnterPwd);
 		};
 		
 		_this.returns = {

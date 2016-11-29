@@ -1,5 +1,5 @@
-define([ 'abstractView', 'basicInfo', 'basicUtil', 'basicTmpl', '../../../common/view/basicEditor'
-       ], function ( AbstractView , BasicInfo, BasicUtil, BasicTmpl, BasicEditor) {
+define([ 'abstractView', 'basicInfo',  '../../../common/view/basicEditor'
+       ], function ( AbstractView , $a, BasicEditor) {
 	
 
 	'use strict';
@@ -20,14 +20,14 @@ define([ 'abstractView', 'basicInfo', 'basicUtil', 'basicTmpl', '../../../common
 				
 			setTitle : function(){
 
-				BasicTmpl.mainBar.addButton({ 
-					name :BasicInfo.getMsg("lbl.add"), 
-					callbackFunc : _f.showEditor 
-			    });
+//				BasicTmpl.mainBar.addButton({ 
+//					name :$a.getMsg("lbl.add"), 
+//					callbackFunc : _f.showEditor 
+//			    });
 			},
 			showEditor : function(e) {
 				
-				BasicTmpl.mainEditor.render({
+				$a.t.mainEditor.render({
 					title : "코드 추가",
 					callBackHide : function() {
 						$(e.target).show();
@@ -36,8 +36,8 @@ define([ 'abstractView', 'basicInfo', 'basicUtil', 'basicTmpl', '../../../common
 						$(e.target).hide();
 					}
 				});
-				BasicTmpl.mainEditor.getContents().html("this is code..");
-				BasicTmpl.mainEditor.showEditor();
+				$a.t.mainEditor.getContents().html("this is code..");
+				$a.t.mainEditor.showEditor();
 			},
 		}; // functions..
 		
@@ -52,13 +52,6 @@ define([ 'abstractView', 'basicInfo', 'basicUtil', 'basicTmpl', '../../../common
 		_this.createPage = function() {
 			
 			thisEl.html("this is code page..");
-		};
-		
-		_this.setElVariable = function() {
-			
-		};
-		
-		_this.setEvent = function() {
 		};
 		
 		_this.reloadContents = function() {

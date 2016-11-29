@@ -12,8 +12,6 @@ define([  'backbone'  ], function ( Backbone) {
 				_fs = new _this.executor(_this.$el);
 				_fs.setParam(obj);
 				_fs.createPage();
-				_fs.setElVariable();
-				_fs.setEvent();
 				_fs.reloadContents();
 				
 				$.extend(true, _this, _fs.returns );

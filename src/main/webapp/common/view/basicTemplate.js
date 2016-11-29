@@ -304,15 +304,16 @@ define(['basicInfo', 'basicUtil'
 				var html = '';
 				
 				if( _opt.label.text != null ) 
-					html += '<span class="'+_opt.label.css+'">'+_opt.label.text+'</span>';
+					html += '<label class="input-group-addon col-form-label '+_opt.label.css+'">'+_opt.label.text+'</label>';
 				html    += '<input type="text" class="" placeholder="'+_opt.placeholder+'">';
 				el.append(html);
 			},
 			select : function(el, obj) {
+				
 				var _opt = $.extend(true,{},this.options, obj );
 				var html = "", elSelect;
 				if( _opt.label.text != null ) 
-					html += '<span class="'+_opt.label.css+'">'+_opt.label.text+'</span>';
+					html += '<label class="input-group-addon col-form-label '+_opt.label.css+'">'+_opt.label.text+'</label>';
 				html += '<select></select>';
 				el.append(html);
 				elSelect = el.find("select");
@@ -327,6 +328,7 @@ define(['basicInfo', 'basicUtil'
 					}
 				}
 			}
+			
 		},
 		date : {
 			options : {
@@ -445,7 +447,7 @@ define(['basicInfo', 'basicUtil'
 						var obj, areaForm;
 						for( var idx = 0 ; idx < _pm.formList.length; idx++ ) {
 							obj = _pm.formList[idx];
-							_els.areaBody.append("<div id='"+obj.id+"' class='form-group'></div>");
+							_els.areaBody.append("<div id='"+obj.id+"' class='form-group input-group'></div>");
 							areaForm = _els.areaBody.children(".form-group").last();
 							if ( obj.type == 'select' )
 								basicTemplate.formHtml.select(areaForm, obj);
