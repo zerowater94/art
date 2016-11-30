@@ -1,7 +1,6 @@
 define([ 'abstractView', 'basicInfo', 'basicUtil'
        ], function ( AbstractView , $a, $aUtil) {
 	
-
 	'use strict';
 	
 	var _funcs = function( thisEl ) {

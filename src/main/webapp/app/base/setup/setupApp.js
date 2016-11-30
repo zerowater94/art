@@ -1,5 +1,5 @@
-define([ 'abstractView', 'basicInfo', 'basicUtil',
-       ], function ( AbstractView , BasicInfo, BasicUtil) {
+define([ 'abstractView', 'basicInfo'
+       ], function ( AbstractView , $a) {
 	
 
 	'use strict';

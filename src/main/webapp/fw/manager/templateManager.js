@@ -116,17 +116,26 @@ define(['jquery','../../fw/manager/eventManager',
 				text : function( obj ) {
 					
 					var html = '';
-					if( obj.label.text != null ) 
-						html += '<label class="input-group-addon col-form-label '+obj.label.css+'">'+obj.label.text+'</label>';
+					if( obj.label != null ) 
+						html += '<label class="input-group-addon col-form-label">'+obj.label+'</label>';
 					
 					html += '<input type="text" class="" placeholder="'+obj.placeholder+'">';
+					return html;
+				},
+				textarea : function( obj ) {
+					
+					var html = '';
+					if( obj.label != null ) 
+						html += '<label class="input-group col-form-label textarea-label">'+obj.label+'</label>';
+					
+					html += '<textarea class="form-control" rows="'+obj.rows+'" ></textarea>';
 					return html;
 				},
 				select : function( obj ) {
 					
 					var html = "";
-					if( obj.label.text != null ) 
-						html += '<label class="input-group-addon col-form-label '+obj.label.css+'">'+obj.label.text+'</label>';
+					if( obj.label != null ) 
+						html += '<label class="input-group-addon col-form-label">'+obj.label+'</label>';
 					
 					html += '<select></select>';
 					return html;
@@ -156,10 +165,7 @@ define(['jquery','../../fw/manager/eventManager',
 		},
 		makeForm : {
 			options : {
-				label : {
-					text : "",
-					css : "",
-				},
+				label : "",
 				placeholder : ""
 			},
 			text : function( el, obj ) {
@@ -193,6 +199,15 @@ define(['jquery','../../fw/manager/eventManager',
 						elSelect.append("<option value='"+_obj[_opt.jsonReader.code]+"'>"+_obj[_opt.jsonReader.value]+"</option>");
 					}
 				}
+			},
+			textarea : function( el, obj ) {
+				
+				var _textareaOptions = {
+					rows : 5
+				};
+				
+				var _opt = $.extend(true,{},this.options,obj );
+				el.html(_f.html.form.textarea(_opt));
 			},
 			date : function( el, obj ) {
 				
@@ -311,6 +326,7 @@ define(['jquery','../../fw/manager/eventManager',
 			
 		options : {
 			title : null,
+			formList     : null,
 			callBackHide : null,
 			callBackShow : null
 		},	
@@ -318,6 +334,7 @@ define(['jquery','../../fw/manager/eventManager',
 			
 			this.options = {
 				title : null,
+				formList     : [],
 				callBackHide : null,
 				callBackShow : null
 			};
@@ -325,7 +342,22 @@ define(['jquery','../../fw/manager/eventManager',
 			
 			_els.mainEditor.editTitle.text(this.options.title);
 			_els.mainEditor.editPanel.addClass("panel-default");
-			_els.mainEditor.editBody.empty();
+			_els.mainEditor.editBody.empty().addClass("edit-area");
+			
+			for( var idx = 0 ; idx < this.options.formList.length; idx++ ) {
+				obj = this.options.formList[idx];
+				_els.mainEditor.editBody.append(_f.html.formInputGroup(obj));
+				areaForm = _els.mainEditor.editBody.children(".form-group").last();
+				
+				if ( obj.type == 'select' )
+					_f.makeForm.select(areaForm, obj);
+				else if ( obj.type == 'textarea' )
+					_f.makeForm.textarea(areaForm, obj);
+				else
+					_f.makeForm.text(areaForm, obj);
+			}
+			
+			
 			_els.areaEditor.width(320).css({
 				position: "absolute",
 				right : -(_els.areaEditor.width())

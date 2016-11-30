@@ -47,7 +47,7 @@ define([ 'abstractView', 'basicInfo'
 						minHeight : $(window).height()-topBottomHeight
 					});
 					_editPanel.css({
-						minHeight : $(window).height()-topBottomHeight
+						height : _els.areaContent.outerHeight()
 					});
 				});
 				
@@ -116,8 +116,9 @@ define([ 'abstractView', 'basicInfo'
 					menuId   : "menu-id-4",
 					menuName : "설정",
 					menuType : null,
-					subMenus : [{iconCss  : "fa fa-h-square",menuName : $a.getMsg("lbl.manageOption"), maneId : "menu-4-1", menuLvl  : 2, url:"base/config/optionList"},
-					            {iconCss  : "fa fa-h-square",menuName : "코드", maneId : "menu-4-2", menuLvl  : 2, url:"base/config/codeList"}
+					subMenus : [{iconCss  : "fa fa-h-square",menuName : $a.getMsg("lbl.manageOption"), maneId : "menu-4-1", menuLvl  : 2, url:"base/system/optionList"},
+					            {iconCss  : "fa fa-h-square",menuName : "코드", maneId : "menu-4-2", menuLvl  : 2, url:"base/system/codeList"},
+					            {iconCss  : "fa fa-h-square",menuName : "메뉴관리", maneId : "menu-4-3", menuLvl  : 2, url:"base/system/menuList"}
 					,]
 				}];
 				

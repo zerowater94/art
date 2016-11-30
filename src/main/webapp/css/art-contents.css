@@ -17,16 +17,25 @@
 
 #main-editor { position: absolute;border-radius : 4px;background-color: #ffffff;display:none;}
 #main-editor .panel { margin-bottom : 0;}
-#main-editor .panel-body {color : #333; }
+#main-editor .panel-body {color : #333; padding:5px; }
 
 .box header h5 { padding:5px; }
 .box .pull-right { padding:2px; } 
 
 .search-area {display:inline-block;padding-bottom:5px !important;}
 .search-area .form-group { position:relative; float:left; width: 30%; min-height: 1px; margin:5px !important; padding-right: 10px; padding-left: 10px;}
-.search-area .form-group label {min-width:100px;width:30%;padding: 2px 10px;}
+.search-area .form-group label {min-width:90px;width:30%;padding: 2px 10px;text-align:left;}
 .search-area .form-group input {border-radius: 0px 4px 4px 0px;color: #555;border: 1px solid #ccc;padding: 2px 3px;}
 .search-area .form-group select {border-radius: 0px 4px 4px 0px;color: #555;border: 1px solid #ccc;padding: 2px 3px;}
+
+
+.edit-area {display:inline-block;padding-bottom:5px !important;}
+.edit-area .form-group {width:95%; min-height: 1px; margin:5px !important;}
+.edit-area .form-group label {min-width:100px;width:30%;padding: 2px 10px;text-align:left;}
+.edit-area .form-group input, select, textarea {border-radius: 0px 4px 4px 0px;color: #555;border: 1px solid #ccc;padding: 2px 3px;}
+.edit-area .form-group textarea {border-radius: 4px !important;width:100%;resize: none; }
+.edit-area .form-group .textarea-label {  border-radius: 4px; border: 1px solid #ccc;background-color:#eee;font-weight:400; }
+
 
 @media ( min-width:768px ) {
     .head .main-bar {background-color:#827e7e}
