@@ -1,8 +1,9 @@
-define(['alertify', 'blockUi', 'basicUtil', 
+define(['alertify', 'blockUi',  'basicValid', 
         '../fw/manager/eventManager' , 
         '../fw/manager/routerManager', 
-        '../fw/manager/templateManager'
-        ], function (Alertify, BlockUi, BasicUtil, MngEvent, MngRouter, MngTmpl) 
+        '../fw/manager/templateManager',
+        '../fw/manager/dataManager',
+        ], function (Alertify, BlockUi, $aValid, MngEvent, MngRouter, MngTmpl, MngData) 
 {
 	'use strict';
 	
@@ -139,8 +140,24 @@ define(['alertify', 'blockUi', 'basicUtil',
 					ok     : _dts.msg.common["lbl.confirm"],
 					cancel : _dts.msg.common["lbl.cancle"], // 취소
 				}});
+				
+				$aValid.initializeMessage({
+					noSelector : _this.getMsg("msg.valid.noSelector"),
+					maxLength  : _this.getMsg("msg.valid.maxLength"),
+					minLenth   : _this.getMsg("msg.valid.minLenth"),
+					noEmpty    : _this.getMsg("msg.valid.noEmpty"),
+					onlyEngNum : _this.getMsg("msg.valid.onlyEngNum"),
+					onlyNum    : _this.getMsg("msg.valid.onlyNum"),
+					onlyEng    : _this.getMsg("msg.valid.onlyEng"),
+					cannotKor  : _this.getMsg("msg.valid.cannotKor"),
+				});
 				_f.execuRouter();
 				MngEvent.startWinResize();
+				// IE에서 startWith를 사용하기 위한 조치.
+				String.prototype.startsWith = function(str){
+					if (this.length < str.length) { return false; }
+					return this.indexOf(str) == 0;
+				}
 			},
 			reloadCode : function( group ) {
 				
@@ -452,7 +469,40 @@ define(['alertify', 'blockUi', 'basicUtil',
 					} 
 				});
 				
+			},
+		};
+		
+		_this.show = {
+
+			success : function(msg, callback) {
+				console.log(msg);
+				this.showMsg(msg, 'success', callback);
+			},
+			info : function(msg, callback) {
+				
+				this.showMsg(msg, 'info', callback);
+			},
+			warning : function(msg, callback) {
+				
+				this.showMsg(msg, 'warning', callback);
+			},
+			error : function(msg, callback) {
+				
+				this.showMsg(msg, 'Danger', callback);
+			},
+			showMsg : function(msg, type, callback) {
+				
+				var _p = {};
+				_p.msg = msg;
+				if( type != undefined )
+					_p.type = type;
+				
+				if( callback != undefined )
+					_p.callbackFunc = callback;
+				
+				_this.t.showMsg.render(_p);
 			}
+			
 		};
 		
 		/*******************************************************
@@ -463,6 +513,7 @@ define(['alertify', 'blockUi', 'basicUtil',
 		
 		_this.e = MngEvent;
 		_this.t = MngTmpl;
+		_this.d = MngData;
 		
 		_this.addWinResizeEvent = function(name, callbackFunc){
 			

@@ -1,4 +1,4 @@
-package com.art.app.base.config.domain;
+package com.art.app.base.system.domain;
 
 import com.art.app.common.basic.domain.AbstractVO;
 
@@ -21,7 +21,7 @@ public class OptionVO extends AbstractVO
 	public String getOptionValue() { return optionValue; }
 	public String getOptionBuilder() { return optionBuilder; }
 	public String getUseYn() { return useYn; }
-	public String getDesc() { return desc; }
+	public String getDescription() { return desc; }
 	
 	/****************************************************
 	 * setter
@@ -56,7 +56,7 @@ public class OptionVO extends AbstractVO
 		if( str != null) 
 			this.useYn = str;
 	}
-	public void setDesc(String str) 
+	public void setDescription(String str) 
 	{
 		if( str != null) 
 			this.desc = str;

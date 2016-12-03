@@ -7,6 +7,7 @@ define(['jquery','../../fw/manager/eventManager',
 		areaMain : null,
 		areaEditor : null,
 		areaMainBar : null,
+		areaShowMsg : null,
 		mainBar : {},
 		mainEditor : {},
 	};
@@ -37,6 +38,8 @@ define(['jquery','../../fw/manager/eventManager',
 				_els.mainEditor.editPanel = _els.areaEditor.find(".panel");
 				_els.mainEditor.editTitle = _els.mainEditor.editPanel.find(".panel-title");
 				_els.mainEditor.editBody = _els.mainEditor.editPanel.find(".panel-body");
+				_els.mainEditor.editToolbar = _els.mainEditor.editPanel.find(".panel-toolbar");
+//				_els.mainEditor.editContents = _els.mainEditor.editBody.find(".panel-contents");
 				MngEvent.addEvent(_els.mainEditor.editPanel.find(".close"), "click", _this.mainEditor.hideEditor);
 			}, 
 			grid : function() {
@@ -91,17 +94,21 @@ define(['jquery','../../fw/manager/eventManager',
 				rtnHtml += "<div class='btn-group pull-right'></div>";
 				return rtnHtml; 
 			},
+			showMsg : function( obj ) {
+				var rtnHtml = '<div class="alert alert-'+obj.type+'">';
+				rtnHtml += '<strong>'+obj.msg+'</strong>';
+				rtnHtml +='</div>';
+				return rtnHtml;
+			},
 			button : function( obj ) {
 				
-				return '<button type="button" class="btn '+obj.btnCls+'">'+obj.name+'</button>';
+				return '<button type="button" class="btn '+obj.btnCls+'" id="'+obj.id+'">'+obj.name+'</button>';
 			},
 			toolbar : function( obj ) {
 				
-				var rtnHtml = '<div class="row">';
-				rtnHtml += '<div class="'+obj.colClass+'" id="'+obj.id+'">';
-				rtnHtml += '<div class="box">';
-				rtnHtml += '<header><div class="toolbar"></div></header>';
-				rtnHtml += "<div><div></div>";
+				var rtnHtml = '<div class="box">';
+				rtnHtml += '<header><div class="toolbar" id="'+obj.id+'"></div></header>';
+				rtnHtml += "</div>";
 				return rtnHtml; 
 			},
 			formBody : function() {
@@ -110,7 +117,7 @@ define(['jquery','../../fw/manager/eventManager',
 			},
 			formInputGroup : function(obj) {
 				
-				return "<div id='"+obj.id+"' class='form-group input-group'></div>";
+				return "<div id='area-"+obj.id+"' class='form-group input-group'></div>";
 			},
 			form : {
 				text : function( obj ) {
@@ -119,7 +126,7 @@ define(['jquery','../../fw/manager/eventManager',
 					if( obj.label != null ) 
 						html += '<label class="input-group-addon col-form-label">'+obj.label+'</label>';
 					
-					html += '<input type="text" class="" placeholder="'+obj.placeholder+'">';
+					html += '<input type="text" class="'+obj.inputCls+'" id="'+obj.id+'" placeholder="'+obj.placeholder+'">';
 					return html;
 				},
 				textarea : function( obj ) {
@@ -128,7 +135,7 @@ define(['jquery','../../fw/manager/eventManager',
 					if( obj.label != null ) 
 						html += '<label class="input-group col-form-label textarea-label">'+obj.label+'</label>';
 					
-					html += '<textarea class="form-control" rows="'+obj.rows+'" ></textarea>';
+					html += '<textarea class="form-control" id="'+obj.id+'" rows="'+obj.rows+'" ></textarea>';
 					return html;
 				},
 				select : function( obj ) {
@@ -137,16 +144,28 @@ define(['jquery','../../fw/manager/eventManager',
 					if( obj.label != null ) 
 						html += '<label class="input-group-addon col-form-label">'+obj.label+'</label>';
 					
-					html += '<select></select>';
+					html += '<div class="input-group"><select class="'+obj.inputCls+'"  id="'+obj.id+'" ></select></div>';
 					return html;
 				},
-				date : function() {
+				date : function(obj) {
 					
-					var html  = '<div class="input-group date">';
-					html += '<input type="text" id="agentStartDate" class="form-control">';
+					var html = "";
+					if( obj.label != null ) 
+						html += '<label class="input-group-addon col-form-label">'+obj.label+'</label>';
+					html += '<div class="input-group date">';
+					html += '<input type="text" id="'+obj.id+'SDate" class="form-control">';
 					html += '<span class="input-group-addon"> ~ </span>';
-					html += '<input type="text" id="agentEndDate" class="form-control">';
+					html += '<input type="text" id="'+obj.id+'EDate" class="form-control">';
 					html += '</div>';
+					return html;
+				},
+				custom : function(obj) {
+					
+					var html = "";
+					if( obj.label != null ) 
+						html += '<label class="input-group-addon col-form-label">'+obj.label+'</label>';
+					
+					html += '<div id="'+obj.id+'" ></div>';
 					return html;
 				}
 			},
@@ -170,7 +189,7 @@ define(['jquery','../../fw/manager/eventManager',
 			},
 			text : function( el, obj ) {
 				
-				var _opt = $.extend(true,{},this.options, obj );
+				var _opt = $.extend(true,{},{inputCls : ""},this.options, obj );
 				el.html(_f.html.form.text(_opt));
 			},
 			select : function( el, obj ) {
@@ -213,6 +232,49 @@ define(['jquery','../../fw/manager/eventManager',
 				
 				var _opt = $.extend(true,{},this.options,obj );
 				el.html(_f.html.form.date(_opt));
+			},
+			custom : function(el, obj ) {
+				
+				var _opt = $.extend(true,{},this.options,obj );
+				el.html(_f.html.form.custom(_opt));
+			},
+			execBatch : function( el, formList ) {
+				
+				var _obj, areaForm;
+				var _label, _input;
+				
+				if ( formList.length == undefined )
+					return;
+				
+				for( var idx = 0 ; idx < formList.length; idx++ ) {
+					_obj = formList[idx];
+					el.append(_f.html.formInputGroup(_obj));
+					areaForm = el.children(".form-group").last().addClass("form-inline");
+					
+					if ( _obj.type == 'select' ) {
+						_f.makeForm.select(areaForm, _obj);
+						_input = areaForm.find("select");
+					} else if ( _obj.type == 'textarea' ) {
+						_f.makeForm.textarea(areaForm, _obj);
+						_input = areaForm.find("textarea");
+					} else if ( _obj.type == 'custom' ) {
+						_f.makeForm.custom(areaForm, _obj);
+						_input = null;
+					} else {
+						_f.makeForm.text(areaForm, _obj);
+						_input = areaForm.find("input");
+					}
+					_label = areaForm.find("label");
+
+					if( _obj.required != undefined && _obj.required ) {
+						_label.addClass("required");
+						_input.attr("required","true");
+					} 
+					
+					if( _input != null && _obj.etc != undefined ) {
+						_input.attr(_obj.etc);
+					}
+				}
 			}
 		},
 		makeGrid : function( el , obj ) {
@@ -288,6 +350,7 @@ define(['jquery','../../fw/manager/eventManager',
 		options : {
 			name : null,
 			btnCls : null,
+			id   : $.guid,
 			callbackFunc : null
 		},
 		render : function(el, obj) {
@@ -302,6 +365,60 @@ define(['jquery','../../fw/manager/eventManager',
 				$(this).blur();
 			});
 		}	
+	};
+	
+	_this.popover = {
+		options : {
+			title : null,
+			contextCss : {
+				minWidth : "300px"
+			},
+			id        : $.guid,
+			direction : 'left',
+			shownFunc : null
+		},
+		render : function(el, obj) {
+			
+			var _opt = $.extend(true,{},this.options, obj );
+			
+			var _elPopoverCntn, _elCloseBtn;
+			
+			var pOver = el.popover({
+                container: _els.areaMain,
+                html: true,
+                title: function() {
+                    return _opt.title+'<span class="close">&times;</span>';
+                },
+                delay: {show: 150, hide: 0},
+                content : '<div id="'+_opt.id+'_popover'+'"></div>',
+                placement: function(context, src){
+                    $(context).css(_opt.contextCss);
+                    return _opt.direction;
+                },
+            }).click(function(event) {
+            	event.preventDefault();
+//            	$('#'+el.attr("id")+' [data-toggle="popover"]').not($(this)).popover('hide'); //결재선 다른 팝오버 숨김
+            	
+                
+            }).on('shown.bs.popover', function() { 
+                // 팝오버 내용 생성
+                _elPopoverCntn = _els.areaMain.find("#"+_opt.id+'_popover');
+                _elCloseBtn = _els.areaMain.find(".popover .close");
+                
+                _elCloseBtn.off().click(function(){
+                	pOver.popover('hide');
+                });
+                if( _opt.shownFunc != null ) {
+                	_opt.shownFunc(_elPopoverCntn);
+                }
+            });
+			
+			return {
+				close : function() {
+					pOver.popover('hide');
+				}
+			};
+		}
 	};
 	
 	_this.mainBar = {
@@ -326,6 +443,8 @@ define(['jquery','../../fw/manager/eventManager',
 			
 		options : {
 			title : null,
+			showToolbar  : true,
+			buttons      : null,
 			formList     : null,
 			callBackHide : null,
 			callBackShow : null
@@ -334,6 +453,8 @@ define(['jquery','../../fw/manager/eventManager',
 			
 			this.options = {
 				title : null,
+				showToolbar  : true,
+				buttons      : [],
 				formList     : [],
 				callBackHide : null,
 				callBackShow : null
@@ -342,21 +463,50 @@ define(['jquery','../../fw/manager/eventManager',
 			
 			_els.mainEditor.editTitle.text(this.options.title);
 			_els.mainEditor.editPanel.addClass("panel-default");
-			_els.mainEditor.editBody.empty().addClass("edit-area");
+			_els.mainEditor.editToolbar.empty();
+			_els.mainEditor.editBody.empty();
 			
-			for( var idx = 0 ; idx < this.options.formList.length; idx++ ) {
-				obj = this.options.formList[idx];
-				_els.mainEditor.editBody.append(_f.html.formInputGroup(obj));
-				areaForm = _els.mainEditor.editBody.children(".form-group").last();
+			if ( this.options.showToolbar ) {
 				
-				if ( obj.type == 'select' )
-					_f.makeForm.select(areaForm, obj);
-				else if ( obj.type == 'textarea' )
-					_f.makeForm.textarea(areaForm, obj);
-				else
-					_f.makeForm.text(areaForm, obj);
+				for( var idx = 0 ; idx < this.options.buttons.length; idx++ ) {
+					
+					_this.button.render(_els.mainEditor.editToolbar, $.extend(true, {btnCls:"btn-default btn-sm"}, this.options.buttons[idx]));
+				}
 			}
 			
+			_f.makeForm.execBatch(_els.mainEditor.editBody, this.options.formList);
+			
+//			var _obj, _label, _input;
+//			for( var idx = 0 ; idx < this.options.formList.length; idx++ ) {
+//				_obj = this.options.formList[idx];
+//				_els.mainEditor.editBody.append(_f.html.formInputGroup(_obj));
+//				areaForm = _els.mainEditor.editBody.children(".form-group").last().addClass("form-inline");
+//				
+//				
+//				if ( _obj.type == 'select' ) {
+//					_f.makeForm.select(areaForm, _obj);
+//					_input = areaForm.find("select");
+//				} else if ( _obj.type == 'textarea' ) {
+//					_f.makeForm.textarea(areaForm, _obj);
+//					_input = areaForm.find("textarea");
+//				} else if ( _obj.type == 'custom' ) {
+//					_f.makeForm.custom(areaForm, _obj);
+//					_input = null;
+//				} else {
+//					_f.makeForm.text(areaForm, _obj);
+//					_input = areaForm.find("input");
+//				}
+//				_label = areaForm.find("label");
+//
+//				if( _obj.required != undefined && _obj.required ) {
+//					_label.addClass("required");
+//					_input.attr("required","true");
+//				} 
+//				
+//				if( _input != null && _obj.etc != undefined ) {
+//					_input.attr(_obj.etc);
+//				}
+//			}
 			
 			_els.areaEditor.width(320).css({
 				position: "absolute",
@@ -411,6 +561,25 @@ define(['jquery','../../fw/manager/eventManager',
 			}, 500);
 			
 		},
+		getInputValue : function() {
+			
+			var rtnObj = {};
+			var obj;
+			console.log(this.options);
+			for( var idx = 0 ; idx < this.options.formList.length; idx++ ) {
+				obj = this.options.formList[idx];
+				
+
+				if ( obj.type == 'custom' )
+					continue;
+					
+				if ( obj.type == 'date' )
+					rtnObj[obj.id] = _els.mainEditor.editBody.find("#"+obj.id).val();
+				else
+					rtnObj[obj.id] = _els.mainEditor.editBody.find("#"+obj.id).val(); //text , textarea, select
+			}
+			return rtnObj;
+		},
 		getContents : function() {
 			return _els.mainEditor.editBody;
 		}
@@ -446,16 +615,18 @@ define(['jquery','../../fw/manager/eventManager',
 			var elBody = boxObj.elBoxBody.find(".form-body");
 			var obj, areaForm;
 			
-			for( var idx = 0 ; idx < _opt.formList.length; idx++ ) {
-				obj = _opt.formList[idx];
-				elBody.append(_f.html.formInputGroup(obj));
-				areaForm = elBody.children(".form-group").last();
-				
-				if ( obj.type == 'select' )
-					_f.makeForm.select(areaForm, obj);
-				else
-					_f.makeForm.text(areaForm, obj);
-			}
+			_f.makeForm.execBatch(elBody, _opt.formList);
+			
+//			for( var idx = 0 ; idx < _opt.formList.length; idx++ ) {
+//				obj = _opt.formList[idx];
+//				elBody.append(_f.html.formInputGroup(obj));
+//				areaForm = elBody.children(".form-group").last();
+//				
+//				if ( obj.type == 'select' )
+//					_f.makeForm.select(areaForm, obj);
+//				else
+//					_f.makeForm.text(areaForm, obj);
+//			}
 
 			var _searchData = function() {
 				
@@ -464,9 +635,9 @@ define(['jquery','../../fw/manager/eventManager',
 				for( var idx = 0 ; idx < _opt.formList.length; idx++ ) {
 					obj = _opt.formList[idx];
 					if ( obj.type == 'select' )
-						rtnObj[obj.id] = elBody.find("#"+obj.id).find("select").val();
+						rtnObj[obj.id] = elBody.find("#"+obj.id).val();
 					else
-						rtnObj[obj.id] = elBody.find("#"+obj.id).find("input").val();
+						rtnObj[obj.id] = elBody.find("#"+obj.id).val();
 				}
 				return rtnObj;
 			};
@@ -524,7 +695,8 @@ define(['jquery','../../fw/manager/eventManager',
 		options : {
 			colClass : 'col-lg-12',
 			boxClass : null,
-			id    : $.guid, 
+			id       : $.guid, 
+			buttons  : null,
 		},
 		render : function(el, obj) {
 			
@@ -533,6 +705,18 @@ define(['jquery','../../fw/manager/eventManager',
 			
 			if( _opt.boxClass != null )
 				el.find(".box").addClass(_opt.boxClass);
+			
+			var _areaToolbar = el.find(".toolbar");
+			
+			if( _opt.buttons != null ) {
+				
+				for( var idx = 0 ; idx < _opt.buttons.length; idx++ ) {
+					
+					_this.button.render(_areaToolbar, $.extend(true, {btnCls:"btn-default btn-xs"}, _opt.buttons[idx]));
+				}
+			}
+			
+			return _areaToolbar;
 		}
 	};
 	
@@ -577,16 +761,60 @@ define(['jquery','../../fw/manager/eventManager',
 		},
 	};
 	
+	_this.showMsg = {
+		options : {
+			msg : "",
+			callbackFunc : null,
+			type : 'seccess',
+		},
+		render : function( obj ) {
+			
+			var _opt = $.extend(true,{},this.options, obj );
+			_els.areaShowMsg.append(_f.html.showMsg(_opt));
+			var _alert = _els.areaShowMsg.children(".alert").last();
+			_els.areaShowMsg.animate({
+	            bottom: "150px", 
+	        }, 500 );
+			_alert.animate({
+	            opacity: 1, 
+	        }, 1000 );
+			
+			setTimeout(function(){
+				_els.areaShowMsg.animate({
+		            bottom: "0px", 
+		        }, 1000 );
+				
+			}, 200);
+			setTimeout(function(){
+				
+				_alert.animate({
+		            opacity:0, 
+		        }, 1000 );
+				
+				setTimeout(function(){
+					_alert.remove();
+				}, 1000);
+				
+			}, 4000);
+			
+			if( _opt.callbackFunc != null )
+				_opt.callbackFunc();
+		}
+	};
+	
 	return {
 		initialize : _this.initialize,
 		nvButton   : _this.nvButton,
 		mainMenu   : _this.mainMenu,
 		button     : _this.button,
+		addForm    : _f.makeForm,
+		popover    : _this.popover,
 		mainBar    : _this.mainBar,
 		mainEditor : _this.mainEditor,
 		search     : _this.search,
 		rowBox     : _this.rowBox,
 		toolbar    : _this.toolbar,
 		grid       : _this.grid,
+		showMsg    : _this.showMsg,
 	};
 });

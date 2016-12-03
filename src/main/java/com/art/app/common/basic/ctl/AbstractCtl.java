@@ -66,6 +66,14 @@ public abstract class AbstractCtl
 			return null;
 	}
 	
+	protected String getSessionLocale()
+	{
+		if( this.getSessionInfo() != null )
+			return this.getSessionInfo().getLocale();
+		else
+			return BasicInfo.getDefaultLocale();
+	}
+	
 	@InitBinder
 	public void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception 
 	{
@@ -87,16 +95,21 @@ public abstract class AbstractCtl
 		
 	    error.setResultMessage( exception.getMessage());
 	    error.setUrl(request.getRequestURL().toString() +" \n"+exception.getClass().getName());
+	    this.logger.error("Exeption====================> "+ exception.getClass().getName());
 	    if( exception.getClass().getName().equals(AuthException.class.getName()) )
 	    {
 	    	response.setStatus(HttpStatus.FORBIDDEN.value());
 	    }else if( exception.getClass().getName().equals(BadRequestException.class.getName()) )
 	    {
 	    	response.setStatus(HttpStatus.BAD_REQUEST.value());
+	    	
 	    }else
 	    {
 	    	if( exception.getClass().getName().equals(NullPointerException.class.getName()) )
 	    		error.setResultMessage( NullPointerException.class.getName() );
+	    	else if ( exception.getClass().getName().indexOf("org.springframework.dao") > -1) 
+	    		error.setResultMessage( BasicInfo.fail(this.getSessionLocale()).daoError() );
+	    	
 	    	response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 	    }
 	    StackTraceElement[] errors = exception.getStackTrace();
@@ -106,7 +119,7 @@ public abstract class AbstractCtl
 	    	if( trace.getClassName().indexOf("com.art") > -1 )
 	    		this.logger.error(trace.getClassName() +":"+trace.getLineNumber());
 	    }
-	    
+	    this.logger.error("<======================================Exeption");
 	    return error;
 	}
 }

@@ -22,6 +22,7 @@
         <property name="propertyMsg" value="true"/> <!-- true : property , false : db  -->
         <property name="loadMessagePath" value="/prop/msg/"/>
         <property name="loadCustomCss" value="file:../art_conf/css"/>
+        <property name="initMsg" value="true"></property>
     </bean>
     
     <!-- Multipart Resolaver -->

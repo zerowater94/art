@@ -26,7 +26,8 @@ define([ 'abstractView', 'basicInfo'
 					els : {
 						areaMain : $a.getMainArea(),
 						areaEditor : $a.getMainEditor(),
-						areaMainBar : _els.areaMainBar
+						areaMainBar : _els.areaMainBar,
+						areaShowMsg : _els.areaContents.find("#main-msg"),
 					},
 					msg : {
 						blankStr : $a.getMsg("lbl.blankStr"),
@@ -46,9 +47,9 @@ define([ 'abstractView', 'basicInfo'
 					_els.areaContent.css({
 						minHeight : $(window).height()-topBottomHeight
 					});
-					_editPanel.css({
-						height : _els.areaContent.outerHeight()
-					});
+//					_editPanel.css({
+//						height : _els.areaContent.outerHeight()
+//					});
 				});
 				
 				$a.winResize();
@@ -206,6 +207,7 @@ define([ 'abstractView', 'basicInfo'
 			thisEl.html(tmpl({}));
 			
 			_els.areaTop        = thisEl.find("#top");
+			_els.areaUserAcess  = thisEl.find(".user-media");
 			_els.areaMainBar    = thisEl.find(".main-bar");
 			_els.areaContents   = thisEl.find("#content");
 			_els.areaContentOut = _els.areaContents.find(".outer");

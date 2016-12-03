@@ -28,7 +28,7 @@ public class InitailizeCtl extends AbstractCtl
 		{
 			rtnObj = new JSONObj();
 			rtnObj.put("PROPERTIES", BasicInfo.getProperties());
-			rtnObj.put("MSG", BasicInfo.getMessageObj("common", langType)); // 최초에 common_module resource를 load 한다.
+			rtnObj.put("MSG", BasicInfo.getMessageDefaultObj(langType)); // 최초에 common_module resource를 load 한다.
 			rtnObj.put("CONSTANTS", BasicConstants.getConstantsMap());
 			
 		}catch ( Exception ex )

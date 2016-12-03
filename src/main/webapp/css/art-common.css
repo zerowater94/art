@@ -1,3 +1,8 @@
 .pointers {cursor:pointer;}
 
 .wrap-scrollable { overflow-x:auto; overflow-y: auto; }
+
+.highlight { font-weight:600; color:#CC0000; }
+
+.m-l-5 {margin-left:5px;}
+.m-l-10 {margin-left:10px;}

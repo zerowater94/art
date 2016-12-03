@@ -56,7 +56,7 @@ define([ 'abstractView', 'basicInfo', 'basicUtil', 'basicValid'
 			},
 			// 로그인 처리
 			executeLogin : function() {
-
+console.log("DDD");
 				// valiation  체크.
 				var _p = {
 					selector : _els.fmLoginId,

@@ -1,4 +1,4 @@
-define(['jquery','basicInfo', 'basicUtil'], function ($, basicInfo, BasicUtil) {
+define(['jquery','basicUtil'], function ($, $aUtil) {
 	
 	var validator = function() {
 		
@@ -50,7 +50,7 @@ define(['jquery','basicInfo', 'basicUtil'], function ($, basicInfo, BasicUtil) {
 			var selector = chkParam.selector;
 			var data = selector.val();
 
-			var dataByteLen = BasicUtil.getLength(data);
+			var dataByteLen = $aUtil.getLength(data);
 			if( chkParam.chkMaxLength != undefined
 			   && chkParam.chkMaxLength > 0 
 			   && dataByteLen > 0 
@@ -64,7 +64,7 @@ define(['jquery','basicInfo', 'basicUtil'], function ($, basicInfo, BasicUtil) {
 			if( chkParam.chkMinLength != undefined
 			   && chkParam.chkMinLength > 0 
 			   && dataByteLen > 0 
-			   && BasicUtil.getLength(data) < chkParam.chkMinLength )
+			   && $aUtil.getLength(data) < chkParam.chkMinLength )
 			{
 				_this.showErrorMessage(selector, _msg.minLenth.replace("{#1}",chkParam.chkMinLength)); //  최소 {#1}자 이상 입력이 되어야 합니다.
 				return false;
@@ -73,7 +73,7 @@ define(['jquery','basicInfo', 'basicUtil'], function ($, basicInfo, BasicUtil) {
 			if( chkParam.chkEmpty != undefined 
 			   && chkParam.chkEmpty )
 			{
-				if( BasicUtil.isEmpty(data) )
+				if( $aUtil.isEmpty(data) )
 				{
 					_this.showErrorMessage(selector, _msg.noEmpty); // 필수 입력 입니다.
 					return false;
@@ -81,13 +81,13 @@ define(['jquery','basicInfo', 'basicUtil'], function ($, basicInfo, BasicUtil) {
 			}
 
 			// 필수 체크가 아닌 경우, 공백이 들어 오면 하단 사항에 대해서 체크 한지 않는다.
-			if( BasicUtil.isEmpty(data) ) 
+			if( $aUtil.isEmpty(data) ) 
 				return true;
 
 			if( chkParam.chkOnlyEngNum != undefined 
 			   && chkParam.chkOnlyEngNum)
 			{
-				if( !BasicUtil.isEngNumber(data) )
+				if( !$aUtil.isEngNumber(data) )
 				{
 					_this.showErrorMessage(selector, _msg.onlyEngNum); //  영문 및 숫자만 입력 가능합니다.
 					return false;
@@ -97,7 +97,7 @@ define(['jquery','basicInfo', 'basicUtil'], function ($, basicInfo, BasicUtil) {
 			if( chkParam.chkOnlyEng != undefined 
 			   && chkParam.chkOnlyEng)
 			{
-				if( !BasicUtil.isEnglish(data) )
+				if( !$aUtil.isEnglish(data) )
 				{
 					_this.showErrorMessage(selector, _msg.onlyNum); // 영문자만 입력 가능 합니다.
 					return false;
@@ -107,7 +107,7 @@ define(['jquery','basicInfo', 'basicUtil'], function ($, basicInfo, BasicUtil) {
 			if( chkParam.chkOnlyNum != undefined 
 			   && chkParam.chkOnlyNum)
 			{
-				if( !BasicUtil.isNumber(data) )
+				if( !$aUtil.isNumber(data) )
 				{
 					_this.showErrorMessage(selector, _msg.onlyEng); // 숫자만 가능
 					return false;
@@ -117,7 +117,7 @@ define(['jquery','basicInfo', 'basicUtil'], function ($, basicInfo, BasicUtil) {
 			if( chkParam.chkCurrency != undefined 
 			   && chkParam.chkCurrency)
 			{
-				if( !BasicUtil.isCurrency(data) )
+				if( !$aUtil.isCurrency(data) )
 				{
 					_this.showErrorMessage(selector, _msg.onlyNum); // 숫자만 가능 ( ., 가능 )
 					return false;
@@ -127,7 +127,7 @@ define(['jquery','basicInfo', 'basicUtil'], function ($, basicInfo, BasicUtil) {
 			if( chkParam.chkNotHangul != undefined 
 			   && chkParam.chkNotHangul)
 			{
-				if( BasicUtil.isInHangul(data) )
+				if( $aUtil.isInHangul(data) )
 				{
 					_this.showErrorMessage(selector, _msg.cannotKor); // 한글 입력 불가
 					return false;
@@ -149,14 +149,16 @@ define(['jquery','basicInfo', 'basicUtil'], function ($, basicInfo, BasicUtil) {
 		
 		_this.showErrorMessage = function(selector, message )
 		{
-			if( selector.closest("div").hasClass("has-error") )
+			var formSelector = selector.closest("div.form-group");
+			if( formSelector.hasClass("has-error") )
 				return;
 			// error 표시
-			selector.closest("div").after().append('<span class="help-block-uni">&nbsp;<span class=" label label-warning">'+message+'</span></span>');
-			selector.closest("div").addClass("has-error");
+			
+			formSelector.append('<span class="help-block-art">&nbsp;<span class=" label label-warning">'+message+'</span></span>');
+			formSelector.addClass("has-error");
 			setTimeout(function() {
-				selector.closest("div").after().find(".help-block-uni").remove();
-				selector.closest("div").removeClass("has-error");
+				formSelector.find(".help-block-art").remove();
+				formSelector.removeClass("has-error");
 			}, 3000);
 			
 			selector.focus();
@@ -213,11 +215,10 @@ define(['jquery','basicInfo', 'basicUtil'], function ($, basicInfo, BasicUtil) {
 				return;
 
 			var formEl ;
-			var chkEl ;
-			var subEls;
+			var chkEl, subEls;
 			var chkParam;
 			var chkResult;
-			console.log(len);
+			
 			for( var idx = 0 ; idx < len; idx++ )
 			{
 				
@@ -236,7 +237,7 @@ define(['jquery','basicInfo', 'basicUtil'], function ($, basicInfo, BasicUtil) {
 					if( !chkEl.is(":visible") || !chkEl.closest("div").is(":visible") )
 						continue;
 					
-					if( subEls.attr("required") != undefined ){
+					if( chkEl.attr("required") != undefined ){
 						chkParam.chkEmpty = true;
 					}
 					

@@ -52,7 +52,7 @@ class BasicMsg extends AbstractBasic
 	 * 언어별 Message Load..
 	 * @throws Exception
 	 */
-	public void reloadMessage(String module, String locale) throws Exception
+	public void reloadMessage(String module, String locale)
 	{
 		
 		if( this.propertyMsgBln )
@@ -61,12 +61,12 @@ class BasicMsg extends AbstractBasic
 			this.reloadDatabaseMessage(module, locale);
 	}
 	
-	private void reloadDatabaseMessage(String module, String locale) throws Exception
+	private void reloadDatabaseMessage(String module, String locale) 
 	{
 		
 	}
 	
-	private void reloadPropertyMessage(String module, String locale, String filePath) throws Exception
+	private void reloadPropertyMessage(String module, String locale, String filePath)
 	{
 		if( filePath.equals("") )
 			filePath = this.msgFilePath;
