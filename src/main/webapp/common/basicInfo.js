@@ -1,9 +1,9 @@
-define(['alertify', 'blockUi',  'basicValid', 
-        '../fw/manager/eventManager' , 
-        '../fw/manager/routerManager', 
+define(['alertify', 'blockUi',  'basicUtil', 'basicValid',
+        'mngEvent' , 
+        'mngRouter', 
         '../fw/manager/templateManager',
         '../fw/manager/dataManager',
-        ], function (Alertify, BlockUi, $aValid, MngEvent, MngRouter, MngTmpl, MngData) 
+        ], function (Alertify, BlockUi, $aUtil, $aValid, MngEvent, MngRouter, MngTmpl, MngData) 
 {
 	'use strict';
 	
@@ -274,7 +274,7 @@ define(['alertify', 'blockUi',  'basicValid',
 			var _p = $.extend(true, _pm.pageParm, param );
 
 			requirejs([_p.viewName] , function(_view) {
-				new _view({el:_p.el}).render(_p.paramData);
+				new _view(_p.el).render(_p.paramData);
             });
 		}
 		
@@ -475,7 +475,6 @@ define(['alertify', 'blockUi',  'basicValid',
 		_this.show = {
 
 			success : function(msg, callback) {
-				console.log(msg);
 				this.showMsg(msg, 'success', callback);
 			},
 			info : function(msg, callback) {
@@ -514,6 +513,8 @@ define(['alertify', 'blockUi',  'basicValid',
 		_this.e = MngEvent;
 		_this.t = MngTmpl;
 		_this.d = MngData;
+		_this.u = $aUtil;
+		_this.v = $aValid;
 		
 		_this.addWinResizeEvent = function(name, callbackFunc){
 			

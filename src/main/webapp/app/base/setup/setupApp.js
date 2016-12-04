@@ -1,12 +1,11 @@
-define([ 'abstractView', 'basicInfo'
-       ], function ( AbstractView , $a) {
+define([ 'basicInfo'], 
+		function ( $a) {
 	
-
 	'use strict';
 		
 	var _funcs = function( thisEl ) {
 		
-		var _this = this;
+		var _this = {};
 		
 		var _pm = {
 			
@@ -21,27 +20,13 @@ define([ 'abstractView', 'basicInfo'
 		/*************************************************
 		 * common structure
 		 *************************************************/
-		 _this.setParam = function(obj) {
-			
-			_pm = $.extend( true, _pm ,obj);
-		};
 		
-		_this.createPage = function() {
+		_this.render = function(obj) {
+			$.extend( true, _pm ,obj);
 			thisEl.html("########################### setup ");
-		};
-		
-		_this.reloadContents = function() {
-			
-		};
-		
-		_this.returns = {
-			
 		};
 		return _this;
 	};
 	
-	return AbstractView.extend({
-		executor : _funcs
-	});
-
+	return _funcs;
 });

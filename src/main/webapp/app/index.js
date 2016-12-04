@@ -1,12 +1,11 @@
-define([ 'abstractView', 'basicInfo', 'basicUtil'
-       ], function ( AbstractView , $a, $aUtil) {
+define([ 'basicInfo'
+       ], function ( $a ){
 	
 	'use strict';
 	
-	var _funcs = function( thisEl ) {
+	return function( thisEl ) {
 		
-		var _this = this;
-		
+		var _this = {};
 		var _pm = {
 			
 		} ; // param	
@@ -46,7 +45,7 @@ define([ 'abstractView', 'basicInfo', 'basicUtil'
 				
 				var wl = window.location;
 				_dts.callParam.hash = wl.hash;
-				_dts.callParam.search = $aUtil.getUrlParams(wl.search);
+				_dts.callParam.search = $a.u.getUrlParams(wl.search);
 				// hash url 삭제
 				history.replaceState({}, document.title, wl.pathname);
 				
@@ -55,7 +54,7 @@ define([ 'abstractView', 'basicInfo', 'basicUtil'
 			setupContentLoad : function() {
 				
 				window.addEventListener('popstate', function(event){
-
+	
 					  if( event.state != null )
 						  Backbone.trigger('historyLocation', event);
 				});
@@ -74,6 +73,13 @@ define([ 'abstractView', 'basicInfo', 'basicUtil'
 					history.pushState(data, data.viewName, '');
 					_f.goMainPage(data);
 				} );
+				
+				$(document).bind("contextmenu",function(e){
+					e.preventDefault();
+					$a.print.alert("Not arrowed...right click..");
+			    });
+	
+			 
 			},
 			goLoginPage : function() {
 				
@@ -91,7 +97,7 @@ define([ 'abstractView', 'basicInfo', 'basicUtil'
 				});
 			},
 			goSetupPage : function() {
-
+	
 				$a.goPage({
 					viewName : 'base/setup/setupApp',
 					el       : $(document.body)  ,
@@ -110,65 +116,43 @@ define([ 'abstractView', 'basicInfo', 'basicUtil'
 				var customCss = $a.getDefaultUrl()+'/common/initialize/getCustomCss/'+$a.getTheme()+'/art-custom.css';
 				$('head').append('<link rel="stylesheet" href="'+customCss+'" type="text/css" />');
 			},
+			goPage : function() {
+				
+				if(_dts.callParam.search.type ==  $a.getConstants("LOGIN_TYPE","SETUP")  ) {
+					_dts.isCallSetup = true;
+				}
+	
+				if( $a.getSessionInfo() == null ) {
+					
+//					_f.goLoginPage();
+					_f.goMainPage();
+				} else {
+					
+					if ( _dts.isCallSetup && $a.getSessionInfo("SYS_ROLE") == $a.getConstants("SYS_ROLE","SETUPADM") ) {
+						_f.goSetupPage();
+					} else {
+						_f.goMainPage();
+					}
+				}
+			},
 		}; // functions..
 		
-		/*************************************************
-		 * common structure
-		 *************************************************/
-		 _this.setParam = function(obj) {
-			
-			_pm = $.extend( true, _pm ,obj);
-		 };
-		
-		 _this.createPage = function() {};
-
-		 _this.reloadContents = function() {
-
-			_f.initialize();
-			_f.parseLocation();
-			_f.setupContentLoad();
-			_f.chkSessionInfo();
-			_f.loadCustomCss();
-			
-			$(document).bind("contextmenu",function(e){
-				e.preventDefault();
-		        console.log(e);
-		        console.log(event.which );
-		        e.target.innerHTML ="AAA";
-		        console.log(e.target.textContent);
-		    });
-			
-			if(_dts.callParam.search.type ==  $a.getConstants("LOGIN_TYPE","SETUP")  ) {
-				_dts.isCallSetup = true;
-			}
-
-			if( $a.getSessionInfo() == null ) {
-				
-//				_f.goLoginPage();
-				_f.goMainPage();
-			} else {
-				
-				if ( _dts.isCallSetup && $a.getSessionInfo("SYS_ROLE") == $a.getConstants("SYS_ROLE","SETUPADM") ) {
-					_f.goSetupPage();
-				} else {
-					_f.goMainPage();
-				}
-			}
-		 };
-		
-		 _this.returns = {
-			
+		// return method...
+		 
+		 _this.render = function( obj ) {
+			 
+			 $a.initializeResource('ko');
+			 $a.initializeApp();
+			 
+			 $.extend( true, _pm ,obj);
+			 _f.initialize();
+			 _f.parseLocation();
+			 _f.setupContentLoad();
+			 _f.chkSessionInfo();
+			 _f.loadCustomCss();
+			 _f.goPage();
 		 };
 		
 		return _this;
-	};
-	
-	return AbstractView.extend({
-		initialize : function(){
-			$a.initializeResource('ko');
-			$a.initializeApp();
-		},
-		executor : _funcs
-	});
-
+	}
 });

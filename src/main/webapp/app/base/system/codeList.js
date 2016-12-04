@@ -1,5 +1,5 @@
-define([ 'abstractView', 'basicInfo',  '../../../common/view/basicEditor'
-       ], function ( AbstractView , $a, BasicEditor) {
+define([  'basicInfo',  '../../../common/view/basicEditor'
+       ], function ( $a, BasicEditor) {
 	
 
 	'use strict';
@@ -44,30 +44,15 @@ define([ 'abstractView', 'basicInfo',  '../../../common/view/basicEditor'
 		/*************************************************
 		 * common structure
 		 *************************************************/
-		 _this.setParam = function(obj) {
-			
-			_pm = $.extend( true, _pm ,obj);
-		};
 		
-		_this.createPage = function() {
-			
+		_this.render = function( obj ) {
+			$.extend( true, _pm ,obj);
 			thisEl.html("this is code page..");
-		};
-		
-		_this.reloadContents = function() {
-			
-			_f.setTitle();
-		};
-		
-		_this.returns = {
-			
 		};
 		
 		return _this;
 	};
 	
-	return AbstractView.extend({
-		executor : _funcs
-	});
+	return _funcs;
 
 });

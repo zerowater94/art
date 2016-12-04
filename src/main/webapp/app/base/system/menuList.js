@@ -1,6 +1,6 @@
-define([ 'abstractView', 'basicInfo'
+define([ 'basicInfo'
          , 'text!base/system/menuList.html'
-       ], function ( AbstractView , $a, _tmpl) {
+       ], function ( $a, _tmpl) {
 	
 
 	'use strict';
@@ -18,7 +18,14 @@ define([ 'abstractView', 'basicInfo'
 		} ; // elements
 		
 		var _f = {
+		    createPage	: function() {
+		    	
+		    	var tmpl = _.template(_tmpl);
+				thisEl.html(tmpl());
 				
+				_els.areaSearch     = thisEl.find("#area-search");
+				_els.areaListGrid = thisEl.find("#grid-list");
+		    },
 			setTitle : function(){
 
 				$a.t.mainBar.addButton({ 
@@ -63,37 +70,16 @@ define([ 'abstractView', 'basicInfo'
 		/*************************************************
 		 * common structure
 		 *************************************************/
-		 _this.setParam = function(obj) {
-			
-			_pm = $.extend( true, _pm ,obj);
-		};
-		
-		_this.createPage = function() {
-			
-			var tmpl = _.template(_tmpl);
-			thisEl.html(tmpl());
-			
-			_els.areaSearch     = thisEl.find("#area-search");
-			_els.areaListGrid = thisEl.find("#grid-list");
-		};
-		
-		_this.reloadContents = function() {
-			
+		_this.render = function(obj){
+			$.extend( true, _pm ,obj);
+			_f.createPage();
 			_f.setTitle();
 			_f.makeSearchArea();
 			_f.makeGrid();
-			
 		};
-		
-		_this.returns = {
-			
-		};
-		
 		return _this;
 	};
 	
-	return AbstractView.extend({
-		executor : _funcs
-	});
+	return _funcs;
 
 });

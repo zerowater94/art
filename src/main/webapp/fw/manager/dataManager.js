@@ -1,5 +1,4 @@
-define(['jquery','../../fw/manager/eventManager',
-        'text!../../../fw/manager/tmpl/mainEditor.html'], function ($, MngEvent, _tmplEditor) {
+define([], function () {
 	
 	var _this = {};
 	

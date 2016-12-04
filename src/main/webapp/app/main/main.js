@@ -1,14 +1,14 @@
-define([ 'abstractView', 'basicInfo'
+define([ 'basicInfo'
          ,'text!main/main.html'
          ,'../../libs/screenfull/screenfull'
-       ], function ( AbstractView , $a, Tmpl ) {
+       ], function (  $a, Tmpl ) {
 	
 
 	'use strict';
 	
 	var _funcs = function( thisEl ) {
 		
-		var _this = this;
+		var _this = {};
 		
 		var _pm = {
 			viewName : null 
@@ -17,6 +17,22 @@ define([ 'abstractView', 'basicInfo'
 				
 		} ; // elements
 		var _f = {
+		    createPage : function() {
+		    	
+		    	var tmpl = _.template(Tmpl);
+				thisEl.html(tmpl({}));
+				
+				_els.areaTop        = thisEl.find("#top");
+				_els.areaUserAcess  = thisEl.find(".user-media");
+				_els.areaMainBar    = thisEl.find(".main-bar");
+				_els.areaContents   = thisEl.find("#content");
+				_els.areaContentOut = _els.areaContents.find(".outer");
+				_els.areaTopBrand   = _els.areaTop.find(".navbar-header");
+				_els.areaTopNav     = _els.areaTop.find(".topnav");
+				_els.areaTopLeftNav = _els.areaTop.find(".navbar-ex1-collapse");
+				_els.areaMenuUl     = thisEl.find("#menu");
+				
+		    },
 			setMainInitialize : function(){
 				
 				$a.setMainArea(_els.areaContents.find("#main-area"));
@@ -27,6 +43,7 @@ define([ 'abstractView', 'basicInfo'
 						areaMain : $a.getMainArea(),
 						areaEditor : $a.getMainEditor(),
 						areaMainBar : _els.areaMainBar,
+						areaMainDetail : _els.areaContents.find("#main-detail"),
 						areaShowMsg : _els.areaContents.find("#main-msg"),
 					},
 					msg : {
@@ -44,11 +61,11 @@ define([ 'abstractView', 'basicInfo'
 				var _editPanel = $a.getMainEditor().find(".panel");
 				$a.e.addWinResizeEvent("WIN-MAIN_resize-contents", function(){
 					
-					_els.areaContent.css({
+					$a.getMainArea().css({
 						minHeight : $(window).height()-topBottomHeight
 					});
 //					_editPanel.css({
-//						height : _els.areaContent.outerHeight()
+//						height : $a.getMainArea().outerHeight()
 //					});
 				});
 				
@@ -193,33 +210,16 @@ define([ 'abstractView', 'basicInfo'
 			},
 		}; // functions..
 		
+		
 		/*************************************************
 		 * common structure
 		 *************************************************/
-		 _this.setParam = function(obj) {
-			
-			_pm = $.extend( true, _pm ,obj);
-		};
+		// return method.. 
 		
-		_this.createPage = function() {
+		_this.render = function( obj ) {
 			
-			var tmpl = _.template(Tmpl);
-			thisEl.html(tmpl({}));
-			
-			_els.areaTop        = thisEl.find("#top");
-			_els.areaUserAcess  = thisEl.find(".user-media");
-			_els.areaMainBar    = thisEl.find(".main-bar");
-			_els.areaContents   = thisEl.find("#content");
-			_els.areaContentOut = _els.areaContents.find(".outer");
-			_els.areaContent    = _els.areaContentOut.find(".inner");
-			_els.areaTopBrand   = _els.areaTop.find(".navbar-header");
-			_els.areaTopNav     = _els.areaTop.find(".topnav");
-			_els.areaTopLeftNav = _els.areaTop.find(".navbar-ex1-collapse");
-			_els.areaMenuUl     = thisEl.find("#menu");
-			
-		};
-		
-		_this.reloadContents = function() {
+			$.extend( true, _pm ,obj);
+			_f.createPage();
 			
 			_f.setMainInitialize();
 			_f.setMainStyle();
@@ -230,17 +230,11 @@ define([ 'abstractView', 'basicInfo'
 			if( _pm.viewName != null ) {
 				$a.goPage(_pm);
 			}
-		};
-		
-		_this.returns = {
-			
-		};
+		}
 		
 		return _this;
 	};
 	
-	return AbstractView.extend({
-		executor : _funcs
-	});
+	return _funcs;
 
 });

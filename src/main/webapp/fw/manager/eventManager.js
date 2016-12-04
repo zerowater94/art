@@ -1,57 +1,64 @@
 define(['jquery'], function ($) {
-	var _winResize = {};
-	var _timeOut = 500;
-	var _isVaidWindResize = false;
 	
-	var _addWinResize = function(name, callbackFunc) {
+	var _funcs = function() {
 		
-		_winResize[name] = callbackFunc;
+		var _winResize = {};
+		var _timeOut = 500;
+		var _isVaidWindResize = false;
+		
+		var _addWinResize = function(name, callbackFunc) {
 			
-	};
-	
-	var _rmResizeEvent = function(name) {
+			_winResize[name] = callbackFunc;
+				
+		};
 		
-		delete _winResize[name];
-	};
-	
-	var _execWinResize = function() {
+		var _rmResizeEvent = function(name) {
+			
+			delete _winResize[name];
+		};
+		
+		var _execWinResize = function() {
 
-		$.each(_winResize, function(key, func) {
-		    func();
-		});
-	};
-	
-	var _clearResizeEvent = function() {
+			$.each(_winResize, function(key, func) {
+			    func();
+			});
+		};
 		
-		$.each(_winResize, function(key, func) {
-		    if ( !key.startsWith("WIN-MAIN") )
-		    	delete _winResize[key];
-		});
-	};
-	
-	var _startWinResize = function() {
+		var _clearResizeEvent = function() {
+			
+			$.each(_winResize, function(key, func) {
+			    if ( !key.startsWith("WIN-MAIN") )
+			    	delete _winResize[key];
+			});
+		};
 		
-		$(window).resize(function()
-		{	
-			clearTimeout(window.resizedFinished);
-		    window.resizedFinished = setTimeout(function(){
-		    	_execWinResize();
-		    }, _timeOut);
+		var _startWinResize = function() {
+			
+			$(window).resize(function()
+			{	
+				clearTimeout(window.resizedFinished);
+			    window.resizedFinished = setTimeout(function(){
+			    	_execWinResize();
+			    }, _timeOut);
 
-		});
+			});
+		};
+		
+		var _addEvent = function(el, type, func) {
+			
+			el.off().on(type, func);
+		};
+		
+		return {
+			addWinResizeEvent : _addWinResize,
+			removeWinResizeEvent : _rmResizeEvent,
+			execWinResize : _execWinResize,
+			startWinResize : _startWinResize,
+			clearWinResize : _clearResizeEvent,
+			addEvent : _addEvent
+		};
 	};
 	
-	var _addEvent = function(el, type, func) {
-		
-		el.off().on(type, func);
-	}
+	return new _funcs();
 	
-	return {
-		addWinResizeEvent : _addWinResize,
-		removeWinResizeEvent : _rmResizeEvent,
-		execWinResize : _execWinResize,
-		startWinResize : _startWinResize,
-		clearWinResize : _clearResizeEvent,
-		addEvent : _addEvent,
-	}
 });

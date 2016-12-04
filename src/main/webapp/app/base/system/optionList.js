@@ -1,29 +1,26 @@
-define([ 'abstractView', 'basicInfo', 'basicValid'
+define([ 'basicInfo'
          , 'text!base/system/optionList.html'
-       ], function ( AbstractView , $a, $aValid, _tmpl) {
+       ], function ( $a, _tmpl) {
 	
-
 	'use strict';
 	
 	var _funcs = function( thisEl ) {
 		
-		var _this = this;
-		
-		var _pm = {
-			
-		} ; // param
-		
-		var _els = {
-				
-		} ; // elements
-		
-		
+		var _this = {};
+		var _pm = {} ; // param
+		var _els = {} ; // elements
 		var _dts = {
 			categoryList : null,
 		};
 		
-		
 		var _f = {
+			createPage : function() {
+				var tmpl = _.template(_tmpl);
+				thisEl.html(tmpl());
+				
+				_els.areaSearch     = thisEl.find("#area-search");
+				_els.areaGridOption = thisEl.find("#grid-list");
+			},
 			setTitle : function(){
 
 				$a.t.mainBar.addButton({ 
@@ -46,7 +43,7 @@ define([ 'abstractView', 'basicInfo', 'basicValid'
 							
 							var mainEditor = $a.getMainEditor();
 							
-							if( $aValid.isValidBatchData(mainEditor) ) {
+							if( $a.v.isValidBatchData(mainEditor) ) {
 								_f.insertData();
 							}
 						}
@@ -79,7 +76,7 @@ define([ 'abstractView', 'basicInfo', 'basicValid'
 					id   : 'add-builder',
 					callbackFunc : function(e) {
 						
-						$a.t.addForm.select(_els.areaFormBuilder,{label:null});
+						$a.t.wgHelper.makeForm.select(_els.areaFormBuilder,{label:null});
 					}
 				});
 				
@@ -102,12 +99,12 @@ define([ 'abstractView', 'basicInfo', 'basicValid'
 					shownFunc : function(el) {
 						
 						el.addClass("edit-area");
-						$a.t.addForm.execBatch(el,[{ id:"category", type:"text", required:true, inputCls : 'addon-btn', label:$a.getMsg("lbl.category"),etc:{'max-length':30,'not-kor':true}}]);
+						$a.t.wgHelper.makeForm.execBatch(el,[{ id:"category", type:"text", required:true, inputCls : 'addon-btn', label:$a.getMsg("lbl.category"),etc:{'max-length':30,'not-kor':true}}]);
 						var elPopoverCategory = el.find("#area-category");
 						
 						var _callbackFunc = function(e) {
 							
-							if ( $aValid.isValidBatchData(el) ) {
+							if ( $a.v.isValidBatchData(el) ) {
 								
 								var inputCategory = $a.t.mainEditor.getContents().find("#category");
 								var searchCategory = _els.areaSearch.find("#category");
@@ -183,6 +180,11 @@ define([ 'abstractView', 'basicInfo', 'basicValid'
 					rowClick : function( event, ui ) {
 						var rowData = ui.rowData;
 						console.log(rowData);
+						console.log($a.t.mainDetail);
+//						$a.t.mainDetail.render({
+//							tabs : [{tabName:"tab A"},{tabName:"tab B"}]
+//						});
+//						$a.t.mainDetail.showDetail();
 					},
 				});
 				
@@ -216,22 +218,10 @@ define([ 'abstractView', 'basicInfo', 'basicValid'
 		/*************************************************
 		 * common structure
 		 *************************************************/
-		_this.setParam = function(obj) {
-			
-			_pm = $.extend( true, _pm ,obj);
-		};
 		
-		_this.createPage = function() {
-			
-			var tmpl = _.template(_tmpl);
-			thisEl.html(tmpl());
-			
-			_els.areaSearch     = thisEl.find("#area-search");
-			_els.areaGridOption = thisEl.find("#grid-list");
-		};
-		
-		_this.reloadContents = function() {
-			
+		_this.render = function(obj) {
+			$.extend( true, _pm ,obj);
+			_f.createPage();
 			_f.setTitle();
 			_f.makeSearchArea();
 			_f.searchCategoryList();
@@ -239,15 +229,9 @@ define([ 'abstractView', 'basicInfo', 'basicValid'
 			_f.setupEditor();
 		};
 		
-		_this.returns = {
-			
-		};
-		
 		return _this;
 	};
 	
-	return AbstractView.extend({
-		executor : _funcs
-	});
+	return _funcs;
 
 });

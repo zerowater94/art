@@ -1,7 +1,6 @@
 define(['jquery'], function ($) {
     
-    var Utils =  function()
-    {
+    var Utils =  function() {
         var _this = this;
         _this.inputOnlyNumber = function(obj)
         {
