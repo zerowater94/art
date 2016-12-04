@@ -1,5 +1,5 @@
 define(['mngEvent', 'wgHelper'
-        ], function (MngEvent, wgHelper) {
+        ], function (MngEvent, wg) {
 	
 	'use strict';
 	
@@ -31,10 +31,10 @@ define(['mngEvent', 'wgHelper'
 				el.empty();
 				
 				// row box 생성
-				var boxObj = wgHelper.rowBox.render(el,{
+				var boxObj = wg.rowBox.render(el,{
 					title   : _opt.title,
 					buttons : [{
-						name : wgHelper.msg.search,
+						name : wg.msg.search,
 						callbackFunc : _opt.searchFunc
 					}]
 				});
@@ -45,7 +45,7 @@ define(['mngEvent', 'wgHelper'
 				var elBody = boxObj.elBoxBody.find(".form-body");
 				var obj, areaForm;
 				
-				wgHelper.makeForm.execBatch(elBody, _opt.formList);
+				wg.makeForm.execBatch(elBody, _opt.formList);
 
 				var _searchData = function() {
 					

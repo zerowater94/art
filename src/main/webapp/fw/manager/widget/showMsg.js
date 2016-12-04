@@ -1,5 +1,5 @@
 define(['mngEvent', 'wgHelper'
-        ], function (MngEvent, wgHelper) {
+        ], function (MngEvent, wg) {
 	
 	'use strict';
 	

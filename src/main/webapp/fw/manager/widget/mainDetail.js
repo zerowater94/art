@@ -22,7 +22,8 @@ define([], function () {
 			html : {
 				
 				mainDetail : function() {
-					var rtnHtml = '<ul class="nav nav-tabs"></ul>';
+					var rtnHtml = '<div class="main-detail">';
+					rtnHtml += '<ul class="nav nav-tabs"></ul>';
 					rtnHtml += "<div class='tab-content'></div>";
 					return rtnHtml; 
 				},
@@ -37,10 +38,6 @@ define([], function () {
 			init : function(elObj) {
 
 				_els.areaMain   = elObj.areaMain;
-				_els.areaDetail = elObj.areaMainDetail;
-				_els.areaDetail.html(_f.html.mainDetail());
-				_els.tabUl = _els.areaDetail.find("ul.nav");
-				_els.tabContents = _els.areaDetail.find(".tab-content");
 			},
 			render : function( obj ) {
 				_pm = {
@@ -48,12 +45,16 @@ define([], function () {
 					callbackFunc : null,
 					height : 300,
 				};
+				
+				if( _els.areaDetail != undefined && _els.areaMain.length > 0 )
+					_els.areaDetail.remove();
 
 				$.extend(true, _pm, obj );
 				
-
-				_els.tabUl.empty();
-				_els.tabContents.empty();
+				_els.areaMain.append(_f.html.mainDetail());
+				_els.areaDetail = _els.areaMain.find(".main-detail");
+				_els.tabUl = _els.areaDetail.find("ul.nav");
+				_els.tabContents = _els.areaDetail.find(".tab-content");
 				
 				if ( _pm.tabs != null ) {
 					var _obj;
@@ -68,15 +69,15 @@ define([], function () {
 			showDetail : function(){
 				
 				_els.areaDetail.show();
-				
-				_els.areaMain.closest(".area-inner").animate({
-		            height: (_els.areaMain.height()-_pm.height)+"px",
-		        }, 500 );
-				
-				_els.areaDetail.animate({
-					height: _pm.height+"px", 
-		            opacity:1,
-		        }, 500 );
+//				
+//				_els.areaMain.closest(".area-inner").animate({
+//		            height: (_els.areaMain.height()-_pm.height)+"px",
+//		        }, 500 );
+//				
+//				_els.areaDetail.animate({
+//					height: _pm.height+"px", 
+//		            opacity:1,
+//		        }, 500 );
 			}
 		}
 		

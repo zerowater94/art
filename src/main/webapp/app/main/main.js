@@ -1,7 +1,7 @@
-define([ 'basicInfo'
+define([ 'basicInfo' , 'main/mainHelper'
          ,'text!main/main.html'
          ,'../../libs/screenfull/screenfull'
-       ], function (  $a, Tmpl ) {
+       ], function (  $a, mainHelper, Tmpl ) {
 	
 
 	'use strict';
@@ -16,6 +16,10 @@ define([ 'basicInfo'
 		var _els = {
 				
 		} ; // elements
+		
+		var _vws = {
+			
+		};
 		var _f = {
 		    createPage : function() {
 		    	
@@ -43,7 +47,6 @@ define([ 'basicInfo'
 						areaMain : $a.getMainArea(),
 						areaEditor : $a.getMainEditor(),
 						areaMainBar : _els.areaMainBar,
-						areaMainDetail : _els.areaContents.find("#main-detail"),
 						areaShowMsg : _els.areaContents.find("#main-msg"),
 					},
 					msg : {
@@ -51,6 +54,7 @@ define([ 'basicInfo'
 						search   : $a.getMsg("lbl.search")
 					}
 				});
+				
 			},
 			setMainStyle : function() {
 				
@@ -81,14 +85,14 @@ define([ 'basicInfo'
 			},
 			setTopNav : function() {
 				
-				$a.t.nvButton.add(_els.areaTopNav, {
+				mainHelper.addNavBtn(_els.areaTopNav, {
 					id      : "toggleFullScreen" ,
 					linkCss : "btn-default btn-sm",
 					title   : "Fullscreen",
 					btnCss  : "glyphicon glyphicon-fullscreen"
 				});
 				
-				$a.t.nvButton.add(_els.areaTopNav, {
+				mainHelper.addNavBtn(_els.areaTopNav, {
 					linkCss : "btn-metis-1 btn-sm",
 					title   : "Logout",
 					btnCss  : "fa fa-power-off"
@@ -148,7 +152,7 @@ define([ 'basicInfo'
 				for( var idx = 0 ; idx < _menus.length; idx++ ) {
 					
 					_menuObj = _menus[idx];
-					$a.t.mainMenu.addMenu(_els.areaMenuUl , _menuObj);
+					mainHelper.addMenu(_els.areaMenuUl , _menuObj);
 					_elLi = _els.areaMenuUl.find("#"+_menuObj.menuId);
 					_f.addEventMenuShow(_elLi, _menuObj);
 					
@@ -158,7 +162,7 @@ define([ 'basicInfo'
 						for( var jdx = 0 ; jdx < _menuObj.subMenus.length; jdx++ ) {
 							
 							_subMenuObj = _menuObj.subMenus[jdx];
-							$a.t.mainMenu.addMenuSub(_elSubUl , _subMenuObj);
+							mainHelper.addMenuSub(_elSubUl , _subMenuObj);
 							_f.addEventMenu(_elSubUl.find("li").eq(jdx), _subMenuObj);
 						}
 					}
@@ -219,8 +223,8 @@ define([ 'basicInfo'
 		_this.render = function( obj ) {
 			
 			$.extend( true, _pm ,obj);
-			_f.createPage();
 			
+			_f.createPage();
 			_f.setMainInitialize();
 			_f.setMainStyle();
 			_f.setBrand();

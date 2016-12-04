@@ -76,7 +76,7 @@ define([ 'basicInfo'
 					id   : 'add-builder',
 					callbackFunc : function(e) {
 						
-						$a.t.wgHelper.makeForm.select(_els.areaFormBuilder,{label:null});
+						$a.t.makeForm.select(_els.areaFormBuilder,{label:null});
 					}
 				});
 				
@@ -99,7 +99,7 @@ define([ 'basicInfo'
 					shownFunc : function(el) {
 						
 						el.addClass("edit-area");
-						$a.t.wgHelper.makeForm.execBatch(el,[{ id:"category", type:"text", required:true, inputCls : 'addon-btn', label:$a.getMsg("lbl.category"),etc:{'max-length':30,'not-kor':true}}]);
+						$a.t.makeForm.execBatch(el,[{ id:"category", type:"text", required:true, inputCls : 'addon-btn', label:$a.getMsg("lbl.category"),etc:{'max-length':30,'not-kor':true}}]);
 						var elPopoverCategory = el.find("#area-category");
 						
 						var _callbackFunc = function(e) {

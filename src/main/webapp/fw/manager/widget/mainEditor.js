@@ -1,6 +1,6 @@
 define(['mngEvent', 'wgHelper',
         'text!../../../../../fw/manager/tmpl/mainEditor.html'
-        ], function (MngEvent, _wg, _tmpl) {
+        ], function (MngEvent, wg, _tmpl) {
 	
 	'use strict';
 	
@@ -69,11 +69,11 @@ define(['mngEvent', 'wgHelper',
 					
 					for( var idx = 0 ; idx < _pm.buttons.length; idx++ ) {
 						
-						_wg.button.render(_els.editToolbar, $.extend(true, {btnCls:"btn-default btn-sm"}, _pm.buttons[idx]));
+						wg.button.render(_els.editToolbar, $.extend(true, {btnCls:"btn-default btn-sm"}, _pm.buttons[idx]));
 					}
 				}
 				
-				_wg.makeForm.execBatch(_els.editBody, _pm.formList);
+				wg.makeForm.execBatch(_els.editBody, _pm.formList);
 				
 				_els.areaEditor.width(320).css({
 					position: "absolute",
