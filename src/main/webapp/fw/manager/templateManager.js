@@ -7,7 +7,8 @@ define(['jquery','mngEvent',
         '../../fw/manager/widget/showMsg',
         '../../fw/manager/widget/popover',
         '../../fw/manager/widget/toolbar'
-        ], function ($, MngEvent, wg,grid, _vEditor,_vDetail, _vMainBar, _vSearch, _vShowMsg, _vPopover, _vToolbar) {
+        ,'../../fw/manager/widget/pqGrid'
+        ], function ($, MngEvent, wg,grid, _vEditor,_vDetail, _vMainBar, _vSearch, _vShowMsg, _vPopover, _vToolbar,_vGrid) {
 	
 	'use strict';
 	
@@ -33,6 +34,7 @@ define(['jquery','mngEvent',
 					_this.showMsg = new _vShowMsg();
 					_this.popover = new _vPopover();
 					_this.toolbar = new _vToolbar();
+					_this.grid = new _vGrid();
 					
 					wg.initialize(obj.msg);
 					$.extend(true, _this, wg);
@@ -42,11 +44,10 @@ define(['jquery','mngEvent',
 					_this.mainDetail.initialize(_els);
 					_this.showMsg.initialize(_els);
 					_this.popover.initialize(_els);
-				},
-				grid : function() {
-					requirejs(['../../fw/manager/widget/pqGrid'], function( _vGrid ) {
-						_this.grid = new _vGrid();
-					});
+					
+//					requirejs(['../../fw/manager/widget/pqGrid'], function( _vGrid ) {
+//						_this.grid = new _vGrid();
+//					});
 				}
 			}
 		};
@@ -55,7 +56,6 @@ define(['jquery','mngEvent',
 			
 			$.extend(true, _els, obj.els);
 			_f.init.widget(obj);
-			_f.init.grid();
 		};
 
 		return _this;

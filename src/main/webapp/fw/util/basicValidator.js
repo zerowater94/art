@@ -154,12 +154,16 @@ define(['jquery','basicUtil'], function ($, $aUtil) {
 				return;
 			// error 표시
 			
-			formSelector.append('<span class="help-block-art">&nbsp;<span class=" label label-warning">'+message+'</span></span>');
-			formSelector.addClass("has-error");
-			setTimeout(function() {
+			var _rmMsg = function() {
 				formSelector.find(".help-block-art").remove();
 				formSelector.removeClass("has-error");
-			}, 3000);
+			};
+			
+			formSelector.append('<div class="help-block-art label-warning">&nbsp;<span class=" label">'+message+' <button type="button" class="close" >×</button></span> </div>');
+			formSelector.addClass("has-error");
+			setTimeout(_rmMsg, 3000);
+			
+			formSelector.find("button.close").off().click(_rmMsg);
 			
 			selector.focus();
 		};

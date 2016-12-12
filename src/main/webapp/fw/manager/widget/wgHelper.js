@@ -133,7 +133,18 @@ define(['mngEvent',
 					var _opt = $.extend(true,{},this.options,_selOptions, obj );
 					el.html(_f.html.form.select(_opt));
 					
-					var elSelect = el.find("select");
+					var _elInputGroup = el.find(".input-group");
+					var elSelect = _elInputGroup.find("select");
+					
+					
+					if( _opt.addedBtn != null ) {
+						_f.button.render(el.find(".input-group"), _opt.addedBtn);
+						elSelect.css({
+							maxWidth : "80%"
+						});
+					}
+					
+					
 					
 					if( _opt.blankOption ) {
 						elSelect.append("<option value=''>"+_opt.blankStr+"</option>");
@@ -165,27 +176,42 @@ define(['mngEvent',
 					var _opt = $.extend(true,{},this.options,obj );
 					el.html(_f.html.form.custom(_opt));
 				},
+				
 				execBatch : function( el, formList ) {
 					
-					var _obj, areaForm;
+					var _formOpt = {
+						id   : null,
+						type : "text",
+						required : null,
+						etc      : null,
+						addedBtn : null,
+					};
+					var _rtnElObj = {}, _obj, areaForm;
 					var _label, _input;
 					
 					if ( formList.length == undefined )
 						return;
 					
 					for( var idx = 0 ; idx < formList.length; idx++ ) {
-						_obj = formList[idx];
+						_obj = $.extend(true,{},_formOpt,formList[idx] );
 						el.append(_f.html.formInputGroup(_obj));
 						areaForm = el.children(".form-group").last().addClass("form-inline");
 						
+						_rtnElObj[_obj.id] = areaForm;
+						
 						if ( _obj.type == 'select' ) {
 							_f.makeForm.select(areaForm, _obj);
+							_rtnElObj[_obj.id] = areaForm.find(".input-group");
 							_input = areaForm.find("select");
 						} else if ( _obj.type == 'textarea' ) {
 							_f.makeForm.textarea(areaForm, _obj);
 							_input = areaForm.find("textarea");
+						}else if ( _obj.type == 'date' ) {
+							_f.makeForm.date(areaForm, _obj);
+							_rtnElObj[_obj.id] = areaForm.find(".input-group");
 						} else if ( _obj.type == 'custom' ) {
 							_f.makeForm.custom(areaForm, _obj);
+							_rtnElObj[_obj.id] = areaForm.find("#"+_obj.id);
 							_input = null;
 						} else {
 							_f.makeForm.text(areaForm, _obj);
@@ -202,6 +228,7 @@ define(['mngEvent',
 							_input.attr(_obj.etc);
 						}
 					}
+					return _rtnElObj;
 				}
 			},
 			rowBox : {

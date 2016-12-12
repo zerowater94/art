@@ -44,7 +44,7 @@ define([ 'basicInfo'
 						$(e.target).hide();
 					}
 				});
-				$a.t.mainEditor.getContents().html("this is menu..");
+				$a.t.mainEditor.getMainBody().html("this is menu..");
 				$a.t.mainEditor.showEditor();
 			},
 			makeSearchArea : function() {

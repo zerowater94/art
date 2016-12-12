@@ -29,7 +29,7 @@ define([ 'basicInfo'
 			    });
 			},
 			setupEditor : function() {
-				$a.t.mainEditor.render({
+				var _frmEls = $a.t.mainEditor.render({
 					title : $a.getMsg("lbl.addOption"),
 					callBackHide : function() {
 
@@ -48,29 +48,29 @@ define([ 'basicInfo'
 							}
 						}
 					}],
-					formList:[{ id:"category",      type:"select", label:$a.getMsg("lbl.category"), required:true, optionList:_dts.categoryList, jsonReader:{code:'category', value:'category'}},
+					formList:[{ id:"category",      type:"select", label:$a.getMsg("lbl.category"), required:true, optionList:_dts.categoryList, jsonReader:{code:'category', value:'category'},
+						        addedBtn : {name :'<i class="fa fa-plus"></i>',btnCls:"btn-default btn-xs m-l-10", id   : 'add-category'}},
 		                      { id:"optionCode",    type:"text",   label:$a.getMsg("lbl.code"), required:true,etc:{'max-length':10,'not-kor':true}},
 		                      { id:"optionValue",   type:"text",   label:$a.getMsg("lbl.value"), etc:{'max-length':10,'not-kor':true,'readOnly':true}, inputCls : 'addon-btn' },
 		                      { id:"optionBuilder", type:"custom", label:null },
 		                      { id:"useYn",         type:"select", label:$a.getMsg("lbl.useYn"), blankOption:false,  optionList:$a.d.values.useYn},
-		                      { id:"useYn",         type:"textarea", label:$a.getMsg("lbl.description")},
+		                      { id:"desc",          type:"textarea", label:$a.getMsg("lbl.description")},
 		                    ],
 				});
 				// category 추가 버튼
-				_els.areaFormCategory = $a.t.mainEditor.getContents().find("#area-category");
-				_els.areaFormValue = $a.t.mainEditor.getContents().find("#area-optionValue");
-				_els.areaFormBuilder = $a.t.mainEditor.getContents().find("#optionBuilder");
-				$a.t.button.render(_els.areaFormCategory,{
-					name :'<i class="fa fa-plus"></i>', 
-					btnCls:"btn-default btn-xs m-l-10",
-					id   : 'add-category',
-				});
+				_els.areaFormCategory = $a.t.mainEditor.getMainBody().find("#area-category");
+				_els.areaFormValue = $a.t.mainEditor.getMainBody().find("#area-optionValue");
+				_els.areaFormBuilder = $a.t.mainEditor.getMainBody().find("#optionBuilder");
+//				$a.t.button.render(_els.areaFormCategory,{
+//					name :'<i class="fa fa-plus"></i>', 
+//					btnCls:"btn-default btn-xs m-l-10",
+//					id   : 'add-category',
+//				});
 				
-				_els.areaFormCategory.find('.input-group').css({
-					maxWidth:"80%"
-				});
-				
-				$a.t.button.render(_els.areaFormValue,{
+//				_els.areaFormCategory.find('.input-group').css({
+//					width:"30%"
+//				});
+				$a.t.button.render(_frmEls.optionValue,{
 					name :'<i class="fa fa-plus"></i>', 
 					btnCls:"btn-default btn-xs m-l-10",
 					id   : 'add-builder',
@@ -81,7 +81,7 @@ define([ 'basicInfo'
 				});
 				
 				// popover 생성.
-				_els.btnAddCategory = $a.t.mainEditor.getContents().find("#add-category");
+				_els.btnAddCategory = $a.t.mainEditor.getMainBody().find("#add-category");
 				_f.makePopover(_els.btnAddCategory);
 			},
 			showEditor : function(e) {
@@ -106,7 +106,7 @@ define([ 'basicInfo'
 							
 							if ( $a.v.isValidBatchData(el) ) {
 								
-								var inputCategory = $a.t.mainEditor.getContents().find("#category");
+								var inputCategory = $a.t.mainEditor.getMainBody().find("#category");
 								var searchCategory = _els.areaSearch.find("#category");
 								var inputVal = el.find("#category").val();
 								inputCategory.append("<option value='"+inputVal+"'>"+inputVal+"</option>");
@@ -181,6 +181,7 @@ define([ 'basicInfo'
 						var rowData = ui.rowData;
 						console.log(rowData);
 						console.log($a.t.mainDetail);
+						$a.t.mainEditor.clearValues();
 //						$a.t.mainDetail.render({
 //							tabs : [{tabName:"tab A"},{tabName:"tab B"}]
 //						});
@@ -192,7 +193,7 @@ define([ 'basicInfo'
 			},
 			insertData : function() {
 				
-				var mainEditor = $a.t.mainEditor.getContents();
+				var mainEditor = $a.t.mainEditor.getMainBody();
 				$a.send({
 					url : $a.getDefaultUrl()+"/base/system/option/insert",
 					data : {

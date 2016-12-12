@@ -73,13 +73,15 @@ define(['mngEvent', 'wgHelper',
 					}
 				}
 				
-				wg.makeForm.execBatch(_els.editBody, _pm.formList);
+				var rtnObj = wg.makeForm.execBatch(_els.editBody, _pm.formList);
 				
 				_els.areaEditor.width(320).css({
 					position: "absolute",
 					right : -(_els.areaEditor.width())
 				});
 				_els.areaEditor.hide();
+				
+				return rtnObj;
 				
 			},
 			showEditor : function(){
@@ -125,13 +127,12 @@ define(['mngEvent', 'wgHelper',
 				}, 500);
 				
 			},
-			getInputValue : function() {
+			getValues : function() {
 				
 				var rtnObj = {};
 				var obj;
-				console.log(this.options);
-				for( var idx = 0 ; idx < this.options.formList.length; idx++ ) {
-					obj = this.options.formList[idx];
+				for( var idx = 0 ; idx < _pm.formList.length; idx++ ) {
+					obj = _pm.formList[idx];
 
 					if ( obj.type == 'custom' )
 						continue;
@@ -143,17 +144,30 @@ define(['mngEvent', 'wgHelper',
 				}
 				return rtnObj;
 			},
-			getContents : function() {
+			clearValues : function() {
+				var obj;
+				for( var idx = 0 ; idx < _pm.formList.length; idx++ ) {
+					obj = _pm.formList[idx];
+					if ( obj.type == 'custom' )
+						continue;
+					if ( obj.type == 'date' )
+						_els.editBody.find("#"+obj.id).val("");
+					else
+						_els.editBody.find("#"+obj.id).val(""); //text , textarea, select
+				}
+			},
+			getMainBody : function() {
 				return _els.editBody;
 			}
 		};
 				
-		_this.initialize = _f.init;
-		_this.render = _f.render;
-		_this.showEditor = _f.showEditor;
-		_this.hideEditor = _f.hideEditor;
-		_this.getInputValue = _f.getInputValue;
-		_this.getContents = _f.getContents;
+		_this.initialize  = _f.init;
+		_this.render      = _f.render;
+		_this.showEditor  = _f.showEditor;
+		_this.hideEditor  = _f.hideEditor;
+		_this.getValues   = _f.getValues;
+		_this.getMainBody = _f.getMainBody;
+		_this.clearValues = _f.clearValues;
 		
 		return _this;
 	}; 

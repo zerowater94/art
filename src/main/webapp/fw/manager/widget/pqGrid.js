@@ -1,4 +1,4 @@
-define(['mngEvent', 'wgHelper'
+define(['mngEvent', 'wgHelper','grid'
         ], function (MngEvent, wg) {
 	
 	'use strict';

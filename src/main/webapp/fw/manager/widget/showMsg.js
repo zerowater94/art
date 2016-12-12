@@ -18,6 +18,7 @@ define(['mngEvent', 'wgHelper'
 				showMsg : function( obj ) {
 					var rtnHtml = '<div class="alert alert-'+obj.type+'">';
 					rtnHtml += '<strong>'+obj.msg+'</strong>';
+					rtnHtml += '<button type="button" class="close" >×</button>';
 					rtnHtml +='</div>';
 					return rtnHtml;
 				},
@@ -34,6 +35,7 @@ define(['mngEvent', 'wgHelper'
 				
 				_els.areaShowMsg.append(_f.html.showMsg(_opt));
 				var _alert = _els.areaShowMsg.children(".alert").last();
+				var _btnClose = _alert.find("button.close");
 				_els.areaShowMsg.animate({
 		            bottom: "150px", 
 		        }, 500 );
@@ -47,7 +49,8 @@ define(['mngEvent', 'wgHelper'
 			        }, 1000 );
 					
 				}, 200);
-				setTimeout(function(){
+				
+				var _fHideMsg = function() {
 					
 					_alert.animate({
 			            opacity:0, 
@@ -56,8 +59,9 @@ define(['mngEvent', 'wgHelper'
 					setTimeout(function(){
 						_alert.remove();
 					}, 1000);
-					
-				}, 4000);
+				};
+				MngEvent.addEvent(_btnClose,"click", _fHideMsg);
+				setTimeout(_fHideMsg, 4000);
 				
 				if( _opt.callbackFunc != null )
 					_opt.callbackFunc();
