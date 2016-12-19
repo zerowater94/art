@@ -86,17 +86,21 @@ define(['mngEvent', 'wgHelper',
 			},
 			showEditor : function(obj){
 				
+				var showTime = 500;
+				if ( _els.areaEditor.is(":visible") )
+					showTime = 0 ;
+				
 				_els.areaEditor.show();
 				
 				_els.areaMain.closest(".area-inner").animate({
 		            marginRight: _els.areaEditor.width(),
-		        }, 500 );
+		        }, showTime );
 				
 				_els.areaEditor.animate({
 		            right: 2, 
 		            opacity:1,
 		            display:'block'
-		        }, 500 );
+		        }, showTime );
 				
 				setTimeout(function(){
 
@@ -105,11 +109,14 @@ define(['mngEvent', 'wgHelper',
 					
 					if( obj == undefined )
 						_f.clearValues();
-					else
+					else {
 						_f.setValues(obj);
-					
+						if ( obj.shown !== undefined )
+							obj.shown();
+					}
+
 					MngEvent.execWinResize();
-				}, 500);
+				}, showTime);
 			},
 			hideEditor : function() {
 				

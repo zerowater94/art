@@ -34,7 +34,7 @@
 .edit-area .form-group input.addon-btn { width:70%; }
 .edit-area .form-group .middle-btn { border-radius:0px; }
 .edit-area .form-group .front-btn { border-radius: 4px 0px 0px 4px; }
-.edit-area .form-group button { margin-bottom:2px; }
+.edit-area .form-group .input-group button { margin-bottom:2px; }
 
 #main-msg {position:absolute;bottom:0px;min-width:500px;max-width:650px;}
 #main-msg .alert {opacity:0;}

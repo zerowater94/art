@@ -44,7 +44,7 @@ define([ 'basicInfo'
 
 				$a.t.mainBar.addButton({ 
 					name :$a.getMsg("lbl.add"), 
-					callbackFunc : _f.showEditor 
+					callbackFunc : _f.showInputEditor 
 			    });
 			},
 			isBuildOptType : function(type) {
@@ -62,23 +62,24 @@ define([ 'basicInfo'
 					buttons : [{
 						name :$a.getMsg("lbl.add"), 
 						callbackFunc : function(e) {
-							_els.elBuiliderBox = _vRowBox.elBoxBody;
 							_f.addOptionItem();
 						}
 					}],
 				});
+				_els.elBuiliderBox = _vRowBox.elBoxBody;
 			},
 			setOptionBuilder : function(arry) {
 				var elBuilder = _els.elForms.editor.optionBuilder;
 				_els.elBuiliderBox.empty();
+				if ( arry == undefined )
+					return;
+				
 				var len = arry.length;
 				var obj ;
 				for( var idx = 0 ; idx < len; idx++ ) {
 					obj = $.extend(true,{},_pm.builder, arry[idx]);
-					addOptionItem(obj);
-					
+					_f.addOptionItem(obj);
 				}
-				
 			},
 			addOptionItem : function( obj ) {
 				
@@ -137,15 +138,14 @@ define([ 'basicInfo'
 						_areaItemCategories.show();
 						_optionList = obj.categories;
 						for( var idx = 0; idx < _optionList.length; idx++ ) {
-							
+							_f.addOptionItemCategories(_areaItemCategories, _optionList[idx]);
 						}
 					}
 				}
 				
 				$a.e.addEvent(_areaOptItem.find("select"), "change", function(e){
 					var selVal = $(e.target).val();
-					
-					if( selVal == 'select' || selVal == 'radio' || selVal == 'checkbox' ) {
+					if( _f.isBuildOptType(selVal) )  {
 						_btnAddItem.show();
 						_areaItemCategories.show();
 					}else {
@@ -155,7 +155,7 @@ define([ 'basicInfo'
 				});
 				
 			},
-			addOptionItemCategories : function( el ) {
+			addOptionItemCategories : function( categoryEl, categoryObj ) {
 				
 				var _param = $a.t.makeForm.getNewFormObj({
 					label : null,
@@ -164,9 +164,16 @@ define([ 'basicInfo'
 						required : true,
 					}
 				});
-				var elDtlOpt = $a.t.makeForm.addNewForm(el,_param);
+				var elDtlOpt = $a.t.makeForm.addNewForm(categoryEl,_param);
 				_param.inputCls = "w-40 category-val";
 				$a.t.makeForm.appendFormEl(elDtlOpt,_param);
+
+				if( categoryObj !== undefined ) {
+					var categoryFormGroup = categoryEl.children(".form-group").last();
+					categoryFormGroup.find(".category-key").val(categoryObj.code);
+					categoryFormGroup.find(".category-val").val(categoryObj.value);
+				}
+				
 				$a.t.button.render(elDtlOpt,{
 					name :'<i class="fa fa-minus"></i>',
 					btnCls:"btn-default btn-xs m-l-5",
@@ -191,13 +198,14 @@ define([ 'basicInfo'
 						type : elSelect.val(),
 						expl : elExpl.val()
 					};
-					if( elSelect.val() == 'select' || elSelect.val() == 'radio' || elSelect.val() == 'checkbox') {
+					
+					if( _f.isBuildOptType(elSelect.val()) )  {
 						elCategories = formGroup.find(".item-categories");
 						categoryFormGroup = elCategories.children(".form-group");
 						optObj.categories = [];
 						for( var jdx = 0 ; jdx < categoryFormGroup.length; jdx++ )  {
 							categoryForm = categoryFormGroup.eq(jdx);
-							catagoryKey = categoryForm.find(".category-key").val();
+							categoryKey = categoryForm.find(".category-key").val();
 							categoryVal = categoryForm.find(".category-val").val();
 							optObj.categories.push({
 								code  : categoryKey,
@@ -208,7 +216,7 @@ define([ 'basicInfo'
 					elCategories = formGroup.find(".item-categories");
 					rtnObj.push(optObj);
 				}
-				console.log(cnt);
+
 				return JSON.stringify(rtnObj);
 			},
 			setupEditor : function() {
@@ -217,9 +225,6 @@ define([ 'basicInfo'
 					title : $a.getMsg("lbl.addOption"),
 					callBackHide : function() {
 
-					},
-					callBackShow : function() {
-						// $(e.target).hide();
 					},
 					buttons :[{
 						name :$a.getMsg("lbl.save"), 
@@ -278,8 +283,12 @@ define([ 'basicInfo'
 				
 				_f.makeOptionBuild();
 			},
-			showEditor : function(e) {
-				$a.t.mainEditor.showEditor();
+			showInputEditor : function(e) {
+				$a.t.mainEditor.showEditor({
+					shown : function() {
+						_f.setOptionBuilder([]);
+					}
+				});
 			},
 			addCategory : function( popOverEl ) {
 				
@@ -377,8 +386,18 @@ define([ 'basicInfo'
 					            { dataIndx : "optionValue", title: "Value", width: "30%", editable: false }],
 					rowClick : function( event, ui ) {
 						var rowData = ui.rowData;
+						
+						rowData.shown = function() {
+							var builderArray;
+							try {
+								builderArray = $.parseJSON(rowData.optionBuilder);
+							}catch ( ex ) {
+								builderArray = [];
+							}
+							_f.setOptionBuilder(builderArray);
+						}
 						$a.t.mainEditor.showEditor(rowData);
-						_f.setOptionBuilder();
+						
 					},
 				});
 				
@@ -393,11 +412,11 @@ define([ 'basicInfo'
 				var formData = $a.t.mainEditor.getValues();
 				formData.siteId = "site-a";
 				formData.compId = "comp-1";
+				formData.optionBuilder = _f.getOptionValues(); // builder
 				$a.send({
 					url : $a.getDefaultUrl()+"/base/system/option/insert",
 					data : formData,
 					success : function(data) {
-						
 						$a.show.success($a.getMsg("msg.success.insert"));
 						_f.searchOptionList();
 						$a.t.mainEditor.hideEditor();
