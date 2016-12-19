@@ -396,7 +396,7 @@ define([ 'basicInfo'
 							}
 							_f.setOptionBuilder(builderArray);
 						}
-						$a.t.mainEditor.showEditor(rowData);
+						$a.t.mainEditor.e(rowData);
 						
 					},
 				});
