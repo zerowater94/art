@@ -29,55 +29,58 @@ define(['mngEvent',
 					
 					return "<div id='area-"+obj.id+"' class='form-group input-group'></div>";
 				},
+				addLabel : function( obj ) {
+					
+					if( obj.label == null )
+						return "";
+					
+					var isRequired = "";
+					if (  obj.validation != undefined && obj.validation.required )
+						isRequired = "required";
+					
+					if( obj.type == 'textarea')
+						return '<label class="input-group col-form-label textarea-label '+obj.labelCls+'  '+isRequired+'">'+obj.label+'</label>';
+					else
+						return '<label class="input-group-addon col-form-label '+obj.labelCls+' '+isRequired+'">'+obj.label+'</label>';
+				},
+				addDiv : function( obj ) {
+					return "<div id='"+obj.id+"'></div>";
+				},
 				form : {
 					text : function( obj ) {
 						
 						var html = '';
-						if( obj.label != null ) 
-							html += '<label class="input-group-addon col-form-label">'+obj.label+'</label>';
-						
 						html += '<input type="text" class="'+obj.inputCls+'" id="'+obj.id+'" placeholder="'+obj.placeholder+'">';
 						return html;
 					},
 					textarea : function( obj ) {
 						
 						var html = '';
-						if( obj.label != null ) 
-							html += '<label class="input-group col-form-label textarea-label">'+obj.label+'</label>';
-						
-						html += '<textarea class="form-control" id="'+obj.id+'" rows="'+obj.rows+'" ></textarea>';
+						html += '<textarea class="form-control" id="'+obj.id+'" rows="'+obj.typeOpt.rows+'" ></textarea>';
 						return html;
 					},
 					select : function( obj ) {
 						
 						var html = "";
-						if( obj.label != null ) 
-							html += '<label class="input-group-addon col-form-label">'+obj.label+'</label>';
-						
 						html += '<div class="input-group"><select class="'+obj.inputCls+'"  id="'+obj.id+'" ></select></div>';
+						return html;
+					},
+					radio : function( obj ) {
+						
+						var html = "";
+						html += '<div class="input-group"></div>';
 						return html;
 					},
 					date : function(obj) {
 						
 						var html = "";
-						if( obj.label != null ) 
-							html += '<label class="input-group-addon col-form-label">'+obj.label+'</label>';
 						html += '<div class="input-group date">';
 						html += '<input type="text" id="'+obj.id+'SDate" class="form-control">';
 						html += '<span class="input-group-addon"> ~ </span>';
 						html += '<input type="text" id="'+obj.id+'EDate" class="form-control">';
 						html += '</div>';
 						return html;
-					},
-					custom : function(obj) {
-						
-						var html = "";
-						if( obj.label != null ) 
-							html += '<label class="input-group-addon col-form-label">'+obj.label+'</label>';
-						
-						html += '<div id="'+obj.id+'" ></div>';
-						return html;
-					},
+					}
 				},
 				rowBox : function() {
 					
@@ -87,6 +90,15 @@ define(['mngEvent',
 					html += '<div class="pull-right"></div>';
 					html += '</header>';
 					html += '<div class="body"></div><div>';
+					html += "</div>";
+					return html;
+				},
+				addRow : function(obj ) {
+					var html = '<div class="row">';
+					for( var idx = 0 ; idx < obj.cols.length; idx++ ) {
+						html += '<div class="col-sm-'+obj.cols[idx]+'" ></div>';
+					}
+					
 					html += "</div>";
 					return html;
 				}
@@ -101,23 +113,143 @@ define(['mngEvent',
 				render : function(el, obj) {
 					var _opt = $.extend(true,{},this.options, obj );
 					el.append(_f.html.button(_opt));
-					el.find("button").last().click(function(e){
+					var _rtnBtnEl = el.find("button").last();
+					_rtnBtnEl.click(function(e){
 						if ( _opt.callbackFunc != null )
 							_opt.callbackFunc(e);
-						
 						$(this).blur();
 					});
+					return _rtnBtnEl;
 				}	
+			},
+			addRow : {
+				options : {
+					cols : [12]
+					
+				},
+				render : function( el, obj ) {
+					
+					var _opt = $.extend(true,{},this.options, obj );
+					el.append(_f.html.addRow(_opt));
+					return el.find(".row").last();
+				}
 			},
 			makeForm : {
 				options : {
-					label : "",
-					placeholder : ""
+					type   : "text",
+					id     : 'form-'+$.guid,
+					label  : "",
+					labelCls : "",
+					inputCls : "",
+					placeholder : "",
+					validation : {
+						readOnly   : false,
+						required   : false,
+						maxLength  : null,
+						minLength  : null,
+						onlyEng    : null,
+						onlyEngNum : null,
+						onlyNum    : null,
+						currency   : null,
+						notKor     : null,
+					},
+					addedBtn : null,
+					typeOpt  : null,
+				},
+				formList : function() {
+					
+					var formObj = _f.html.form;
+					var rtnList = [];
+					for(var key in formObj) {
+						rtnList.push(key);
+					}
+					return rtnList;
+				},
+				getNewFormObj : function( obj ) {
+					return $.extend(true,{},_f.makeForm.options, obj);
+				},
+				addNewForm : function( el, obj ) {
+					
+					var _areaForm, _elRtnForm, _elInput, _elLabel;  
+					var _opt = $.extend(true,{},_f.makeForm.options, obj );
+					el.append(_f.html.formInputGroup(_opt));
+					var areaForm = el.children(".form-group").last().addClass("form-inline");
+					
+					// add label
+					areaForm.html(_f.html.addLabel(_opt));
+					
+					_elRtnForm = areaForm;
+					_elLabel   = areaForm.find("label"); //validation attribute set..
+					
+					_elRtnForm = _f.makeForm.appendFormEl(areaForm, _opt);
+
+					return _elRtnForm;
+				},
+				appendFormEl : function( elFormGroup, obj ) {
+					
+					var _elRtnForm = elFormGroup;
+					
+					if ( obj.type == 'select' ) {
+						_f.makeForm.select(elFormGroup, obj);
+						_elRtnForm = elFormGroup.find(".input-group");
+					} else if ( obj.type == 'textarea' ) {
+						_f.makeForm.textarea(elFormGroup, obj);
+					}else if ( obj.type == 'date' ) {
+						_f.makeForm.date(elFormGroup, obj);
+						_elRtnForm = elFormGroup.find(".input-group");
+					} else if ( obj.type == 'custom' ) {
+						_f.makeForm.custom(elFormGroup, obj);
+					} else {
+						_f.makeForm.text(elFormGroup, obj);
+					}
+					return _elRtnForm;
+				},
+				setValidAttr : function( obj,  _elInput ) {
+					
+					var _objValid = obj.validation;
+					
+					if( _objValid.required != undefined && _objValid.readOnly ) {
+						_elInput.attr("readOnly","true");
+					} 
+					if( _objValid.required != undefined && _objValid.required ) {
+						_elInput.attr("required","true");
+					} 
+					if( _objValid.maxLength != null ) {
+						_elInput.attr("max-length",_objValid.maxLength);
+					}
+					if( _objValid.minLength != null ) {
+						_elInput.attr("min-length",_objValid.minLength);
+					}
+					if( _objValid.onlyEng != null && _objValid.onlyEng ) {
+						_elInput.attr("only-eng",true);
+					}
+					if( _objValid.onlyEngNum != null && _objValid.onlyEngNum ) {
+						_elInput.attr("only-engNum",true);
+					}
+					if( _objValid.onlyNum != null && _objValid.onlyNum ) {
+						_elInput.attr("only-num",true);
+					}
+					if( _objValid.currency != null && _objValid.currency ) {
+						_elInput.attr("currency",true);
+					}
+					if( _objValid.notKor != null && _objValid.notKor ) {
+						_elInput.attr("not-kor",true);
+					}
 				},
 				text : function( el, obj ) {
 					
-					var _opt = $.extend(true,{},{inputCls : ""},this.options, obj );
-					el.html(_f.html.form.text(_opt));
+					el.append(_f.html.form.text(obj));
+					
+					var elInput = el.find("input");
+					
+					if( obj.addedBtn != null ) {
+						_f.button.render(el, obj.addedBtn);
+						elInput.css({
+							maxWidth : "80%"
+						});
+					}
+					
+					_f.makeForm.setValidAttr(obj, elInput);
 				},
 				select : function( el, obj ) {
 					
@@ -125,37 +257,44 @@ define(['mngEvent',
 						optionsList : null,
 						blankStr    : _msg.blankStr,
 						blankOption : true,
+						defaultParam : null,
 						jsonReader  : {
 							code : "code",
 							value : "value"
 						}
 					};
-					var _opt = $.extend(true,{},this.options,_selOptions, obj );
-					el.html(_f.html.form.select(_opt));
+					var _typeObj = $.extend(true,{},_selOptions, obj.typeOpt );
+					el.append(_f.html.form.select(obj));
 					
 					var _elInputGroup = el.find(".input-group");
 					var elSelect = _elInputGroup.find("select");
 					
-					
-					if( _opt.addedBtn != null ) {
-						_f.button.render(el.find(".input-group"), _opt.addedBtn);
+					if( obj.addedBtn != null ) {
+						_f.button.render(el.find(".input-group"), obj.addedBtn);
 						elSelect.css({
 							maxWidth : "80%"
 						});
 					}
 					
-					
-					
-					if( _opt.blankOption ) {
-						elSelect.append("<option value=''>"+_opt.blankStr+"</option>");
+					if( _typeObj.blankOption ) {
+						elSelect.append("<option value=''>"+_typeObj.blankStr+"</option>");
 					}
-					if( _opt.optionList != null ) {
+					if( _typeObj.optionList != null ) {
 						var _obj;
-						for( var idx = 0 ; idx < _opt.optionList.length; idx++ ) {
-							_obj = _opt.optionList[idx];
-							elSelect.append("<option value='"+_obj[_opt.jsonReader.code]+"'>"+_obj[_opt.jsonReader.value]+"</option>");
+						for( var idx = 0 ; idx < _typeObj.optionList.length; idx++ ) {
+							_obj = _typeObj.optionList[idx];
+							
+							if( typeof _obj == 'object')
+								elSelect.append("<option value='"+_obj[_typeObj.jsonReader.code]+"'>"+_obj[_typeObj.jsonReader.value]+"</option>");
+							else
+								elSelect.append("<option value='"+_obj+"'>"+_obj+"</option>");
 						}
 					}
+					
+					if( _typeObj.defaultParam != null )
+						elSelect.val(_typeObj.defaultParam);
+					
+					_f.makeForm.setValidAttr(obj, elSelect);
 				},
 				textarea : function( el, obj ) {
 					
@@ -163,70 +302,30 @@ define(['mngEvent',
 						rows : 5
 					};
 					
-					var _opt = $.extend(true,{},this.options,obj );
-					el.html(_f.html.form.textarea(_opt));
+					el.append(_f.html.form.textarea(obj));
+					var elInput = el.find("textarea");
+					_f.makeForm.setValidAttr(obj, elInput);
 				},
 				date : function( el, obj ) {
 					
-					var _opt = $.extend(true,{},this.options,obj );
-					el.html(_f.html.form.date(_opt));
+					el.append(_f.html.form.date(obj));
 				},
 				custom : function(el, obj ) {
 					
-					var _opt = $.extend(true,{},this.options,obj );
-					el.html(_f.html.form.custom(_opt));
+					el.append(_f.html.addDiv(obj));
 				},
 				
 				execBatch : function( el, formList ) {
 					
-					var _formOpt = {
-						id   : null,
-						type : "text",
-						required : null,
-						etc      : null,
-						addedBtn : null,
-					};
-					var _rtnElObj = {}, _obj, areaForm;
-					var _label, _input;
+					var _rtnElObj = {};
+					var _obj;
 					
 					if ( formList.length == undefined )
 						return;
 					
 					for( var idx = 0 ; idx < formList.length; idx++ ) {
-						_obj = $.extend(true,{},_formOpt,formList[idx] );
-						el.append(_f.html.formInputGroup(_obj));
-						areaForm = el.children(".form-group").last().addClass("form-inline");
-						
-						_rtnElObj[_obj.id] = areaForm;
-						
-						if ( _obj.type == 'select' ) {
-							_f.makeForm.select(areaForm, _obj);
-							_rtnElObj[_obj.id] = areaForm.find(".input-group");
-							_input = areaForm.find("select");
-						} else if ( _obj.type == 'textarea' ) {
-							_f.makeForm.textarea(areaForm, _obj);
-							_input = areaForm.find("textarea");
-						}else if ( _obj.type == 'date' ) {
-							_f.makeForm.date(areaForm, _obj);
-							_rtnElObj[_obj.id] = areaForm.find(".input-group");
-						} else if ( _obj.type == 'custom' ) {
-							_f.makeForm.custom(areaForm, _obj);
-							_rtnElObj[_obj.id] = areaForm.find("#"+_obj.id);
-							_input = null;
-						} else {
-							_f.makeForm.text(areaForm, _obj);
-							_input = areaForm.find("input");
-						}
-						_label = areaForm.find("label");
-
-						if( _obj.required != undefined && _obj.required ) {
-							_label.addClass("required");
-							_input.attr("required","true");
-						} 
-						
-						if( _input != null && _obj.etc != undefined ) {
-							_input.attr(_obj.etc);
-						}
+						_obj = formList[idx];
+						_rtnElObj[_obj.id] = _f.makeForm.addNewForm( el, _obj);
 					}
 					return _rtnElObj;
 				}
@@ -271,12 +370,53 @@ define(['mngEvent',
 					};
 				}
 			},
+			relocationEl : function( container, elParent) {
+		    	
+		    	var cntnEl = elParent;
+		    	var position = cntnEl.position();
+		    	var winW = container.width();
+		    	var winH = container.height();
+		    	var cntnW = cntnEl.width();
+		    	var cntnH = cntnEl.height();
+
+		    	var minLeft = -1*(cntnW - 200) ; // 100만큼 보이게 ( 최소 )
+		    	var minTop = 0; // 
+		    	
+		    	var maxLeft = winW-200; // 100만큼 보이게 ( 최소 )
+		    	var maxTop = winH-cntnH; // Header이기 때문에 ( 헤더가 사라지게는 하지 않는다 ), 30( bs modal top margin) + header높이
+		    	
+		    	if( position.left < minLeft ) {
+		    		cntnEl.css({
+		            	left:minLeft+"px",
+		            });
+		    	}
+
+		    	if( position.left > maxLeft ) {
+		    		cntnEl.css({
+		            	left:maxLeft+"px",
+		            });
+		    	}
+
+		    	if( position.top < minTop ) {
+		    		cntnEl.css({
+		            	top:minTop+"px",
+		            });
+		    	}
+		    	
+		    	if( position.top > maxTop ) {
+		    		cntnEl.css({
+		            	top:maxTop+"px",
+		            });
+		    	}
+		    }
 		};
 		
 		_this.initialize = _f.init;
 		_this.button = _f.button;
 		_this.makeForm = _f.makeForm;
 		_this.rowBox = _f.rowBox;
+		_this.relocationEl = _f.relocationEl;
+		_this.addRow = _f.addRow;
 		
 		return _this;
 	}; 

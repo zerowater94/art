@@ -84,7 +84,7 @@ define(['mngEvent', 'wgHelper',
 				return rtnObj;
 				
 			},
-			showEditor : function(){
+			showEditor : function(obj){
 				
 				_els.areaEditor.show();
 				
@@ -102,6 +102,11 @@ define(['mngEvent', 'wgHelper',
 
 					if ( _pm.callBackShow != null )
 						_pm.callBackShow();
+					
+					if( obj == undefined )
+						_f.clearValues();
+					else
+						_f.setValues(obj);
 					
 					MngEvent.execWinResize();
 				}, 500);
@@ -144,30 +149,41 @@ define(['mngEvent', 'wgHelper',
 				}
 				return rtnObj;
 			},
-			clearValues : function() {
-				var obj;
+			setValues : function( obj ) {
+				
+				var fObj;
 				for( var idx = 0 ; idx < _pm.formList.length; idx++ ) {
-					obj = _pm.formList[idx];
+					fObj = _pm.formList[idx];
 					if ( obj.type == 'custom' )
 						continue;
-					if ( obj.type == 'date' )
-						_els.editBody.find("#"+obj.id).val("");
+					if ( fObj.type == 'date' )
+						_els.editBody.find("#"+fObj.id).val(_f.null2Str(obj[fObj.id]));
 					else
-						_els.editBody.find("#"+obj.id).val(""); //text , textarea, select
+						_els.editBody.find("#"+fObj.id).val(_f.null2Str(obj[fObj.id])); //text , textarea, select
 				}
+			},
+			clearValues : function() {
+				_f.setValues({});
 			},
 			getMainBody : function() {
 				return _els.editBody;
-			}
+			},
+			null2Str : function( value ) {
+				if( value == undefined || value == null )
+					return "";
+				else
+					return value;
+			},
 		};
 				
 		_this.initialize  = _f.init;
 		_this.render      = _f.render;
 		_this.showEditor  = _f.showEditor;
 		_this.hideEditor  = _f.hideEditor;
-		_this.getValues   = _f.getValues;
 		_this.getMainBody = _f.getMainBody;
 		_this.clearValues = _f.clearValues;
+		_this.setValues   = _f.setValues;
+		_this.getValues   = _f.getValues;
 		
 		return _this;
 	}; 

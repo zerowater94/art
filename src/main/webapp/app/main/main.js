@@ -25,7 +25,7 @@ define([ 'basicInfo' , 'main/mainHelper'
 		    	
 		    	var tmpl = _.template(Tmpl);
 				thisEl.html(tmpl({}));
-				
+				_els.body           = thisEl;
 				_els.areaTop        = thisEl.find("#top");
 				_els.areaUserAcess  = thisEl.find(".user-media");
 				_els.areaMainBar    = thisEl.find(".main-bar");
@@ -44,8 +44,9 @@ define([ 'basicInfo' , 'main/mainHelper'
 				
 				$a.t.initialize({
 					els : {
-						areaMain : $a.getMainArea(),
-						areaEditor : $a.getMainEditor(),
+						areaBody    : _els.body,
+						areaMain    : $a.getMainArea(),
+						areaEditor  : $a.getMainEditor(),
 						areaMainBar : _els.areaMainBar,
 						areaShowMsg : _els.areaContents.find("#main-msg"),
 					},
@@ -68,9 +69,12 @@ define([ 'basicInfo' , 'main/mainHelper'
 					$a.getMainArea().css({
 						minHeight : $(window).height()-topBottomHeight
 					});
-//					_editPanel.css({
-//						height : $a.getMainArea().outerHeight()
-//					});
+					var _heightBody = $a.getMainArea().outerHeight()-2;
+					_heightBody -= _editPanel.find("#editor-header").outerHeight();
+					_heightBody -= _editPanel.find("#editor-tail").outerHeight();
+					_editPanel.find("#editor-body").css({
+						maxHeight : _heightBody
+					});
 				});
 				
 				$a.winResize();

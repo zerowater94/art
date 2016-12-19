@@ -16,7 +16,6 @@ requirejs.config({
 		'amChart'			: '../libs/amcharts/amcharts',
 		'amSerial'			: '../libs/amcharts/serial',
 		'amPie' 			: '../libs/amcharts/pie',
-		'grid' 			    : '../libs/pq-grid/pqgrid.min',
 	    'mngEvent' 		    : '../fw/manager/eventManager',
 	    'mngRouter' 		: '../fw/manager/routerManager',
 		'basicUtil' 		: '../fw/util/basicUtil',

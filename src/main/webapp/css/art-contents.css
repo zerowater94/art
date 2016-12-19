@@ -13,24 +13,28 @@
 }
 .outer { padding: 5px !important;}
 .inner {border: 0px !important;border-radius : 4px; padding : 10px;}
+.form-group {margin-bottom : 5px;}
 .form-group .help-block-art { display:inline-table; position: absolute; right: 10px;padding:1px 5px; border-radius : 4px;}
 .form-group .help-block-art .close { font-weight:500;font-size:18px;}
 .form-group input, select { height:26px;}
 
 #main-editor { position: absolute;border-radius : 4px;display:none;}
 #main-editor .panel { margin-bottom : 2px;}
-#main-editor .panel-toolbar { width:100%;margin-top:5px;padding:2px 10px;text-align:right;border-top:1px solid #ddd;border-bottom:1px solid #ddd;background-color:#f5f5f5;border-radius: 0px 0px 4px 4px; }
+#main-editor .panel-toolbar { width:100%;padding:2px 10px;text-align:right;border-top:1px solid #ddd;border-bottom:1px solid #ddd;background-color:#f5f5f5;border-radius: 0px 0px 4px 4px; }
 #main-editor .panel-body {color : #333; padding:5px; }
-#main-editor .panel-body {display:inline-block;padding-bottom:5px !important;}
-.edit-area .form-group {width:95%; min-height: 1px; margin:5px !important;}
+#main-editor .panel-body {padding-bottom:5px !important;}
+.edit-area .form-group {width:100%; min-height: 1px; margin-bottom :5px !important;}
 .edit-area .form-group label {min-width:100px;width:30%; padding: 4px 10px;text-align:left;margin-bottom:1px;font-size:0.83em;}
 .edit-area .form-group label.required {background-color:#f9ebeb;}
 .edit-area .form-group label.required:after {content:" *";font-weight:600; color:#CC0000; }
-.edit-area .form-group .textarea-label {  border-radius: 4px 4px 0px 0px;; border: 1px solid #ccc;background-color:#eee;font-weight:400; }
+.edit-area .form-group .textarea-label {  border-radius: 4px 4px 0px 0px; border: 1px solid #ccc;background-color:#eee;font-weight:400; }
 .edit-area .form-group input, select, textarea {border-radius: 0px 4px 4px 0px;color: #555;border: 1px solid #ccc;padding: 2px 3px;}
 .edit-area .form-group textarea {border-radius: 0px 4px 4px 4px !important;width:100%;resize: none; }
 .edit-area .form-group input[readonly] { background:#f9f7f7; pointer-events: none;cursor:not-allowed; }
 .edit-area .form-group input.addon-btn { width:70%; }
+.edit-area .form-group .middle-btn { border-radius:0px; }
+.edit-area .form-group .front-btn { border-radius: 4px 0px 0px 4px; }
+.edit-area .form-group button { margin-bottom:2px; }
 
 #main-msg {position:absolute;bottom:0px;min-width:500px;max-width:650px;}
 #main-msg .alert {opacity:0;}
@@ -44,8 +48,7 @@
 .search-area .form-group input {border-radius: 0px 4px 4px 0px;color: #555;border: 1px solid #ccc;padding: 2px 3px;}
 .search-area .form-group select {border-radius: 0px 4px 4px 0px;color: #555;border: 1px solid #ccc;padding: 2px 3px;}
 
-
-
+.area-color {background-color:#fbfcff; border:1px dashed #ddd; padding:10px;border-radius: 0.6em !important;}
 
 @media ( min-width:768px ) {
     .head .main-bar {background-color:#827e7e}

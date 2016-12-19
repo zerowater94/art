@@ -4,15 +4,34 @@ define([ 'basicInfo'
 	
 	'use strict';
 	
-	var _funcs = function( thisEl ) {
+	return function( thisEl ) {
 		
 		var _this = {};
-		var _pm = {} ; // param
-		var _els = {} ; // elements
+		var _pm = {
+			builder : {
+				type : "text",
+				expl : "",
+				categories : []
+			}
+		} ; // param
+		var _els = {
+			elForms : {
+				editor : null,
+				category : null
+			},
+			build : {},
+		}; // elements
+		var _vws = {};  // view or widget
 		var _dts = {
 			categoryList : null,
+			delimiter : $a.getConstants('DELIMITER'),
+			builOptType : {
+				select: null,
+				radio : null,
+				checkbox : null,
+			}
 		};
-		
+	
 		var _f = {
 			createPage : function() {
 				var tmpl = _.template(_tmpl);
@@ -21,15 +40,180 @@ define([ 'basicInfo'
 				_els.areaSearch     = thisEl.find("#area-search");
 				_els.areaGridOption = thisEl.find("#grid-list");
 			},
-			setTitle : function(){
+			setupMainBar : function(){
 
 				$a.t.mainBar.addButton({ 
 					name :$a.getMsg("lbl.add"), 
 					callbackFunc : _f.showEditor 
 			    });
 			},
+			isBuildOptType : function(type) {
+				return (_dts.builOptType[type] !== undefined );
+			},
+			/**
+			 * Option Build에 대해서 추가 버튼을 클릭 했을경우,
+			 * building 하기 위한 옵션 설정 항목이 추가된다
+			 */
+			makeOptionBuild : function() {
+				var _elBuilder = _els.elForms.editor.optionBuilder;
+				_elBuilder.show();
+				var _vRowBox = $a.t.rowBox.render(_elBuilder,{
+					title : $a.getMsg("lbl.makeRuleDetail"),
+					buttons : [{
+						name :$a.getMsg("lbl.add"), 
+						callbackFunc : function(e) {
+							_els.elBuiliderBox = _vRowBox.elBoxBody;
+							_f.addOptionItem();
+						}
+					}],
+				});
+			},
+			setOptionBuilder : function(arry) {
+				var elBuilder = _els.elForms.editor.optionBuilder;
+				_els.elBuiliderBox.empty();
+				var len = arry.length;
+				var obj ;
+				for( var idx = 0 ; idx < len; idx++ ) {
+					obj = $.extend(true,{},_pm.builder, arry[idx]);
+					addOptionItem(obj);
+					
+				}
+				
+			},
+			addOptionItem : function( obj ) {
+				
+				var _param = {
+					label:null,
+					type : "select",
+					inputCls : "front-btn item-type",
+					typeOpt : {
+						optionList : $a.t.makeForm.formList(),
+						blankOption : false,
+						defaultParam : 'text'
+					}
+				};
+				var _areaOptItem = $a.t.makeForm.addNewForm(_els.elBuiliderBox,_param);
+				_param = $a.t.makeForm.getNewFormObj({
+					inputCls : "w-50 item-expl"
+				});
+				$a.t.makeForm.appendFormEl(_areaOptItem,_param);
+				
+				var _btnMinus  = $a.t.button.render(_areaOptItem, {
+					name :'<i class="fa fa-minus"></i>',
+					btnCls:"btn-default btn-xs m-l-5",
+					callbackFunc : function(e) {
+						_areaOptItem.closest(".form-group").remove();
+					}
+				} );
+				
+				var  _areaItemCategories;
+				var _btnAddItem = $a.t.button.render(_areaOptItem, { 
+					name :'<i class="fa fa-plus"></i>',
+					btnCls:"btn-default btn-xs",
+					callbackFunc : function(e) {
+						_f.addOptionItemCategories(_areaItemCategories);
+					}
+			    });
+				
+				_param.id = "area-item-options";
+				_param.type = "custom";
+				$a.t.makeForm.appendFormEl(_areaOptItem,_param);
+				
+				_areaItemCategories = _areaOptItem.find("#area-item-options");
+				_areaItemCategories.addClass("area-color").addClass("item-categories");
+				
+				
+				
+				_btnAddItem.hide();
+				_areaItemCategories.hide();
+				_areaOptItem.find("select.item-type").focus();
+				
+				if ( obj !== undefined) {
+					_areaOptItem.find("select.item-type").val(obj.type);
+					_areaOptItem.find("input.item-expl").val(obj.expl);
+					var _optionList;
+					if( _f.isBuildOptType(obj.type) ) {
+						_btnAddItem.show();
+						_areaItemCategories.show();
+						_optionList = obj.categories;
+						for( var idx = 0; idx < _optionList.length; idx++ ) {
+							
+						}
+					}
+				}
+				
+				$a.e.addEvent(_areaOptItem.find("select"), "change", function(e){
+					var selVal = $(e.target).val();
+					
+					if( selVal == 'select' || selVal == 'radio' || selVal == 'checkbox' ) {
+						_btnAddItem.show();
+						_areaItemCategories.show();
+					}else {
+						_btnAddItem.hide();
+						_areaItemCategories.hide();
+					}
+				});
+				
+			},
+			addOptionItemCategories : function( el ) {
+				
+				var _param = $a.t.makeForm.getNewFormObj({
+					label : null,
+					inputCls : "w-30 front-btn category-key",
+					validation: {
+						required : true,
+					}
+				});
+				var elDtlOpt = $a.t.makeForm.addNewForm(el,_param);
+				_param.inputCls = "w-40 category-val";
+				$a.t.makeForm.appendFormEl(elDtlOpt,_param);
+				$a.t.button.render(elDtlOpt,{
+					name :'<i class="fa fa-minus"></i>',
+					btnCls:"btn-default btn-xs m-l-5",
+					callbackFunc : function(e) {
+						elDtlOpt.closest(".form-group").remove();
+					}
+				});
+				elDtlOpt.children("input").eq(0).focus();
+			},
+			getOptionValues : function() {
+				var elBuilder = _els.elForms.editor.optionBuilder;
+				var elFormGroups = elBuilder.find(".form-group select");
+				var cnt = elFormGroups.length;
+				var formGroup, elSelect, elExpl, elItems, elCategories;
+				var categoryFormGroup, categoryForm, categoryKey, categoryVal;
+				var rtnObj = [], optObj;
+				for ( var idx = 0; idx < cnt; idx++ ) {
+					formGroup = elFormGroups.closest(".form-group").eq(idx);
+					elSelect = formGroup.find(".item-type");
+					elExpl   = formGroup.find(".item-expl");
+					optObj = {
+						type : elSelect.val(),
+						expl : elExpl.val()
+					};
+					if( elSelect.val() == 'select' || elSelect.val() == 'radio' || elSelect.val() == 'checkbox') {
+						elCategories = formGroup.find(".item-categories");
+						categoryFormGroup = elCategories.children(".form-group");
+						optObj.categories = [];
+						for( var jdx = 0 ; jdx < categoryFormGroup.length; jdx++ )  {
+							categoryForm = categoryFormGroup.eq(jdx);
+							catagoryKey = categoryForm.find(".category-key").val();
+							categoryVal = categoryForm.find(".category-val").val();
+							optObj.categories.push({
+								code  : categoryKey,
+								value : categoryVal
+							});
+						}
+					}
+					elCategories = formGroup.find(".item-categories");
+					rtnObj.push(optObj);
+				}
+				console.log(cnt);
+				return JSON.stringify(rtnObj);
+			},
 			setupEditor : function() {
-				var _frmEls = $a.t.mainEditor.render({
+				
+				var _param = {
 					title : $a.getMsg("lbl.addOption"),
 					callBackHide : function() {
 
@@ -40,90 +224,106 @@ define([ 'basicInfo'
 					buttons :[{
 						name :$a.getMsg("lbl.save"), 
 						callbackFunc : function(e) {
-							
 							var mainEditor = $a.getMainEditor();
-							
-							if( $a.v.isValidBatchData(mainEditor) ) {
-								_f.insertData();
-							}
+							_f.insertData();
 						}
 					}],
-					formList:[{ id:"category",      type:"select", label:$a.getMsg("lbl.category"), required:true, optionList:_dts.categoryList, jsonReader:{code:'category', value:'category'},
-						        addedBtn : {name :'<i class="fa fa-plus"></i>',btnCls:"btn-default btn-xs m-l-10", id   : 'add-category'}},
-		                      { id:"optionCode",    type:"text",   label:$a.getMsg("lbl.code"), required:true,etc:{'max-length':10,'not-kor':true}},
-		                      { id:"optionValue",   type:"text",   label:$a.getMsg("lbl.value"), etc:{'max-length':10,'not-kor':true,'readOnly':true}, inputCls : 'addon-btn' },
+					formList:[{ id:"category", type:"select", label:$a.getMsg("lbl.category"), 
+						      	validation : {
+						      		required   :true, 
+						        	notKor    : true
+						      	},
+						      	typeOpt : {
+						      		optionList:_dts.categoryList,
+						      		jsonReader:{code:'category', value:'category'}
+						      	},
+						        addedBtn : {
+						        	name :'<i class="fa fa-plus"></i>',btnCls:"btn-default btn-xs m-l-10", id:'add-category'
+						        } },
+		                      { id:"optionCode", type:"text", label:$a.getMsg("lbl.code"), 
+						        validation : {
+						        	required  :true,
+						        	maxLength : 100,
+						        	notKor    : true
+						        },
+						      },
+		                      { id:"useYn",  type:"select", label:$a.getMsg("lbl.useYn"), 
+		                    	validation : {
+						        	required  :true
+						        },
+		                    	typeOpt : {
+		                    		blankOption:false,
+		                    		optionList:$a.d.values.useYn
+		                    	}
+		                      },
+		                      { id:"optionValue",   type:"text",   label:$a.getMsg("lbl.value"), 
+						    	validation : {
+						    		maxLength : 2000,
+						    		readOnly  : true,
+						    	},
+						      },
+		                      { id:"description", type:"textarea", label:$a.getMsg("lbl.description"),
+		                    	typeOpt : {
+		                    		rows : 5
+		                    	},
+		                      },
 		                      { id:"optionBuilder", type:"custom", label:null },
-		                      { id:"useYn",         type:"select", label:$a.getMsg("lbl.useYn"), blankOption:false,  optionList:$a.d.values.useYn},
-		                      { id:"desc",          type:"textarea", label:$a.getMsg("lbl.description")},
 		                    ],
-				});
-				// category 추가 버튼
-				_els.areaFormCategory = $a.t.mainEditor.getMainBody().find("#area-category");
-				_els.areaFormValue = $a.t.mainEditor.getMainBody().find("#area-optionValue");
-				_els.areaFormBuilder = $a.t.mainEditor.getMainBody().find("#optionBuilder");
-//				$a.t.button.render(_els.areaFormCategory,{
-//					name :'<i class="fa fa-plus"></i>', 
-//					btnCls:"btn-default btn-xs m-l-10",
-//					id   : 'add-category',
-//				});
-				
-//				_els.areaFormCategory.find('.input-group').css({
-//					width:"30%"
-//				});
-				$a.t.button.render(_frmEls.optionValue,{
-					name :'<i class="fa fa-plus"></i>', 
-					btnCls:"btn-default btn-xs m-l-10",
-					id   : 'add-builder',
-					callbackFunc : function(e) {
-						
-						$a.t.makeForm.select(_els.areaFormBuilder,{label:null});
-					}
-				});
+				};
+				_els.elForms.editor = $a.t.mainEditor.render(_param);
+				_els.elForms.editor.optionBuilder.hide();
 				
 				// popover 생성.
-				_els.btnAddCategory = $a.t.mainEditor.getMainBody().find("#add-category");
-				_f.makePopover(_els.btnAddCategory);
+				_f.makePopover(_els.elForms.editor.category.find("#add-category"));
+				
+				_f.makeOptionBuild();
 			},
 			showEditor : function(e) {
-				
 				$a.t.mainEditor.showEditor();
+			},
+			addCategory : function( popOverEl ) {
+				
+				if ( $a.v.isValidBatchData(popOverEl) ) {
+					
+					var inputCategory = _els.elForms.editor.category.find("#category");
+					var searchCategory = _els.areaSearch.find("#category");
+					var inputVal = popOverEl.find("#category").val();
+					inputCategory.append("<option value='"+inputVal+"'>"+inputVal+"</option>");
+					searchCategory.append("<option value='"+inputVal+"'>"+inputVal+"</option>");
+					inputCategory.val(inputVal);
+					_vws.categoryPopover.close();
+				}
+				
 			},
 			makePopover : function( el ) {
 				
-				
-				var categoryPopover = $a.t.popover.render(el,{
+				_vws.categoryPopover = $a.t.popover.render(el,{
 					title : $a.getMsg("lbl.addCategory"),
 					contextCss : {
 						minWidth : "350px"
 					},
-					shownFunc : function(el) {
+					popoverCss : "popover-category",
+					shownFunc : function(event, popOverEl) {
 						
-						el.addClass("edit-area");
-						$a.t.makeForm.execBatch(el,[{ id:"category", type:"text", required:true, inputCls : 'addon-btn', label:$a.getMsg("lbl.category"),etc:{'max-length':30,'not-kor':true}}]);
-						var elPopoverCategory = el.find("#area-category");
+						popOverEl.addClass("edit-area");
+						var _param = [{ id:"category", type:"text", label:$a.getMsg("lbl.category"),inputCls : 'addon-btn', 
+										validation : {
+											required  :true,
+											maxLength : 30,
+											notKor    : true
+										} }];
+						_els.elForms.category = $a.t.makeForm.execBatch(popOverEl,_param);
+						var elPopoverCategory = popOverEl.find("#area-category");
 						
-						var _callbackFunc = function(e) {
-							
-							if ( $a.v.isValidBatchData(el) ) {
-								
-								var inputCategory = $a.t.mainEditor.getMainBody().find("#category");
-								var searchCategory = _els.areaSearch.find("#category");
-								var inputVal = el.find("#category").val();
-								inputCategory.append("<option value='"+inputVal+"'>"+inputVal+"</option>");
-								searchCategory.append("<option value='"+inputVal+"'>"+inputVal+"</option>");
-								inputCategory.val(inputVal);
-								categoryPopover.close();
-							}
-						};
-						
-						$a.t.button.render(elPopoverCategory,{
+						$a.t.button.render(_els.elForms.category.category,{
 							name :$a.getMsg("lbl.add"), 
 							btnCls:"btn-default btn-xs m-l-10",
-							callbackFunc : _callbackFunc ,
+							callbackFunc :  function() {
+								_f.addCategory(popOverEl);
+							} ,
 						});
-
-						elPopoverCategory.find("input").keypress(function(e){
-							
+						
+						_els.elForms.category.category.find("input").keypress(function(e){
 							if (e.keyCode == 13){
 								_callbackFunc(e);
 						    }  
@@ -135,7 +335,6 @@ define([ 'basicInfo'
 				
 				var searchCategory = [{ id:"category", type:"select", blankOption:true, label:$a.getMsg("lbl.category")},
 				                      { id:"optionValue",  type:"text",  label:$a.getMsg("lbl.value")}];
-				
 				_els.searhcForm = $a.t.search.render(_els.areaSearch,{
 					formList   : searchCategory,
 					searchFunc : _f.searchOptionList
@@ -159,7 +358,6 @@ define([ 'basicInfo'
 				});
 			},
 			searchCategoryList : function() {
-				
 				$a.send({
 					url : $a.getDefaultUrl()+"/base/system/option/category/list",
 					type : "get",
@@ -179,13 +377,8 @@ define([ 'basicInfo'
 					            { dataIndx : "optionValue", title: "Value", width: "30%", editable: false }],
 					rowClick : function( event, ui ) {
 						var rowData = ui.rowData;
-						console.log(rowData);
-						console.log($a.t.mainDetail);
-						$a.t.mainEditor.clearValues();
-//						$a.t.mainDetail.render({
-//							tabs : [{tabName:"tab A"},{tabName:"tab B"}]
-//						});
-//						$a.t.mainDetail.showDetail();
+						$a.t.mainEditor.showEditor(rowData);
+						_f.setOptionBuilder();
 					},
 				});
 				
@@ -194,17 +387,15 @@ define([ 'basicInfo'
 			insertData : function() {
 				
 				var mainEditor = $a.t.mainEditor.getMainBody();
+				if( !$a.v.isValidBatchData(mainEditor) ) 
+					return;
+				
+				var formData = $a.t.mainEditor.getValues();
+				formData.siteId = "site-a";
+				formData.compId = "comp-1";
 				$a.send({
 					url : $a.getDefaultUrl()+"/base/system/option/insert",
-					data : {
-						siteId : "site-a",
-						compId : "comp-1",
-						category : mainEditor.find("#category").val(),
-						optionId : "option-3",
-						optionCode : mainEditor.find("#optionCode").val(),
-						optionValue : mainEditor.find("#opionValue").val() ,
-						optionBuilder : mainEditor.find("#optionBuilder").val(),
-					},
+					data : formData,
 					success : function(data) {
 						
 						$a.show.success($a.getMsg("msg.success.insert"));
@@ -223,7 +414,7 @@ define([ 'basicInfo'
 		_this.render = function(obj) {
 			$.extend( true, _pm ,obj);
 			_f.createPage();
-			_f.setTitle();
+			_f.setupMainBar();
 			_f.makeSearchArea();
 			_f.searchCategoryList();
 			_f.makeGrid();
@@ -233,6 +424,4 @@ define([ 'basicInfo'
 		return _this;
 	};
 	
-	return _funcs;
-
 });

@@ -10,7 +10,7 @@ public class OptionVO extends AbstractVO
 	private String optionValue = "";
 	private String optionBuilder = "";
 	private String useYn = "";
-	private String desc = "";
+	private String description = "";
 	
 	/****************************************************
 	 * getter
@@ -21,7 +21,7 @@ public class OptionVO extends AbstractVO
 	public String getOptionValue() { return optionValue; }
 	public String getOptionBuilder() { return optionBuilder; }
 	public String getUseYn() { return useYn; }
-	public String getDescription() { return desc; }
+	public String getDescription() { return description; }
 	
 	/****************************************************
 	 * setter
@@ -59,7 +59,7 @@ public class OptionVO extends AbstractVO
 	public void setDescription(String str) 
 	{
 		if( str != null) 
-			this.desc = str;
+			this.description = str;
 	}
 	
 }

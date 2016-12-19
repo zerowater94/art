@@ -1,5 +1,5 @@
 define(['jquery','mngEvent',
-        'wgHelper','grid',
+        'wgHelper',
         '../../fw/manager/widget/mainEditor',
         '../../fw/manager/widget/mainDetail',
         '../../fw/manager/widget/mainBar',
@@ -7,8 +7,7 @@ define(['jquery','mngEvent',
         '../../fw/manager/widget/showMsg',
         '../../fw/manager/widget/popover',
         '../../fw/manager/widget/toolbar'
-        ,'../../fw/manager/widget/pqGrid'
-        ], function ($, MngEvent, wg,grid, _vEditor,_vDetail, _vMainBar, _vSearch, _vShowMsg, _vPopover, _vToolbar,_vGrid) {
+        ], function ($, MngEvent, wg,_vEditor,_vDetail, _vMainBar, _vSearch, _vShowMsg, _vPopover, _vToolbar) {
 	
 	'use strict';
 	
@@ -17,6 +16,7 @@ define(['jquery','mngEvent',
 		var _this = {};
 		
 		var _els = {
+			areaBody : null,
 			areaMain : null,
 			areaEditor : null,
 			areaMainBar : null,
@@ -34,20 +34,19 @@ define(['jquery','mngEvent',
 					_this.showMsg = new _vShowMsg();
 					_this.popover = new _vPopover();
 					_this.toolbar = new _vToolbar();
-					_this.grid = new _vGrid();
+					requirejs(['../../libs/pq-grid/pqgrid.min'], function(  ) {
+						requirejs(['../../fw/manager/widget/pqGrid'], function( _vGrid ) {
+							_this.grid = new _vGrid();
+						});
+					});
 					
 					wg.initialize(obj.msg);
 					$.extend(true, _this, wg);
-					
 					_this.mainBar.initialize(_els);
 					_this.mainEditor.initialize(_els);
 					_this.mainDetail.initialize(_els);
 					_this.showMsg.initialize(_els);
 					_this.popover.initialize(_els);
-					
-//					requirejs(['../../fw/manager/widget/pqGrid'], function( _vGrid ) {
-//						_this.grid = new _vGrid();
-//					});
 				}
 			}
 		};

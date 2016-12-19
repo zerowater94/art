@@ -15,6 +15,9 @@ define(['jquery'], function ($) {
 
         _this.isEmpty = function(data)
         {
+        	if( data == undefined || data == null )
+        		return true;
+        	
             for (var i=0; i < data.length; i++)
             {
                 if (data.substring(i, i+1) != " ")
@@ -27,6 +30,9 @@ define(['jquery'], function ($) {
 
         _this.getLength = function(s,b,i,c)
         {
+        	if( s == undefined || s == null )
+        		return 0;
+        	
             for( b=i=0; c=s.charCodeAt(i++); b+=c>>11?3:c>>7?2:1);
             return b;
         };

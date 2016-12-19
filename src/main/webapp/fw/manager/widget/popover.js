@@ -11,6 +11,7 @@ define(['mngEvent', 'wgHelper'
 			contextCss : {
 				minWidth : "300px"
 			},
+			popoverCss: "art-popover",
 			id        : $.guid,
 			direction : 'left',
 			shownFunc : null
@@ -19,44 +20,51 @@ define(['mngEvent', 'wgHelper'
 		var _els = {} ; // elements
 		var _f = {
 			init : function(elObj) {
-
+				_els.areaBody   = elObj.areaBody;
 				_els.areaMain   = elObj.areaMain;
-				
 			},
 			render : function(el, obj){
 				
 				var _opt = $.extend(true,{},_pm, obj );
-				
 				var _elPopoverCntn, _elCloseBtn;
 				
+				if ( _els.areaBody.find("."+_opt.popoverCss).length == 0 ) {
+					_els.areaBody.append('<div class="'+_opt.popoverCss+'"></div>');
+				}
+				var _elContainer = _els.areaBody.find("."+_opt.popoverCss);
 				var pOver = el.popover({
-	                container: _els.areaMain,
+	                container: _elContainer,
 	                html: true,
 	                title: function() {
 	                    return _opt.title+'<span class="close">&times;</span>';
 	                },
 	                delay: {show: 150, hide: 0},
-	                content : '<div id="'+_opt.id+'_popover'+'"></div>',
 	                placement: function(context, src){
 	                    $(context).css(_opt.contextCss);
+	                    $(context).addClass(_opt.popoverCss);
 	                    return _opt.direction;
 	                },
 	            }).click(function(event) {
 	            	event.preventDefault();
-//	            	$('#'+el.attr("id")+' [data-toggle="popover"]').not($(this)).popover('hide'); //결재선 다른 팝오버 숨김
+	            	_elContainer.find(".popover."+obj.popoverCss).not($(this)).popover('hide'); //결재선 다른 팝오버 숨김 
+	            }).on('shown.bs.popover', function(e) { 
 	            	
-	                
-	            }).on('shown.bs.popover', function() { 
 	                // 팝오버 내용 생성
-	                _elPopoverCntn = _els.areaMain.find("#"+_opt.id+'_popover');
-	                _elCloseBtn = _els.areaMain.find(".popover .close");
-	                
+	                _elPopoverCntn = _elContainer.find(".popover-content");
+	                _elCloseBtn = _elContainer.find(".popover .close");
 	                _elCloseBtn.off().click(function(){
 	                	pOver.popover('hide');
 	                });
 	                if( _opt.shownFunc != null ) {
-	                	_opt.shownFunc(_elPopoverCntn);
+	                	_opt.shownFunc(e, _elPopoverCntn);
 	                }
+	                
+	                _elContainer.find(".popover").draggable({
+	                	scroll: false ,
+	                	stop : function(){
+	                		wg.relocationEl(_els.areaBody, $(this));
+	                	}
+	                });
 	            });
 				
 				return {
