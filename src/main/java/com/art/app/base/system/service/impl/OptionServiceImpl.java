@@ -37,4 +37,22 @@ public class OptionServiceImpl extends AbstractService implements OptionService
 			rstVO.setResult(true);
 		return rstVO;
 	}
+	
+	public ResultVO update(OptionVO param) throws Exception
+	{
+		ResultVO rstVO = new ResultVO();
+		rstVO.setExecCnt(dao.update(param));
+		if ( rstVO.getExecCnt() > 0 )
+			rstVO.setResult(true);
+		return rstVO;
+	}
+	
+	public ResultVO delete(OptionVO param) throws Exception
+	{
+		ResultVO rstVO = new ResultVO();
+		rstVO.setExecCnt(dao.delete(param));
+		if ( rstVO.getExecCnt() > 0 )
+			rstVO.setResult(true);
+		return rstVO;
+	}
 }

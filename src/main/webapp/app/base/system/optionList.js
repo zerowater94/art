@@ -23,6 +23,7 @@ define([ 'basicInfo'
 		}; // elements
 		var _vws = {};  // view or widget
 		var _dts = {
+			selectedData : null,
 			categoryList : null,
 			delimiter : $a.getConstants('DELIMITER'),
 			builOptType : {
@@ -284,6 +285,7 @@ define([ 'basicInfo'
 				_f.makeOptionBuild();
 			},
 			showInputEditor : function(e) {
+				_dts.selectedData = null;
 				$a.t.mainEditor.showEditor({
 					shown : function() {
 						_f.setOptionBuilder([]);
@@ -385,18 +387,17 @@ define([ 'basicInfo'
 					            { dataIndx : "optionCode", title: "Code", width: "30%", editable: false  },
 					            { dataIndx : "optionValue", title: "Value", width: "30%", editable: false }],
 					rowClick : function( event, ui ) {
-						var rowData = ui.rowData;
-						
-						rowData.shown = function() {
+						_dts.selectedData = ui.rowData;
+						_dts.selectedData.shown = function() {
 							var builderArray;
 							try {
-								builderArray = $.parseJSON(rowData.optionBuilder);
+								builderArray = $.parseJSON(_dts.selectedData.optionBuilder);
 							}catch ( ex ) {
 								builderArray = [];
 							}
 							_f.setOptionBuilder(builderArray);
 						}
-						$a.t.mainEditor.e(rowData);
+						$a.t.mainEditor.showEditor(_dts.selectedData);
 						
 					},
 				});
@@ -412,11 +413,14 @@ define([ 'basicInfo'
 				var formData = $a.t.mainEditor.getValues();
 				formData.siteId = "site-a";
 				formData.compId = "comp-1";
+				formData.optionId = (_dts.selectedData==null)?"":_dts.selectedData.optionId;
 				formData.optionBuilder = _f.getOptionValues(); // builder
 				$a.send({
-					url : $a.getDefaultUrl()+"/base/system/option/insert",
+					url  : $a.getDefaultUrl()+"/base/system/option/save",
+					type : (_dts.selectedData==null)?"post":"put", 
 					data : formData,
 					success : function(data) {
+						console.log(this.type);
 						$a.show.success($a.getMsg("msg.success.insert"));
 						_f.searchOptionList();
 						$a.t.mainEditor.hideEditor();

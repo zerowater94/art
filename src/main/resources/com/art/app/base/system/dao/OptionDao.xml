@@ -29,4 +29,19 @@
         )
     </insert>
     
+    <update id="update" parameterType="com.art.app.base.system.domain.OptionVO">
+        UPDATE tco_option 
+        SET    option_code    = #{optionCode},
+        	   option_value   = #{optionValue},
+        	   option_builder = #{optionBuilder},
+        	   use_yn         = #{useYn},
+        	   description    = #{description}
+        WHERE  option_id      = #{optionId}
+    </update>
+    
+    <delete id="delete" parameterType="com.art.app.base.system.domain.OptionVO">
+        DELETE FROM tco_option
+        WHERE  option_id      = #{optionId}
+    </delete>
+    
 </mapper> 

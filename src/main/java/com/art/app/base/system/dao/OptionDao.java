@@ -11,4 +11,8 @@ public interface OptionDao
 	public List<OptionVO> selectCategoryList(OptionVO param) throws Exception;
 	
 	public int insert(OptionVO param) throws Exception;
+	
+	public int update(OptionVO param) throws Exception;
+	
+	public int delete(OptionVO param) throws Exception;
 }

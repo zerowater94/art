@@ -12,4 +12,8 @@ public interface OptionService
 	public List<OptionVO> getCategoryList(OptionVO param) throws Exception;
 	
 	public ResultVO insert(OptionVO param) throws Exception;
+	
+	public ResultVO update(OptionVO param) throws Exception;
+	
+	public ResultVO delete(OptionVO param) throws Exception;
 }

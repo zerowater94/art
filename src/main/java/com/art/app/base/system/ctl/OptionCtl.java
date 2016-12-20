@@ -14,6 +14,8 @@ import com.art.app.common.basic.ctl.AbstractCtl;
 import com.art.app.common.component.BasicInfo;
 import com.art.fw.domain.ResultVO;
 import com.art.fw.exception.ArtException;
+import com.art.fw.exception.BadRequestException;
+import com.art.fw.util.CommonUtil;
 
 @RestController
 @RequestMapping("/base/system/option")
@@ -35,11 +37,24 @@ public class OptionCtl extends AbstractCtl
 	}
 	
 	
-	@RequestMapping(value="/insert", method = RequestMethod.POST)
+	@RequestMapping(value="/save", method = RequestMethod.POST)
 	public ResultVO insertData(@RequestBody OptionVO param ) throws Exception
 	{
 		logger.debug("call insertdata : " + param.getCategory() + " , " +param.getOptionId());
 		ResultVO rstVO = service.insert(param);
+		if ( !rstVO.getResult() )
+			throw new ArtException(BasicInfo.fail(super.getSessionLocale()).insert());
+		return rstVO;
+	}
+	
+	@RequestMapping(value="/save", method = RequestMethod.PUT)
+	public ResultVO updateData(@RequestBody OptionVO param ) throws Exception
+	{
+		logger.debug("call insertdata : " + param.getCategory() + " , " +param.getOptionId());
+		
+		if( CommonUtil.isNull(param.getOptionId()) )
+			throw new BadRequestException(BasicInfo.fail(super.getSessionLocale()).poorParam());
+		ResultVO rstVO = service.update(param);
 		if ( !rstVO.getResult() )
 			throw new ArtException(BasicInfo.fail(super.getSessionLocale()).insert());
 		return rstVO;
