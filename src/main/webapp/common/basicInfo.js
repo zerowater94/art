@@ -26,7 +26,8 @@ define(['alertify', 'blockUi',  'basicUtil', 'basicValid',
 		var _errMsg = {
 			noSession  : 'No session info , please login',
 			notConnect : 'Not Connection server..',
-			failProcess: 'Fail to execute request'
+			failProcess: 'Fail to execute request',
+			illegalAccess : 'Illegal Access',
 		};
 
 		var _pm = {
@@ -67,13 +68,16 @@ define(['alertify', 'blockUi',  'basicUtil', 'basicValid',
 						 _dts.isStopAjax = true; // 다음 부터 session 오류 발생되지 않게 하기 위해서.. 
 						_this.print.alert(_errMsg.noSession, _this.goHome ); // no seession.
 						
+					}else if ( xhr.status == 405 || xhr.status == 406 ) { // sesssion error
+						 _dts.isStopAjax = true; // 다음 부터 session 오류 발생되지 않게 하기 위해서.. 
+						_this.print.alert(_errMsg.illegalAccess ); // no seession.
+						console.error(xhr.responseText);
 					}else if(  xhr.status == 0 ) {
 						// server close
 						_this.print.alert(_errMsg.notConnect, _this.goHome); // 에러 메시지 출력
 					}else if( xhr.status == 200 ) {  // NULL값이 return 될 경우..
 						
 						this.success(xhr.responseText);
-						
 					}else { // 500 error
 						try {
 							// JSON object 형태임.
@@ -194,9 +198,10 @@ define(['alertify', 'blockUi',  'basicUtil', 'basicValid',
 			// error message에 대해서 다국어 적용 시킨다.
 			setErrorMessage : function() {
 				
-				_errMsg.noSession   = _dts.msg.common["err.noSession"];
-				_errMsg.notConnect  = _dts.msg.common["err.notConnect"];
-				_errMsg.failProcess = _dts.msg.common["err.failProcess"];
+				_errMsg.noSession   = _dts.msg.common["msg.noSession"];
+				_errMsg.notConnect  = _dts.msg.common["msg.notConnect"];
+				_errMsg.failProcess = _dts.msg.common["msg.failProcess"];
+				_errMsg.illegalAccess = _dts.msg.common["msg.illegalAccess"];
 			},
 			// Backbone Router 실행
 			execuRouter : function() {

@@ -15,5 +15,7 @@ public interface OptionService
 	
 	public ResultVO update(OptionVO param) throws Exception;
 	
+	public ResultVO updateValue(OptionVO param) throws Exception;
+	
 	public ResultVO delete(OptionVO param) throws Exception;
 }

@@ -37,6 +37,7 @@ define(['jquery','mngEvent',
 					requirejs(['../../libs/pq-grid/pqgrid.min'], function(  ) {
 						requirejs(['../../fw/manager/widget/pqGrid'], function( _vGrid ) {
 							_this.grid = new _vGrid();
+							_this.grid.initialize(_els);
 						});
 					});
 					

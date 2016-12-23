@@ -50,13 +50,39 @@ public class OptionCtl extends AbstractCtl
 	@RequestMapping(value="/save", method = RequestMethod.PUT)
 	public ResultVO updateData(@RequestBody OptionVO param ) throws Exception
 	{
-		logger.debug("call insertdata : " + param.getCategory() + " , " +param.getOptionId());
+		logger.debug("call updateData : " + param.getCategory() + " , " +param.getOptionId());
 		
 		if( CommonUtil.isNull(param.getOptionId()) )
 			throw new BadRequestException(BasicInfo.fail(super.getSessionLocale()).poorParam());
 		ResultVO rstVO = service.update(param);
 		if ( !rstVO.getResult() )
-			throw new ArtException(BasicInfo.fail(super.getSessionLocale()).insert());
+			throw new ArtException(BasicInfo.fail(super.getSessionLocale()).update());
+		return rstVO;
+	}
+	
+	@RequestMapping(value="/save/value", method = RequestMethod.PUT)
+	public ResultVO updateValue(@RequestBody OptionVO param ) throws Exception
+	{
+		logger.debug("call updateValue : " + param.getOptionId() + " , " +param.getOptionValue());
+		
+		if( CommonUtil.isNull(param.getOptionId()) )
+			throw new BadRequestException(BasicInfo.fail(super.getSessionLocale()).poorParam());
+		ResultVO rstVO = service.updateValue(param);
+		if ( !rstVO.getResult() )
+			throw new ArtException(BasicInfo.fail(super.getSessionLocale()).update());
+		return rstVO;
+	}
+	
+	@RequestMapping(value="/save", method = RequestMethod.DELETE)
+	public ResultVO deleteData(@RequestBody OptionVO param ) throws Exception
+	{
+		logger.debug("call deleteData : " + param.getCategory() + " , " +param.getOptionId());
+		
+		if( CommonUtil.isNull(param.getOptionId()) )
+			throw new BadRequestException(BasicInfo.fail(super.getSessionLocale()).poorParam());
+		ResultVO rstVO = service.delete(param);
+		if ( !rstVO.getResult() )
+			throw new ArtException(BasicInfo.fail(super.getSessionLocale()).delete());
 		return rstVO;
 	}
 }

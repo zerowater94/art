@@ -67,7 +67,7 @@ define([ 'basicInfo' , 'main/mainHelper'
 				$a.e.addWinResizeEvent("WIN-MAIN_resize-contents", function(){
 					
 					$a.getMainArea().css({
-						minHeight : $(window).height()-topBottomHeight
+						height : $(window).height()-topBottomHeight
 					});
 					var _heightBody = $a.getMainArea().outerHeight()-2;
 					_heightBody -= _editPanel.find("#editor-header").outerHeight();
@@ -207,6 +207,7 @@ define([ 'basicInfo' , 'main/mainHelper'
 				$a.clearWinResizeEvent();
 				
 				$a.t.mainEditor.hideEditor();
+				$a.t.popover.closeAllPopover();
 				
 				var _param = {
 					viewName : obj.url,

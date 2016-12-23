@@ -1,5 +1,5 @@
 define(['mngEvent', 'wgHelper'
-        ], function (MngEvent, wg) {
+        ], function ($aEvent, $aWg) {
 	
 	'use strict';
 	
@@ -60,7 +60,7 @@ define(['mngEvent', 'wgHelper'
 						_alert.remove();
 					}, 1000);
 				};
-				MngEvent.addEvent(_btnClose,"click", _fHideMsg);
+				$aEvent.addEvent(_btnClose,"click", _fHideMsg);
 				setTimeout(_fHideMsg, 4000);
 				
 				if( _opt.callbackFunc != null )

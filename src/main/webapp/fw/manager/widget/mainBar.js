@@ -1,6 +1,6 @@
 define(['mngEvent', 'wgHelper',
         'text!../../../../../fw/manager/tmpl/mainEditor.html'
-        ], function (MngEvent, wg, _tmpl) {
+        ], function ($aEvent, $aWg, _tmpl) {
 	
 	'use strict';
 	
@@ -43,7 +43,7 @@ define(['mngEvent', 'wgHelper',
 			},
 			addButton : function( btnObj ){
 				
-				wg.button.render(_els.btnGroup, $.extend(true, {btnCls:"btn-default btn-sm"}, btnObj));
+				$aWg.button.render(_els.btnGroup, $.extend(true, {btnCls:"btn-default btn-sm"}, btnObj));
 			}
 		};
 				

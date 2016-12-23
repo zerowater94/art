@@ -2,23 +2,34 @@ define(['jquery'], function ($) {
 	
 	var _funcs = function() {
 		
+		var _winResizeMain = {};
 		var _winResize = {};
 		var _timeOut = 500;
 		var _isVaidWindResize = false;
 		
 		var _addWinResize = function(name, callbackFunc) {
 			
-			_winResize[name] = callbackFunc;
+			if ( name.startsWith("WIN-MAIN") )
+				_winResizeMain[name] = callbackFunc;
+			else
+				_winResize[name] = callbackFunc;
 				
 		};
 		
 		var _rmResizeEvent = function(name) {
 			
-			delete _winResize[name];
+			if ( name.startsWith("WIN-MAIN") )
+				delete _winResizeMain[name];
+			else
+				delete _winResize[name];
 		};
 		
 		var _execWinResize = function() {
-
+			
+			$.each(_winResizeMain, function(key, func) {
+			    func();
+			});
+			
 			$.each(_winResize, function(key, func) {
 			    func();
 			});
@@ -27,8 +38,7 @@ define(['jquery'], function ($) {
 		var _clearResizeEvent = function() {
 			
 			$.each(_winResize, function(key, func) {
-			    if ( !key.startsWith("WIN-MAIN") )
-			    	delete _winResize[key];
+			    delete _winResize[key];
 			});
 		};
 		

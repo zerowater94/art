@@ -1,5 +1,5 @@
 define(['mngEvent', 'wgHelper'
-        ], function (MngEvent, wg) {
+        ], function ($aEvent, $aWg) {
 	
 	'use strict';
 	
@@ -44,7 +44,7 @@ define(['mngEvent', 'wgHelper'
 					
 					for( var idx = 0 ; idx < _opt.buttons.length; idx++ ) {
 						
-						wg.render(_areaToolbar, $.extend(true, {btnCls:"btn-default btn-xs"}, _opt.buttons[idx]));
+						$aWg.render(_areaToolbar, $.extend(true, {btnCls:"btn-default btn-xs"}, _opt.buttons[idx]));
 					}
 				}
 				

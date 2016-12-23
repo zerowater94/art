@@ -1,6 +1,6 @@
 define(['mngEvent', 'wgHelper',
         'text!../../../../../fw/manager/tmpl/mainEditor.html'
-        ], function (MngEvent, wg, _tmpl) {
+        ], function ($aEvent, $aWg, _tmpl) {
 	
 	'use strict';
 	
@@ -46,7 +46,7 @@ define(['mngEvent', 'wgHelper',
 				_els.editTitle = _els.editPanel.find(".panel-title");
 				_els.editBody = _els.editPanel.find(".panel-body");
 				_els.editToolbar = _els.editPanel.find(".panel-toolbar");
-				MngEvent.addEvent(_els.editPanel.find(".close"), "click", _f.hideEditor);
+				$aEvent.addEvent(_els.editPanel.find(".close"), "click", _f.hideEditor);
 				
 			},
 			render : function( obj ) {
@@ -69,18 +69,17 @@ define(['mngEvent', 'wgHelper',
 					
 					for( var idx = 0 ; idx < _pm.buttons.length; idx++ ) {
 						
-						wg.button.render(_els.editToolbar, $.extend(true, {btnCls:"btn-default btn-sm"}, _pm.buttons[idx]));
+						$aWg.button.render(_els.editToolbar, $.extend(true, {btnCls:"btn-default btn-sm"}, _pm.buttons[idx]));
 					}
 				}
 				
-				var rtnObj = wg.makeForm.execBatch(_els.editBody, _pm.formList);
+				var rtnObj = $aWg.makeForm.execBatch(_els.editBody, _pm.formList);
 				
 				_els.areaEditor.width(320).css({
 					position: "absolute",
 					right : -(_els.areaEditor.width())
 				});
 				_els.areaEditor.hide();
-				
 				return rtnObj;
 				
 			},
@@ -115,7 +114,7 @@ define(['mngEvent', 'wgHelper',
 							obj.shown();
 					}
 
-					MngEvent.execWinResize();
+					$aEvent.execWinResize();
 				}, showTime);
 			},
 			hideEditor : function() {
@@ -135,51 +134,21 @@ define(['mngEvent', 'wgHelper',
 						_pm.callBackHide();
 					_els.areaEditor.hide();
 					
-					MngEvent.execWinResize();
+					$aEvent.execWinResize();
 				}, 500);
 				
 			},
 			getValues : function() {
-				
-				var rtnObj = {};
-				var obj;
-				for( var idx = 0 ; idx < _pm.formList.length; idx++ ) {
-					obj = _pm.formList[idx];
-
-					if ( obj.type == 'custom' )
-						continue;
-						
-					if ( obj.type == 'date' )
-						rtnObj[obj.id] = _els.editBody.find("#"+obj.id).val();
-					else
-						rtnObj[obj.id] = _els.editBody.find("#"+obj.id).val(); //text , textarea, select
-				}
-				return rtnObj;
+				return $aWg.makeForm.getFormValues(_els.editBody, _pm.formList);
 			},
 			setValues : function( obj ) {
-				
-				var fObj;
-				for( var idx = 0 ; idx < _pm.formList.length; idx++ ) {
-					fObj = _pm.formList[idx];
-					if ( obj.type == 'custom' )
-						continue;
-					if ( fObj.type == 'date' )
-						_els.editBody.find("#"+fObj.id).val(_f.null2Str(obj[fObj.id]));
-					else
-						_els.editBody.find("#"+fObj.id).val(_f.null2Str(obj[fObj.id])); //text , textarea, select
-				}
+				$aWg.makeForm.setFormValues(_els.editBody, _pm.formList, obj);
 			},
 			clearValues : function() {
 				_f.setValues({});
 			},
 			getMainBody : function() {
 				return _els.editBody;
-			},
-			null2Str : function( value ) {
-				if( value == undefined || value == null )
-					return "";
-				else
-					return value;
 			},
 		};
 				

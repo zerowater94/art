@@ -31,7 +31,6 @@ public class PjtOutoutServiceImpl extends AbstractService implements PjtOutputSe
 		String toScanDirName = "";
 		try
 		{
-			
 			toScanRootDir = new File(rootDir);
 			if( !toScanRootDir.isDirectory() )
 			{
@@ -88,7 +87,7 @@ public class PjtOutoutServiceImpl extends AbstractService implements PjtOutputSe
 			sheetVO = new ExcelSheetVO();
 			sheet2VO = new ExcelSheetVO();
 			sheet3VO = new ExcelSheetVO();
-			
+
 			// excel data
 			fileList = this.getFileListInDirectory(rootDir);
 			dataList = new ArrayList<Map<String,String>>();

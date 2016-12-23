@@ -14,5 +14,7 @@ public interface OptionDao
 	
 	public int update(OptionVO param) throws Exception;
 	
+	public int updateValue(OptionVO param) throws Exception;
+	
 	public int delete(OptionVO param) throws Exception;
 }

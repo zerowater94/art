@@ -1,5 +1,5 @@
 define(['mngEvent', 'wgHelper'
-        ], function (MngEvent, wg) {
+        ], function ($aEvent, $aWg) {
 	
 	'use strict';
 	
@@ -12,7 +12,8 @@ define(['mngEvent', 'wgHelper'
 			dataModel  : {
 				data : null
 			},
-			width : "auto",
+			width  : "auto",
+			height : 200,
 			title: "No Title",
 			showTitle : false, 
 			resizable:false,
@@ -21,8 +22,15 @@ define(['mngEvent', 'wgHelper'
 	        collapsible: { on: true, collapsed: false },
 		} ; // param
 		
-		var _els = {} ; // elements
+		var _els = {
+			areaBody : null,
+			areaMain : null
+		} ; // elements
 		var _f = {
+			init : function(elObj) {
+				_els.areaBody   = elObj.areaBody;
+				_els.areaMain   = elObj.areaMain;
+			},
 			html   : {
 				nvButton : function(obj) {
 					var rtnHtml = '<div class="btn-group">';
@@ -39,8 +47,11 @@ define(['mngEvent', 'wgHelper'
 				
 				_g.pqGrid(obj);
 				
-				MngEvent.addWinResizeEvent("resize-"+el.selector+"-grid", function(){
-					_g.pqGrid('option', 'width', el.width()).pqGrid('refresh');
+				$aEvent.addWinResizeEvent("resize-"+el.selector+"-grid", function(){
+					_g.pqGrid('option', {
+						width :el.width(),
+						height : _els.areaMain.height()-obj.height,
+					}).pqGrid('refresh');
 				});
 				
 				_g.on( "pqpagerchange", function( event, ui ) {
@@ -52,7 +63,7 @@ define(['mngEvent', 'wgHelper'
 				return _g;
 			},
 			render : function(el, obj){
-				
+				console.log(obj);
 				var grid = _f.makeGrid(el, $.extend(true, {}, _pm, obj));
 				var _rtn = {};
 				_rtn.reloadData = function(data) {
@@ -75,6 +86,7 @@ define(['mngEvent', 'wgHelper'
 			}
 		};
 				
+		_this.initialize = _f.init;
 		_this.render = _f.render;
 
 		return _this;

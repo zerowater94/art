@@ -1,5 +1,5 @@
 define(['mngEvent', 'wgHelper'
-        ], function (MngEvent, wg) {
+        ], function ($aEvent, $aWg) {
 	
 	'use strict';
 	
@@ -62,7 +62,7 @@ define(['mngEvent', 'wgHelper'
 	                _elContainer.find(".popover").draggable({
 	                	scroll: false ,
 	                	stop : function(){
-	                		wg.relocationEl(_els.areaBody, $(this));
+	                		$aWg.relocationEl(_els.areaBody, $(this));
 	                	}
 	                });
 	            });
@@ -72,11 +72,15 @@ define(['mngEvent', 'wgHelper'
 						pOver.popover('hide');
 					}
 				};
+			},
+			closeAllPopover : function() {
+				_els.areaBody.find(".popover").popover('hide'); 
 			}
 		};
 				
 		_this.initialize = _f.init;
 		_this.render = _f.render;
+		_this.closeAllPopover = _f.closeAllPopover;
 
 		return _this;
 	}; 

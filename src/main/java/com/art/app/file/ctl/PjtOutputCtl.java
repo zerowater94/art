@@ -42,10 +42,10 @@ public class PjtOutputCtl extends AbstractCtl
 		File excelFile = null;
 		try
 		{
+				
 			
 			
-			
-			excelFile = service.getExcelFileList(dirUrl);
+			excelFile = service.getExcelFileList("C:\\02.work\\workspace\\lets-run\\src\\main");
 			
 			response.setContentType("application/octet-stream;charset=UTF-8");
 

@@ -1,9 +1,9 @@
 define(['mngEvent', 'wgHelper'
-        ], function (MngEvent, wg) {
+        ], function ($aEvent, $aWg) {
 	
 	'use strict';
 	
-	var _funcs = function() {
+	return function() {
 		
 		var _this = {};
 		
@@ -18,7 +18,14 @@ define(['mngEvent', 'wgHelper'
 			type : "text" // text / select / checkbox, radio ,
 		};
 		
-		var _els = {} ; // elements
+		var _els = {
+			currBoxBox : null,
+			currFormBody : null
+		} ; // elements
+		
+		var _dts = {
+			currBoxObj : null,
+		};
 		var _f = {
 			html   : {
 				formBody : function() {
@@ -27,51 +34,47 @@ define(['mngEvent', 'wgHelper'
 			},
 			render : function(el, obj){
 				
-				var _opt = $.extend(true,{},_pm, obj );
+				_pm = {
+					title        : null,
+					formList     : null,
+					searchFunc   : null
+				};
+
+				$.extend(true, _pm, obj );
+					
 				el.empty();
 				
 				// row box 생성
-				var boxObj = wg.rowBox.render(el,{
-					title   : _opt.title,
+				_dts.currBoxObj = $aWg.rowBox.render(el,{
+					title   : _pm.title,
 					buttons : [{
-						name : wg.msg.search,
-						callbackFunc : _opt.searchFunc
+						name : $aWg.msg.search,
+						callbackFunc : _pm.searchFunc
 					}]
 				});
 				
-				boxObj.elBoxBody.addClass("search-area");
-				boxObj.elBoxBody.append(_f.html.formBody());
+				_els.currBoxBox = _dts.currBoxObj.elBoxBody;
 				
-				var elBody = boxObj.elBoxBody.find(".form-body");
+				_els.currBoxBox.addClass("search-area");
+				_els.currBoxBox.append(_f.html.formBody());
+				
+				_els.currFormBody = _els.currBoxBox.find(".form-body");
 				var obj, areaForm;
 				
-				wg.makeForm.execBatch(elBody, _opt.formList);
-
-				var _searchData = function() {
-					
-					var rtnObj = {};
-					var obj;
-					for( var idx = 0 ; idx < _opt.formList.length; idx++ ) {
-						obj = _opt.formList[idx];
-						if ( obj.type == 'select' )
-							rtnObj[obj.id] = elBody.find("#"+obj.id).val();
-						else
-							rtnObj[obj.id] = elBody.find("#"+obj.id).val();
-					}
-					return rtnObj;
-				};
-				
-				return {
-					searchData : _searchData,
-					addButton : boxObj.addButtion
-				};
+				return $aWg.makeForm.execBatch(_els.currFormBody, _pm.formList);
+			},
+			addButton : function(obj) {
+				_dts.currBoxObj.addButton(obj);
+			},
+			getSearchValue : function() {
+				return $aWg.makeForm.getFormValues(_els.currFormBody, _pm.formList);
 			}
 		};
 				
 		_this.render = _f.render;
+		_this.addButton = _f.addButton;
+		_this.getSearchValue = _f.getSearchValue;
 
 		return _this;
 	}; 
-	
-	return _funcs;
 });

@@ -227,8 +227,8 @@ define(['jquery','basicUtil'], function ($, $aUtil) {
 			{
 				
 				formEl = formArray.eq(idx);
-				subEls = formEl.find("input:text, textarea, select, checkbox, radio");
-				
+				subEls = formEl.find("input:text, input:radio, textarea, select, checkbox, radio");
+
 				if( subEls.length == 0 )
 					continue;
 				
