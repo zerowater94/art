@@ -63,7 +63,7 @@ define(['mngEvent', 'wgHelper'
 				return _g;
 			},
 			render : function(el, obj){
-				console.log(obj);
+
 				var grid = _f.makeGrid(el, $.extend(true, {}, _pm, obj));
 				var _rtn = {};
 				_rtn.reloadData = function(data) {

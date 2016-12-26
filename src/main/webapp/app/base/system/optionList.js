@@ -39,6 +39,7 @@ define([ 'basicInfo'
 				var tmpl = _.template(_tmpl);
 				thisEl.html(tmpl());
 				_els.areaSearch     = thisEl.find("#area-search");
+				_els.areaSearchResult = thisEl.find(".area-search-result");
 				_els.areaGridOption = thisEl.find("#grid-list");
 				_els.areaGridOption.addClass('wrap-scrollable');
 				$a.e.addWinResizeEvent('resize-option-area',function(){
@@ -54,6 +55,19 @@ define([ 'basicInfo'
 					callbackFunc : _f.showInputEditor 
 			    });
 			},
+			makeSearchArea : function() {
+				
+				_vws.dropDownCategory = $a.t.dropDown.render(_els.areaSearch,{
+					jsonReader : {
+						id   : 'category',
+						name : 'category',
+					},
+					callbackFunc : _f.searchOptionList
+				});
+				
+//				_els.areaSearch.find(".dropdown").append("<span id='area-search-result'></span>");
+//				_els.areaSearchResult = _els.areaSearch.find("#area-search-result");
+			},
 			searchCategoryList : function() {
 				$a.send({
 					url : $a.getDefaultUrl()+"/base/system/option/category/list",
@@ -62,18 +76,14 @@ define([ 'basicInfo'
 					},
 					success : function(data) {
 						_dts.categoryList = data;
+						
+						if( data.length == 0 ) {
+							_els.areaGridOption.html($a.getMsg("msg.addOption"));
+							return;
+						}
+						_vws.dropDownCategory.addAllElement(_dts.categoryList);
+						_vws.dropDownCategory.selectElement(0);
 					}
-				});
-			},
-			makeSearchArea : function() {
-				
-				_vws.dropDownCategory = $a.t.dropDown.render(_els.areaSearch,{
-					jsonReader : {
-						id   : 'category',
-						name : 'category',
-					},
-					list : _dts.categoryList,
-					callbackFunc : _f.searchOptionList
 				});
 			},
 			/**
@@ -135,7 +145,7 @@ define([ 'basicInfo'
 		                    		rows : 5
 		                    	},
 		                      },
-		                      { id:"optionBuilder", type:"custom", label:null },
+		                      { id:"optionBuilder", type:"custom", label:null, formGroupCls:"" },
 		                    ],
 				};
 				_els.elForms.editor = $a.t.mainEditor.render(_param);
@@ -205,6 +215,7 @@ define([ 'basicInfo'
 					label:null,
 					type : "select",
 					inputCls : "front-btn item-type",
+					formGroupCls:"form-inline",
 					typeOpt : {
 						optionList : $a.t.makeForm.formList(),
 						blankOption : false,
@@ -213,7 +224,7 @@ define([ 'basicInfo'
 				};
 				var _areaOptItem = $a.t.makeForm.addNewForm(_els.elBuiliderBox,_param);
 				_param = $a.t.makeForm.getNewFormObj({
-					inputCls : "w-50 item-expl"
+					inputCls : "w-50 item-expl",
 				});
 				$a.t.makeForm.appendFormEl(_areaOptItem,_param);
 				
@@ -431,14 +442,14 @@ define([ 'basicInfo'
 					},
 					success : function(data) {
 						_els.areaGridOption.empty();
-						
+						_els.areaSearchResult.html($a.getMsg("lbl.searchResultCount").replace("{#1}",data.length));
 						if( data.length == 0 ) {
 							_els.areaGridOption.html($a.getMsg("msg.noData"));
 							return ;
 						}
 						
 						for( var idx = 0 ; idx < data.length; idx++ ) {
-							_f.addOptionBox(data[idx]);
+							_f.addOptionBox(data[idx], idx);
 						}
 					}
 				});
@@ -516,10 +527,11 @@ define([ 'basicInfo'
 					});
 				});
 			},
-			addOptionBox : function(obj) {
+			addOptionBox : function(obj, index) {
 				_els.areaGridOption.append("<div id='area-"+obj.optionId+"'></div>");
 				var vRowBox = $a.t.rowBox.render(_els.areaGridOption.find("#area-"+obj.optionId),{
 					title   : obj.optionCode,
+					iconCls : (index+1)
 				});
 				// description / value 영역 분할  
 				$a.t.addRow.render(vRowBox.elBoxBody,{
@@ -567,13 +579,19 @@ define([ 'basicInfo'
 						_f.deleteData(obj);
 					}
 				});
+				
+				if( $a.u.isEmpty(obj.optionValue) )
+					vRowBox.elBoxBtn.find(".fa-save").closest('button').addClass("btn-warning");
+				
 			},
 			/**
 			 * Option 별 설명 
 			 */
 			addOptionBoxDesc : function( elDescription, obj ) {
 				
-				elDescription.append('<div class="area-color">'+obj.description+'</div>');
+				$a.t.areaBox.render(elDescription, {
+					contents : obj.description
+				});
 			},
 			/**
 			 * Option별 Value 설정 화면.
@@ -585,14 +603,15 @@ define([ 'basicInfo'
 				var formList = [{ 
 						type : 'select', id : 'useYn', label : $a.getMsg("lbl.useYn"),
 						typeOpt : {
-							blankOption:false,optionList:$a.d.values.useYn,defaultParam : 'Y'
+							blankOption:false, optionList:$a.d.values.useYn
 						},
 						validation : { 
 							required : true 
 						}
 					}
 				];
-				
+				if( $a.u.isEmpty(obj.optionBuilder) )
+					return;
 				var builderArray = $.parseJSON(obj.optionBuilder); 
 				var buildOpt, elObj ;
 				for( var idx = 0 ; idx < builderArray.length; idx++ ) {
@@ -627,8 +646,8 @@ define([ 'basicInfo'
 			$.extend( true, _pm ,obj);
 			_f.createPage();
 			_f.setupMainBar();
-			_f.searchCategoryList();
 			_f.makeSearchArea();
+			_f.searchCategoryList();
 			_f.setupEditor();
 		};
 		

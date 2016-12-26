@@ -7,7 +7,7 @@ define(['jquery','mngEvent',
         '../../fw/manager/widget/showMsg',
         '../../fw/manager/widget/popover',
         '../../fw/manager/widget/toolbar'
-        ], function ($, MngEvent, wg,_vEditor,_vDetail, _vMainBar, _vSearch, _vShowMsg, _vPopover, _vToolbar) {
+        ], function ($, $aEvent, $aWidget,_vEditor,_vDetail, _vMainBar, _vSearch, _vShowMsg, _vPopover, _vToolbar) {
 	
 	'use strict';
 	
@@ -41,8 +41,7 @@ define(['jquery','mngEvent',
 						});
 					});
 					
-					wg.initialize(obj.msg);
-					$.extend(true, _this, wg);
+					$aWidget.initialize(obj.msg);
 					_this.mainBar.initialize(_els);
 					_this.mainEditor.initialize(_els);
 					_this.mainDetail.initialize(_els);
@@ -56,6 +55,7 @@ define(['jquery','mngEvent',
 			
 			$.extend(true, _els, obj.els);
 			_f.init.widget(obj);
+			$.extend(true, _this, $aWidget);
 		};
 
 		return _this;

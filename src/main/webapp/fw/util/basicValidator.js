@@ -48,8 +48,16 @@ define(['jquery','basicUtil'], function ($, $aUtil) {
 				return false;
 			}
 			var selector = chkParam.selector;
+			
 			var data = selector.val();
-
+			if ( selector.hasClass("radio-area") ) {
+				
+				if (selector.find(':radio:checked').length > 0 )
+					data = selector.find(':radio:checked').val();
+				else
+					data = "";
+			}
+			
 			var dataByteLen = $aUtil.getLength(data);
 			if( chkParam.chkMaxLength != undefined
 			   && chkParam.chkMaxLength > 0 
@@ -227,7 +235,7 @@ define(['jquery','basicUtil'], function ($, $aUtil) {
 			{
 				
 				formEl = formArray.eq(idx);
-				subEls = formEl.find("input:text, input:radio, textarea, select, checkbox, radio");
+				subEls = formEl.find("input:text, .radio-area, textarea, select, checkbox");
 
 				if( subEls.length == 0 )
 					continue;

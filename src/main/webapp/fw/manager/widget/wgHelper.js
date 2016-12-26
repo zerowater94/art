@@ -1,6 +1,6 @@
-define(['mngEvent',
+define(['mngEvent', 'basicUtil',
         'text!../../../fw/manager/tmpl/dropDown.html'
-        ], function ($aEvent, TmplDropDown) {
+        ], function ($aEvent, $aUtil, TmplDropDown) {
 	
 	'use strict';
 	
@@ -36,7 +36,7 @@ define(['mngEvent',
 				},
 				formInputGroup : function(obj) {
 					
-					return "<div id='area-"+obj.id+"' class='form-group input-group'></div>";
+					return "<div id='area-"+obj.id+"' class='form-group "+obj.formGroupCls+"'></div>";
 				},
 				addLabel : function( obj ) {
 					
@@ -48,18 +48,53 @@ define(['mngEvent',
 						isRequired = "required";
 					
 					if( obj.type == 'textarea')
-						return '<label class="input-group col-form-label textarea-label '+obj.labelCls+'  '+isRequired+'">'+obj.label+'</label>';
+						return '<sapn class="title input-group col-form-label textarea-label '+obj.labelCls+'  '+isRequired+'">'+obj.label+'</sapn>';
 					else
-						return '<label class="input-group-addon col-form-label '+obj.labelCls+' '+isRequired+'">'+obj.label+'</label>';
+						return '<sapn class="title input-group-addon col-form-label '+obj.labelCls+' '+isRequired+'">'+obj.label+'</sapn>';
 				},
 				addDiv : function( obj ) {
 					return "<div id='"+obj.id+"'></div>";
+				},
+				radioOption : function( obj, typeObj, optObj ) {
+					
+					var html = "";
+					if( typeObj.isInline ) {
+						html += '<label class="radio-inline">';
+					} else {
+						html += '<div class="radio">';
+						html += '<label>';
+					}	
+					
+					html += '<input type="radio" name="'+obj.id+'" value="'+optObj[typeObj.jsonReader.code]+'"> '+optObj[typeObj.jsonReader.value];
+					html += '</label>';
+					if( !typeObj.isInline )
+						html += '</div>';
+					return html;
+				},
+				checkboxOption : function( obj, typeObj, optObj ) {
+					
+					var html = "";
+					if( typeObj.isInline ) {
+						html += '<label class="checkbox-inline">';
+					} else {
+						html += '<div class="checkbox">';
+						html += '<label>';
+					}	
+					
+					html += '<input type="checkbox" name="'+obj.id+'" value="'+optObj[typeObj.jsonReader.code]+'"> '+optObj[typeObj.jsonReader.value];
+					html += '</label>';
+					if( !typeObj.isInline )
+						html += '</div>';
+					return html;
+				},
+				addBtnGroup : function() {
+					return '<div class="input-group-btn"></div>';
 				},
 				form : {
 					text : function( obj ) {
 						
 						var html = '';
-						html += '<input type="text" class="'+obj.inputCls+'" id="'+obj.id+'" placeholder="'+obj.placeholder+'">';
+						html += '<input type="text" class="form-control '+obj.inputCls+'" id="'+obj.id+'" placeholder="'+obj.placeholder+'">';
 						return html;
 					},
 					textarea : function( obj ) {
@@ -71,29 +106,19 @@ define(['mngEvent',
 					select : function( obj ) {
 						
 						var html = "";
-						html += '<div class="input-group"><select class="'+obj.inputCls+'"  id="'+obj.id+'" ></select></div>';
+						html += '<select class="form-control '+obj.inputCls+'"  id="'+obj.id+'" ></select>';
 						return html;
 					},
 					radio : function( obj ) {
 						
 						var html = "";
-						html += '<div class="input-group"><div class="radio-area"></div></div>';
+						html += '<div class="radio-area"></div>';
 						return html;
 					},
-					radioOption : function( obj, typeObj, optObj ) {
+					checkbox : function( obj ) {
 						
 						var html = "";
-						if( typeObj.isInline ) {
-							html += '<label class="radio-inline">';
-						} else {
-							html += '<div class="radio">';
-							html += '<label>';
-						}	
-						
-						html += '<input type="radio" name="'+obj.id+'" value="'+optObj[typeObj.jsonReader.code]+'"> '+optObj[typeObj.jsonReader.value];
-						html += '</label>';
-						if( !typeObj.isInline )
-							html += '</div>';
+						html += '<div class="checkbox-area"></div>';
 						return html;
 					},
 					date : function(obj) {
@@ -105,7 +130,7 @@ define(['mngEvent',
 						html += '<input type="text" id="'+obj.id+'EDate" class="form-control">';
 						html += '</div>';
 						return html;
-					}
+					},
 				},
 				rowBox : function(obj) {
 					
@@ -120,6 +145,9 @@ define(['mngEvent',
 					html += '<div class="body"></div><div>';
 					html += "</div>";
 					return html;
+				},
+				areaBox : function() {
+					return '<div class="area-color"></div>';
 				},
 				addRow : function( obj ) {
 					return '<div class="col-sm-'+obj.colCnt+' '+obj.colCls+' " ></div>';
@@ -194,6 +222,7 @@ define(['mngEvent',
 					label  : "",
 					labelCls : "",
 					inputCls : "",
+					formGroupCls : "input-group",
 					placeholder : "",
 					validation : {
 						readOnly   : false,
@@ -226,39 +255,32 @@ define(['mngEvent',
 					var _areaForm, _elRtnForm, _elInput, _elLabel;  
 					var _opt = $.extend(true,{},_f.makeForm.options, obj );
 					el.append(_f.html.formInputGroup(_opt));
-					var areaForm = el.children(".form-group").last().addClass("form-inline");
+					var areaForm = el.children(".form-group").last(); //.addClass("form-inline");
 					
 					// add label
-					areaForm.html(_f.html.addLabel(_opt));
-					
-					_elRtnForm = areaForm;
-					_elLabel   = areaForm.find("label"); //validation attribute set..
-					
-					_elRtnForm = _f.makeForm.appendFormEl(areaForm, _opt);
-
-					return _elRtnForm;
+					if( obj.label != null ) {
+						areaForm.html(_f.html.addLabel(_opt));
+					}
+					_f.makeForm.appendFormEl(areaForm, _opt);
+					return areaForm;
 				},
 				appendFormEl : function( elFormGroup, obj ) {
 					
-					var _elRtnForm = elFormGroup;
-					
 					if ( obj.type == 'select' ) {
 						_f.makeForm.select(elFormGroup, obj);
-						_elRtnForm = elFormGroup.find(".input-group");
 					} else if ( obj.type == 'radio' ) {
 						_f.makeForm.radio(elFormGroup, obj);
-						_elRtnForm = elFormGroup.find(".input-group");
+					}else if ( obj.type == 'checkbox' ) {
+						_f.makeForm.checkbox(elFormGroup, obj);
 					}else if ( obj.type == 'textarea' ) {
 						_f.makeForm.textarea(elFormGroup, obj);
 					}else if ( obj.type == 'date' ) {
 						_f.makeForm.date(elFormGroup, obj);
-						_elRtnForm = elFormGroup.find(".input-group");
 					} else if ( obj.type == 'custom' ) {
 						_f.makeForm.custom(elFormGroup, obj);
 					} else {
 						_f.makeForm.text(elFormGroup, obj);
 					}
-					return _elRtnForm;
 				},
 				setValidAttr : function( obj,  _elInput ) {
 					
@@ -299,10 +321,8 @@ define(['mngEvent',
 					var elInput = el.find("input");
 					
 					if( obj.addedBtn != null ) {
-						_f.button.render(el, obj.addedBtn);
-						elInput.css({
-							maxWidth : "80%"
-						});
+						el.append(_f.html.addBtnGroup());
+						_f.button.render(el.find(".input-group-btn"), obj.addedBtn);
 					}
 					
 					_f.makeForm.setValidAttr(obj, elInput);
@@ -323,14 +343,11 @@ define(['mngEvent',
 					var _typeObj = $.extend(true,{},_selOptions, obj.typeOpt );
 					el.append(_f.html.form.select(obj));
 					
-					var _elInputGroup = el.find(".input-group");
-					var elSelect = _elInputGroup.find("select");
+					var elSelect = el.find("select");
 					
 					if( obj.addedBtn != null ) {
-						_f.button.render(el.find(".input-group"), obj.addedBtn);
-						elSelect.css({
-							maxWidth : "80%"
-						});
+						el.append(_f.html.addBtnGroup());
+						_f.button.render(el.find(".input-group-btn"), obj.addedBtn);
 					}
 					
 					if( _typeObj.blankOption ) {
@@ -369,21 +386,59 @@ define(['mngEvent',
 					};
 					var _typeObj = $.extend(true,{},_radioOptions, obj.typeOpt );
 					el.append(_f.html.form.radio(obj));
-					console.log(el.html());
-					var _elInputGroup = el.find(".input-group");
-					var elRadio = _elInputGroup.find(".radio-area");
+					var elRadio = el.find(".radio-area");
 					
 					if( _typeObj.optionList != null ) {
 						var _obj;
 						for( var idx = 0 ; idx < _typeObj.optionList.length; idx++ ) {
 							_obj = _typeObj.optionList[idx];
-							elRadio.append(_f.html.form.radioOption(obj, _typeObj, _obj));
+							elRadio.append(_f.html.radioOption(obj, _typeObj, _obj));
 						}
 					}
+
+					if( _typeObj.defaultParam != null )
+						elRadio.find('input:radio [value='+_typeObj.defaultParam+']').attr("checked", true);
+					
 					if ( _typeObj.callbackClick != null ) 
 						$aEvent.addEvent(elRadio,"click",_typeObj.callbackClick);
 					
 					_f.makeForm.setValidAttr(obj, elRadio);
+				},
+				checkbox : function(el, obj) {
+					var _chkboxOptions = {
+						isInline    : true,
+						optionsList : null,
+						defaultParam : null,
+						callbackClick : null,
+						jsonReader  : {
+							code : "code",
+							value  : "value"
+						}
+					};
+					var _typeObj = $.extend(true,{},_chkboxOptions, obj.typeOpt );
+					el.append(_f.html.form.checkbox(obj));
+					var elCheckbox = el.find(".checkbox-area");
+					
+					if( _typeObj.optionList != null ) {
+						var _obj;
+						for( var idx = 0 ; idx < _typeObj.optionList.length; idx++ ) {
+							_obj = _typeObj.optionList[idx];
+							elCheckbox.append(_f.html.checkboxOption(obj, _typeObj, _obj));
+						}
+					}
+
+					if( _typeObj.defaultParam != null ) {
+					
+						for( var idx = 0 ; idx < _typeObj.defaultParam.length; idx++  ) {
+							elCheckbox.find('input:chekbox [value='+_typeObj.defaultParam[idx]+']').attr("checked", true);
+						}
+					}
+						
+					
+					if ( _typeObj.callbackClick != null ) 
+						$aEvent.addEvent(elCheckbox,"click",_typeObj.callbackClick);
+					
+					_f.makeForm.setValidAttr(obj, elCheckbox);
 				},
 				textarea : function( el, obj ) {
 					
@@ -432,6 +487,13 @@ define(['mngEvent',
 							rtnObj[obj.id] = el.find("#"+obj.id).val();
 						} else if ( obj.type == 'radio' ){
 							rtnObj[obj.id] = el.find(':radio[name="'+obj.id+'"]:checked').val();
+						} else if ( obj.type == 'checkbox' ){
+							var inVal = [];
+							el.find(":checkbox:checked").each(function() { 
+						        alert($(this).val());
+						        inVal.push($(this).val());
+						   });
+							rtnObj[obj.id] = JSON.stringify(inVal);
 						} else {
 							rtnObj[obj.id] = el.find("#"+obj.id).val(); //text , textarea, select
 						}	
@@ -439,7 +501,6 @@ define(['mngEvent',
 					return rtnObj;
 				},
 				setFormValues : function(el,formList, obj) {
-					
 					var fObj;
 					for( var idx = 0 ; idx < formList.length; idx++ ) {
 						fObj = formList[idx];
@@ -448,7 +509,18 @@ define(['mngEvent',
 						if ( fObj.type == 'date' ){
 							el.find("#"+fObj.id).val(_f.null2Str(obj[fObj.id]));
 						}else if( fObj.type == 'radio') {
-							el.find(':radio[name="'+obj.id+'"]:radio[value="'+_f.null2Str(obj[fObj.id])+'"]').attr("checked",true);
+							el.find(':radio[name="'+fObj.id+'"]:radio[value="'+_f.null2Str(obj[fObj.id])+'"]').attr("checked",true);
+						}else if( fObj.type == 'checkbox') {
+							var inVal ;
+							try {
+								inVal = $.parseJSON(_f.null2Str(obj[fObj.id]));
+							}catch ( exception ) {
+								inVal = [];
+							}
+
+							for( var jdx = 0 ; jdx < inVal.length; jdx++ ) {
+								el.find(':checkbox[name="'+fObj.id+'"]:checkbox[value="'+inVal[jdx]+'"]').attr("checked",true);
+							}
 						}else {
 							el.find("#"+fObj.id).val(_f.null2Str(obj[fObj.id])); //text , textarea, select
 						}
@@ -490,6 +562,7 @@ define(['mngEvent',
 
 					return {
 						elBoxBody : _elBody,
+						elBoxBtn  : _elBtnGroup,
 						addButton : function( obj ) {
 							_f.button.render(_elBtnGroup, $.extend(true, {btnCls:"btn-default btn-xs"}, obj));
 						},
@@ -535,25 +608,53 @@ define(['mngEvent',
 					var _funcAddEvent = function() {
 						_elBtnLabel.html($(this).text());
 						if( _opt.callbackFunc != null ) {
-							
 							_opt.callbackFunc({
 								id : $(this).attr("id")
 							});
 						}
 					}
 					
-					for( var idx = 0 ; idx < _opt.list.length; idx++ ) {
-						_funcAddElement(_opt.list[idx]);
-					}
-					
-					_elUL.find("li").click(_funcAddEvent);
-					_elUL.find('li:first-child').click();
-					
 					_this.addElement = function( obj ){
 						_funcAddElement(obj);
 						_elUL.find("li").click(_funcAddEvent);
 					};
+					_this.clearElement = function() {
+						_elUL.empty();
+					};
+					_this.addAllElement = function(arry) {
+
+						_this.clearElement();
+						if( arry != undefined && arry != null && arry.length > 0 ) {
+							for( var idx = 0 ; idx < arry.length; idx++ ) {
+								_funcAddElement(arry[idx]);
+							}
+						}
+						_elUL.find("li").click(_funcAddEvent);
+					};
+					
+					_this.selectElement = function(idx) {
+						_elUL.find('li').eq(idx).click();
+					};
+					
+					_this.selectElementById = function(id) {
+						_elUL.find('li#'+id).click();
+					};
+					
+					_this.addAllElement(_opt.list);
+					
 					return _this;
+				}
+			},
+			areaBox :  {
+				options : {
+					contents : ""
+				},
+				render : function( el , obj ) {
+					
+					var _opt = $.extend(true,{},this.options, obj );
+					el.html(_f.html.areaBox());
+					var elBox = el.find(".area-color");
+					elBox.html($aUtil.toHtmlFormat(_opt.contents));
 				}
 			},
 			relocationEl : function( container, elParent) {
@@ -604,6 +705,7 @@ define(['mngEvent',
 		_this.dropDown   = _f.dropDown;
 		_this.relocationEl = _f.relocationEl;
 		_this.addRow     = _f.addRow;
+		_this.areaBox    = _f.areaBox;
 		
 		return _this;
 	}; 
