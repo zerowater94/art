@@ -18,7 +18,7 @@
 
 .form-group {margin-bottom : 5px;}
 .form-group input[type=text], select { height:26px;}
-.form-group .help-block-art { display:inline-table; position: absolute; right: 10px;padding:3px 5px; border-radius : 4px;z-index:1024;}
+.form-group .help-block-art { display:inline-table; position: absolute; top:0px; right: 10px; padding:1px 5px; border-radius : 4px;z-index:1024;}
 .form-group .help-block-art .label { font-size:85%;}
 .form-group .help-block-art .close { font-weight:500;font-size:18px;}
 
@@ -41,8 +41,13 @@
 .edit-area .form-group .input-group button { margin-bottom:2px; }
 
 .edit-area .form-group .radio-area, .checkbox-area  {min-height:26px;border-radius: 0px 4px 4px 0px;color: #555;border: 1px solid #ccc;padding-left:5px;}
-
 .edit-area .form-group .input-group-btn .btn-xs {padding:3px 10px;}
+
+.form-group.has-error .radio-area, .form-group.has-error .checkbox-area  {
+    border-color: #a94442;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+}
 
 #main-msg {position:absolute;bottom:0px;min-width:500px;max-width:650px;}
 #main-msg .alert {opacity:0;}

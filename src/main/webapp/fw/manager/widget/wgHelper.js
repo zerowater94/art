@@ -490,7 +490,6 @@ define(['mngEvent', 'basicUtil',
 						} else if ( obj.type == 'checkbox' ){
 							var inVal = [];
 							el.find(":checkbox:checked").each(function() { 
-						        alert($(this).val());
 						        inVal.push($(this).val());
 						   });
 							rtnObj[obj.id] = JSON.stringify(inVal);
