@@ -1,6 +1,6 @@
-define([ 'basicInfo
-         ,'text!base/login/login.html'
-         , '../../../libs/security/aes'
+define([ 'basicInfo',
+         'text!base/login/login.html',
+          '../../../libs/security/aes'
        ], function ( $a, Tmpl) {
 	
 

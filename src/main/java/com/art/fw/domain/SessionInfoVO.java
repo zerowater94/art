@@ -9,7 +9,7 @@ import java.sql.Timestamp;
 public class SessionInfoVO 
 {
 	private String sessionId = "";
-	private String userUid = "";
+	private String loginId = "";
 	private String userId = "";
 	private String userName = "";
 	private String userConnIp = "";
@@ -26,7 +26,7 @@ public class SessionInfoVO
 	 * 
 	 ***********************************************************************/
 	public String getSessionId() { return this.sessionId; }
-	public String getUserUid() { return this.userUid; }
+	public String getLoginId() { return this.loginId; }
 	public String getUserId() { return this.userId; }
 	public String getUserName() { return this.userName; }
 	public String getUserConnIp() { return this.userConnIp; }
@@ -42,10 +42,10 @@ public class SessionInfoVO
 	 * setter..
 	 * 
 	 ***********************************************************************/
-	public void setUserUid(String userUid) 
+	public void setLoginId(String loginId) 
 	{
-		if( userUid != null )
-			this.userUid = userUid;
+		if( loginId != null )
+			this.loginId = loginId;
 	}
 	
 	public void setSessionId(String str)

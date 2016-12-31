@@ -24,6 +24,7 @@ public class LoginServiceImpl extends AbstractService implements LoginService
 		UserBasicVO rtnVO = null;
 		try
 		{
+			logger.debug("--> " + param.getLoginType());
 			if( param.getLoginType().equals(BasicConstants.LOGIN_TYPE.SETUP.code) )
 			{
 				if( !( param.getLoginId().equals(this.SETUP_LOGIN_ID)
@@ -34,7 +35,10 @@ public class LoginServiceImpl extends AbstractService implements LoginService
 					
 			}else 
 			{
-				
+				rtnVO = new UserBasicVO();
+				rtnVO.setUserId("general-user");
+				rtnVO.setLoginId(param.getLoginId());
+				rtnVO.setUserName("general-user");
 			}
 		}catch ( Exception ex )
 		{
@@ -48,7 +52,7 @@ public class LoginServiceImpl extends AbstractService implements LoginService
 	{
 		UserBasicVO rtnVO = new UserBasicVO();
 		rtnVO.setUserId(this.SETUP_LOGIN_ID);
-		rtnVO.setUserUid(this.SETUP_LOGIN_ID);
+		rtnVO.setLoginId(this.SETUP_LOGIN_ID);
 		rtnVO.setUserName("Setup Admin");
 		rtnVO.setSystemRole(BasicConstants.SYS_ROLE.SYSTEM_ADMIN.code);
 		return rtnVO;

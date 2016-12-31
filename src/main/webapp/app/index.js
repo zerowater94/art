@@ -48,7 +48,6 @@ define([ 'basicInfo'
 				_dts.callParam.search = $a.u.getUrlParams(wl.search);
 				// hash url 삭제
 				history.replaceState({}, document.title, wl.pathname);
-				
 			},
 			// page 이동에 대한 listener 등록
 			setupContentLoad : function() {
@@ -60,7 +59,6 @@ define([ 'basicInfo'
 				});
 				// window.history.
 				Backbone.on("historyLocation", function(event){
-					
 					if (event.state && _.keys(event.state).length > 0) {
 						$a.goPage(event.state);
 					}
@@ -78,8 +76,6 @@ define([ 'basicInfo'
 					e.preventDefault();
 					$a.print.alert("Not arrowed...right click..");
 			    });
-	
-			 
 			},
 			goLoginPage : function() {
 				
@@ -90,6 +86,7 @@ define([ 'basicInfo'
 				} else {
 					_p.callbackFunc = _f.goMainPage;
 				}
+				
 				$a.goPage({
 					viewName : 'base/login/login',
 					el       : $(document.body)  ,
@@ -124,8 +121,8 @@ define([ 'basicInfo'
 	
 				if( $a.getSessionInfo() == null ) {
 					
-//					_f.goLoginPage();
-					_f.goMainPage();
+					_f.goLoginPage();
+//					_f.goMainPage();
 				} else {
 					
 					if ( _dts.isCallSetup && $a.getSessionInfo("SYS_ROLE") == $a.getConstants("SYS_ROLE","SETUPADM") ) {

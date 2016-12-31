@@ -20,17 +20,17 @@ public abstract class AbstractVO
 	private String siteId = "";
 	private String compId = "";
 	
-	// 등록일/등록자/등록부서/변경일/변경자
-	private String creatorUid = "";
-	private String creatorName = "";
-	private String creatorDeptId = "";
-	private String creatorDeptName = "";
-	private Timestamp createDate = null;
-	private String updaterUid = "";
-	private String updaterName = "";
-	private String updaterDeptId = "";
-	private String updaterDeptName = "";
-    private Timestamp updateDate = null;
+	
+	// 기타 Json string형태의 정보
+	private String etcInfo  = "";
+	
+	
+	// 등록일/등록자/변경일/변경자
+	private String currUserId = "";
+	private String regUserId = "";
+	private Timestamp regDtm = null;
+	private String updUserId = "";
+    private Timestamp updDtm = null;
     
 	
 	/********************************************************************************
@@ -60,65 +60,41 @@ public abstract class AbstractVO
 			this.compId = str;
 	}
 	
-	/******************************************************************************
-	 * 등록일/등록자/변경일/변경일자
-	 ******************************************************************************/
-	public void setCreatorUid(String str)
+	public void setEtcInfo(String str)
 	{
 		if( str != null )
-			this.creatorUid = str;
+			this.etcInfo = str;
 	}
 	
-	public void setCreatorName(String str)
+	// 현재 사용자 / 등록일/등록자/변경일/변경일자
+	public void setCurrUserId(String str)
 	{
 		if( str != null )
-			this.creatorName = str;
+			this.currUserId = str;
 	}
 	
-	public void setCreatorDeptId(String str)
+	public void setRegUserId(String str)
 	{
 		if( str != null )
-			this.creatorDeptId = str;
+			this.regUserId = str;
 	}
 	
-	public void setCreatorDeptName(String str)
-	{
-		if( str != null )
-			this.creatorDeptName = str;
-	}
 
-	public void setCreateDate(Timestamp tm )
+	public void setRegDtm(Timestamp tm )
 	{
-		this.createDate = tm;
+		this.regDtm = tm;
 	}
 	
-	public void setUpdaterUid(String str)
+	public void setUpdUserId(String str)
 	{
 		if( str != null )
-			this.updaterUid = str;
+			this.updUserId = str;
 	}
 	
-	public void setUpdaterName(String str)
-	{
-		if( str != null )
-			this.updaterName = str;
-	}
 	
-	public void setUpdaterDeptId(String str)
+	public void setUpdDtm(Timestamp tm )
 	{
-		if( str != null )
-			this.updaterDeptId = str;
-	}
-	
-	public void setUpdaterDeptName(String str)
-	{
-		if( str != null )
-			this.updaterDeptName = str;
-	}
-	
-	public void setUpdateDate(Timestamp tm )
-	{
-		this.updateDate = tm;
+		this.updDtm = tm;
 	}
 	
 	/********************************************************************************
@@ -133,77 +109,14 @@ public abstract class AbstractVO
 	public String getSiteId() { return this.siteId; }
 	public String getCompId() { return this.compId; }
 	
-	/******************************************************************************
-	 * 등록일/등록자/변경일/변경자
-	 ******************************************************************************/
-//	@JsonIgnore
-	public String getCreatorUid() { return this.creatorUid; }
-//	@JsonIgnore
-	public String getCreatorName() { return this.creatorName; }
-//	@JsonIgnore
-	public String getCreatorDeptId() { return this.creatorDeptId; }
-//	@JsonIgnore
-	public String getCreatorDeptName() { return this.creatorDeptName; }
-//	@JsonIgnore
-	public String getUpdaterUid() { return this.updaterUid; }
-//	@JsonIgnore
-	public String getUpdaterName() { return this.updaterName; }
-//	@JsonIgnore
-	public String getUpdaterDeptId() { return this.updaterDeptId; }
-//	@JsonIgnore
-	public String getUpdaterDeptName() { return this.updaterDeptName; }
+	public String getEtcInfo() { return this.etcInfo; }
 	
 	
-	/**
-	 * 등록일은 Default format 또는 특정 포맷으로 리턴한다.
-	 * @return
-	 */
-//	@JsonIgnore
-	public Timestamp getCreateDateTimestamp() 
-	{ 
-		if( this.createDate == null )
-			return null;
-		else
-			return createDate;
-	}
-//	@JsonIgnore
-	public String getCreateDate() 
-	{ 
-		return getCreateDate("");
-	}
-//	@JsonIgnore
-	public String getCreateDate(String dateFormat) 
-	{ 
-		if( this.createDate == null )
-			return null;
-		else
-			return DateUtil.getDate(this.createDate, dateFormat);
-	}
-	
-	/**
-	 * 변경일은 Default format 또는 특정 포맷으로 리턴한다.
-	 * @return
-	 */
-//	@JsonIgnore
-	public Timestamp getUpdateDateTimestamp() 
-	{ 
-		if( this.updateDate == null )
-			return null;
-		else
-			return updateDate;
-	}
-//	@JsonIgnore
-	public String getUpdateDate() 
-	{ 
-		return getUpdateDate("");
-	}
-//	@JsonIgnore
-	public String getUpdateDate(String dateFormat) 
-	{ 
-		if( this.updateDate == null )
-			return null;
-		else
-			return DateUtil.getDate(this.updateDate, dateFormat);
-	}
-	
+	// 현재 시간 및 사용자/등록일/등록자/변경일/변경자
+	public String getCurrUserId() { return this.currUserId; }
+	public Timestamp getCurrDateTime() { return DateUtil.getCurrentTimestamp(); }
+	public String getRegUserId() { return this.regUserId; }
+	public String getUpdUserId() { return this.updUserId; }
+	public Timestamp getRegDtm() { return regDtm; }
+	public Timestamp getUpdDtm() { return updDtm; }
 }

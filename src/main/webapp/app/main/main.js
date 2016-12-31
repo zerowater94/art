@@ -184,7 +184,7 @@ define([ 'basicInfo' , 'main/mainHelper'
 						el.find("ul").toggleClass("in");
 					} else {
 						_els.areaMenuUl.find(".selected").removeClass("selected");
-						_f.goMainPage(obj);
+						_f.getMainContents(obj);
 					}
 				});
 				
@@ -194,24 +194,15 @@ define([ 'basicInfo' , 'main/mainHelper'
 				$a.addEvent(el, "click", function() {
 					_els.areaMenuUl.find(".selected").removeClass("selected");
 					el.addClass("selected");
-					_f.goMainPage(obj);
+					_f.getMainContents(obj);
 				});
 			}, 
-			goMainPage : function( obj ) {
-				
-				$a.t.mainBar.render({
-					iconCss  : obj.iconCss,
-					title    : obj.menuName
-				});
-				
-				$a.clearWinResizeEvent();
-				
-				$a.t.mainEditor.hideEditor();
-				$a.t.popover.closeAllPopover();
+			getMainContents : function( obj ) {
 				
 				var _param = {
 					viewName : obj.url,
-					paramData : obj
+					paramData : obj,
+					isMainContents : true
 				}
 				
 				history.pushState(_param, _param.viewName, '');
@@ -235,9 +226,8 @@ define([ 'basicInfo' , 'main/mainHelper'
 			_f.setBrand();
 			_f.setTopNav();
 			_f.searchLeftMenu();
-			
 			if( _pm.viewName != null ) {
-				$a.goPage(_pm);
+				_f.getMainContents(_pm);
 			}
 		}
 		

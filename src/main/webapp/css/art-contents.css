@@ -53,8 +53,8 @@
 #main-msg .alert {opacity:0;}
 
 .search-area {display:inline-block;padding-bottom:5px !important;}
-.search-area .form-group { position:relative; float:left; width: 30%; min-height: 1px; margin:5px !important; padding-right: 10px; padding-left: 10px;}
-.search-area .form-group label {min-width:90px;width:30%;padding: 2px 10px;text-align:left;font-size:0.83em;}
+.search-area .form-group { position:relative; float:left; min-height: 1px; margin:5px !important; padding-right: 10px; padding-left: 10px;}
+.search-area .form-group .title {min-width:90px;width:30%;padding: 2px 10px;text-align:left;font-size:0.83em;}
 .search-area .form-group input {border-radius: 0px 4px 4px 0px;color: #555;border: 1px solid #ccc;padding: 2px 3px;}
 .search-area .form-group select {border-radius: 0px 4px 4px 0px;color: #555;border: 1px solid #ccc;padding: 2px 3px;}
 

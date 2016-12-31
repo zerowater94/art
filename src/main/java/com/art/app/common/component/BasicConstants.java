@@ -89,4 +89,14 @@ public class BasicConstants
 		public String code ; 
         private DELIMITER(String value) {this.code = value; }
 	}
+	
+	/***************************************************************
+	 * 코드 그룹
+	 ****************************************************************/
+	public enum CODE_TYPE
+	{
+		GROUP("G"), CODE("C");
+		public String code ; 
+        private CODE_TYPE(String value) {this.code = value; }
+	}
 }

@@ -6,6 +6,8 @@ import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -77,7 +79,21 @@ public abstract class AbstractCtl
 	@InitBinder
 	public void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception 
 	{
-		
+		try 
+		{
+			if (binder.getTarget() == null) 
+				return;
+			
+			BeanWrapper beanWrapper = new BeanWrapperImpl(binder.getTarget());
+			
+			if (beanWrapper.isReadableProperty("currUserId"))
+				beanWrapper.setPropertyValue("currUserId", this.getSessionInfo().getUserId());
+			
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+			//throw new Exception(BaseUtils.printStackTrace(e));
+		}
 	}
 	
 	
