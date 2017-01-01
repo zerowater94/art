@@ -32,12 +32,12 @@
 .edit-area .form-group .title.required {background-color:#f9ebeb;}
 .edit-area .form-group .title.required:after {content:" *";font-weight:600; color:#CC0000; }
 .edit-area .form-group .textarea-label {  border-radius: 4px 4px 0px 0px !important; border: 1px solid #ccc;background-color:#eee;font-weight:400; }
-.edit-area .form-group input, select, textarea  {border-radius: 0px 4px 4px 0px  !important;}
 .edit-area .form-group textarea {border-radius: 0px 4px 4px 4px !important;width:100%;resize: none; }
 .edit-area .form-group input[readonly] { background:#f9f7f7; pointer-events: none;cursor:not-allowed; }
 .edit-area .form-group input.addon-btn { width:70%; }
-.edit-area .form-group .middle-btn { border-radius:0px; }
-.edit-area .form-group .front-btn { border-radius: 4px 0px 0px 4px; }
+.edit-area .form-group .middle-btn { border-radius:0px;border-right:0px; }
+.edit-area .form-group .front-btn { border-radius: 4px 0px 0px 4px;border-right:0px; }
+.edit-area .form-group .end-btn { border-radius: 0px 4px 4px 0px !important; }
 .edit-area .form-group .input-group button { margin-bottom:2px; }
 
 .edit-area .form-group .radio-area, .checkbox-area  {min-height:26px;border-radius: 0px 4px 4px 0px;color: #555;border: 1px solid #ccc;padding-left:5px;}

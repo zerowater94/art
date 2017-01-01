@@ -45,7 +45,6 @@ public class CodeCtl extends AbstractCtl
 	public ResultVO updateData(@RequestBody CodeVO param ) throws Exception
 	{
 		logger.debug("call updateData : " + param.getCodeGroup() + " , " +param.getCodeId());
-		
 		if( CommonUtil.isNull(param.getCodeId()) )
 			throw new BadRequestException(BasicInfo.fail(super.getSessionLocale()).poorParam());
 		ResultVO rstVO = service.update(param);

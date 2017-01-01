@@ -6,7 +6,7 @@
  
     <select id="selectList" resultType="com.art.app.base.system.domain.CodeVO">
         SELECT  code_id, site_id, comp_id, code_group, code, code_value, 
-        		use_yn, code_ord, description, etc_info,
+        		code_type, use_yn, code_ord, description, etc_info,
         	    reg_user_id, reg_dtm, upd_user_id, upd_dtm
 		FROM    tco_code
         WHERE   1 = 1
@@ -15,7 +15,7 @@
         	AND   code_group = #{codeGroup}
         </if>
         <if test="codeValue != null and codeValue != '' ">
-        	AND   code_value like CONCAT(?,#{codeValue},?) 
+        	AND   code_value like CONCAT('%',#{codeValue},'%') 
         </if>
 		ORDER BY code_group, code_ord
     </select>
@@ -25,11 +25,11 @@
     <insert id="insert" parameterType="com.art.app.base.system.domain.CodeVO">
         INSERT INTO tco_code (
         	code_id, site_id, comp_id, code_group, code, code_value, 
-       		use_yn, code_ord, description, etc_info,
+       		code_type, use_yn, code_ord, description, etc_info,
        	    reg_user_id, reg_dtm, upd_user_id, upd_dtm
         )VALUES(
         	#{codeId}, #{siteId}, #{compId}, #{codeGroup}, #{code}, #{codeValue}, 
-        	#{useYn}, #{codeOrd}, #{description}, #{etcInfo},
+        	#{codeType}, #{useYn}, #{codeOrd}, #{description}, #{etcInfo},
         	#{currUserId}, #{currDateTime},#{currUserId}, #{currDateTime}
         )
     </insert>

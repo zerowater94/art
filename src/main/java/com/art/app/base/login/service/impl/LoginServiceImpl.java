@@ -7,6 +7,7 @@ import com.art.app.base.login.service.LoginService;
 import com.art.app.base.user.domain.UserBasicVO;
 import com.art.app.common.basic.service.AbstractService;
 import com.art.app.common.component.BasicConstants;
+import com.art.app.common.component.BasicInfo;
 import com.art.fw.exception.AuthException;
 
 @Service("loginService")
@@ -39,6 +40,7 @@ public class LoginServiceImpl extends AbstractService implements LoginService
 				rtnVO.setUserId("general-user");
 				rtnVO.setLoginId(param.getLoginId());
 				rtnVO.setUserName("general-user");
+				rtnVO.setLocale(BasicInfo.getDefaultLocale());
 			}
 		}catch ( Exception ex )
 		{
@@ -54,6 +56,7 @@ public class LoginServiceImpl extends AbstractService implements LoginService
 		rtnVO.setUserId(this.SETUP_LOGIN_ID);
 		rtnVO.setLoginId(this.SETUP_LOGIN_ID);
 		rtnVO.setUserName("Setup Admin");
+		rtnVO.setLocale(BasicInfo.getDefaultLocale());
 		rtnVO.setSystemRole(BasicConstants.SYS_ROLE.SYSTEM_ADMIN.code);
 		return rtnVO;
 	}

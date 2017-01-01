@@ -25,9 +25,9 @@ define(['mngEvent', 'wgHelper'
 		areaMain : null
 	} ; // elements
 	var _f = {
-		init : function(elObj) {
-			_els.areaBody   = elObj.areaBody;
-			_els.areaMain   = elObj.areaMain;
+		init : function() {
+			_els.areaBody   = $aWg.els.areaBody;
+			_els.areaMain   = $aWg.els.areaMain;
 		},
 		html   : {
 			nvButton : function(obj) {
@@ -63,8 +63,7 @@ define(['mngEvent', 'wgHelper'
 		render : function(el, obj){
 
 			var grid = _f.makeGrid(el, $.extend(true, {}, _pm, obj));
-			var _rtn = {};
-			_rtn.reloadData = function(data) {
+			var _reloadData = function(data) {
 				
 				var _obj ;
 		        if( data == undefined ) {
@@ -77,10 +76,17 @@ define(['mngEvent', 'wgHelper'
 				}else {
 					_obj = data;
 				}
-		
 		        grid.pqGrid('option', _obj).pqGrid('refreshDataAndView');
 			};
-			return _rtn;
+			return {
+				reloadData :_reloadData ,
+				setSelection : function(rowIndex) {
+					grid.pqGrid('setSelection', {rowIndx:rowIndex});
+				},
+				resetSelection : function() {
+					grid.pqGrid('setSelection', {rowIndx:null});
+				},
+			};
 		}
 	};
 			

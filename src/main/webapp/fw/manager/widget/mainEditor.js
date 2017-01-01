@@ -1,5 +1,5 @@
 define(['mngEvent', 'wgHelper',
-        'text!../../../../../fw/manager/tmpl/mainEditor.html'
+        'text!fw/manager/tmpl/mainEditor.html'
         ], function ($aEvent, $aWg, _tmpl) {
 	
 	'use strict';
@@ -9,6 +9,8 @@ define(['mngEvent', 'wgHelper',
 	
 	var _pm = {
 		title : null,
+		isWritable   : false,
+		titleIcon    : null,
 		showToolbar  : true,
 		buttons      : null,
 		formList     : null,
@@ -34,10 +36,10 @@ define(['mngEvent', 'wgHelper',
 				return '<div id="#tab-'+idx+'" class="tab-pane"></div>';
 			}, 
 		},
-		init : function(elObj) {
+		init : function() {
 
-			_els.areaMain   = elObj.areaMain;
-			_els.areaEditor = elObj.areaEditor;
+			_els.areaMain   = $aWg.els.areaMain;
+			_els.areaEditor = $aWg.els.areaEditor;
 			
 			_els.areaEditor.html(_.template(_tmpl));
 			
@@ -51,6 +53,8 @@ define(['mngEvent', 'wgHelper',
 		render : function( obj ) {
 			_pm = {
 				title : null,
+				isWritable   : false,
+				titleIcon    : null,
 				showToolbar  : true,
 				buttons      : [],
 				formList     : [],
@@ -59,15 +63,15 @@ define(['mngEvent', 'wgHelper',
 			};
 
 			$.extend(true, _pm, obj );
-			_els.editTitle.text(_pm.title);
+			_f.setTitle(_pm.title);
+			if(_pm.titleICon != null )
+				_f.setTitleIcon('edit');
 			_els.editPanel.addClass("panel-default");
 			_els.editToolbar.empty();
 			_els.editBody.empty();
 			
 			if ( _pm.showToolbar ) {
-				
 				for( var idx = 0 ; idx < _pm.buttons.length; idx++ ) {
-					
 					$aWg.button.render(_els.editToolbar, $.extend(true, {btnCls:"btn-default btn-sm"}, _pm.buttons[idx]));
 				}
 			}
@@ -81,6 +85,26 @@ define(['mngEvent', 'wgHelper',
 			_els.areaEditor.hide();
 			return rtnObj;
 			
+		},
+		setTitle : function( title ) {
+			_els.editTitle.html(title+"&nbsp;&nbsp;<i class='fa fa-plus-square'></i>");
+			_f.setTitleIcon();
+		},
+		setTitleIcon : function( inputMode ) {
+
+			if ( inputMode == undefined ) {
+				_els.editTitle.find("i").removeClass();
+				return;
+			}
+				
+			if ( inputMode == 'I')
+				_els.editTitle.find("i").removeClass().addClass("fa fa-plus-square");
+			else if ( inputMode == 'U' )
+				_els.editTitle.find("i").removeClass().addClass("fa fa-pencil-square");
+			else if ( inputMode == 'R' )
+				_els.editTitle.find("i").removeClass().addClass("fa fa-registered");
+			else
+				_els.editTitle.find("i").removeClass();
 		},
 		showEditor : function(obj){
 			
@@ -105,14 +129,19 @@ define(['mngEvent', 'wgHelper',
 				if ( _pm.callBackShow != null )
 					_pm.callBackShow();
 				
-				if( obj == undefined )
+				if( obj == undefined || obj == null ) {
 					_f.clearValues();
-				else {
+					_f.setTitleIcon('I');
+				} else {
 					_f.setValues(obj);
+					if ( obj.isInputMode != undefined && obj.isInputMode  )
+						_f.setTitleIcon('I');
+					else
+						_f.setTitleIcon('U');
+					
 					if ( obj.shown !== undefined )
 						obj.shown();
 				}
-
 				$aEvent.execWinResize();
 			}, showTime);
 		},
@@ -153,6 +182,7 @@ define(['mngEvent', 'wgHelper',
 			
 	_this.initialize  = _f.init;
 	_this.render      = _f.render;
+	_this.setTitle    = _f.setTitle;
 	_this.showEditor  = _f.showEditor;
 	_this.hideEditor  = _f.hideEditor;
 	_this.getMainBody = _f.getMainBody;

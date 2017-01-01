@@ -1,6 +1,6 @@
 define([ 'basicInfo',
-         'text!base/login/login.html',
-          '../../../libs/security/aes'
+         'text!app/base/login/login.html',
+          'libs/security/aes'
        ], function ( $a, Tmpl) {
 	
 

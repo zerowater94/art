@@ -1,5 +1,5 @@
 define([ 'basicInfo'
-         , 'text!base/system/optionList.html'
+         , 'text!app/base/system/optionList.html'
        ], function ( $a, _tmpl) {
 	
 	'use strict';

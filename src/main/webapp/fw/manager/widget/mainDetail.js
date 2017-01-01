@@ -1,5 +1,5 @@
-define([], function () {
-	
+define(['mngEvent', 'wgHelper'
+        ], function ($aEvent, $aWg) {
 	'use strict';
 		
 	var _this = {};
@@ -33,9 +33,9 @@ define([], function () {
 				return '<div id="#tab-'+idx+'" class="tab-pane"></div>';
 			}, 
 		},
-		init : function(elObj) {
+		init : function() {
 
-			_els.areaMain   = elObj.areaMain;
+			_els.areaMain   = $aWg.els.areaMain;
 		},
 		render : function( obj ) {
 			_pm = {

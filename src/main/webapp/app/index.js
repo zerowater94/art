@@ -88,7 +88,7 @@ define([ 'basicInfo'
 				}
 				
 				$a.goPage({
-					viewName : 'base/login/login',
+					viewName : 'app/base/login/login',
 					el       : $(document.body)  ,
 					paramData : _p
 				});
@@ -96,14 +96,14 @@ define([ 'basicInfo'
 			goSetupPage : function() {
 	
 				$a.goPage({
-					viewName : 'base/setup/setupApp',
+					viewName : 'app/base/setup/setupApp',
 					el       : $(document.body)  ,
 				});
 				
 			},
 			goMainPage : function( param ) {
 				$a.goPage({
-					viewName  : 'main/main',
+					viewName  : 'app/main/main',
 					paramData : param ,
 					el        : $(document.body)  ,
 				});

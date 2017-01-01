@@ -17,9 +17,9 @@ define(['mngEvent', 'wgHelper'
 	
 	var _els = {} ; // elements
 	var _f = {
-		init : function(elObj) {
-			_els.areaBody   = elObj.areaBody;
-			_els.areaMain   = elObj.areaMain;
+		init : function() {
+			_els.areaBody   = $aWg.els.areaBody;
+			_els.areaMain   = $aWg.els.areaMain;
 		},
 		render : function(el, obj){
 			

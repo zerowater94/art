@@ -1,5 +1,5 @@
 define([ 'basicInfo'
-         , 'text!base/system/optionList.html'
+         , 'text!app/base/system/optionList.html'
        ], function ( $a, _tmpl) {
 	
 	'use strict';
@@ -224,7 +224,7 @@ define([ 'basicInfo'
 				};
 				var _areaOptItem = $a.t.makeForm.addNewForm(_els.elBuiliderBox,_param);
 				_param = $a.t.makeForm.getNewFormObj({
-					inputCls : "w-50 item-expl",
+					inputCls : "w-50 end-btn item-expl",
 				});
 				$a.t.makeForm.appendFormEl(_areaOptItem,_param);
 				
@@ -241,7 +241,7 @@ define([ 'basicInfo'
 					name :'<i class="fa fa-plus"></i>',
 					btnCls:"btn-default btn-xs",
 					callbackFunc : function(e) {
-						_f.addOptionItemCategories(_areaItemCategories);
+						$a.t.makeForm.addNewEtcInfo(_areaItemCategories);
 					}
 			    });
 				
@@ -249,7 +249,7 @@ define([ 'basicInfo'
 				_param.type = "custom";
 				$a.t.makeForm.appendFormEl(_areaOptItem,_param);
 				
-				_areaItemCategories = _areaOptItem.find("#area-item-options");
+				_areaItemCategories = _areaOptItem.find("#"+_param.id);
 				_areaItemCategories.addClass("area-color").addClass("item-categories");
 				
 				_btnAddItem.hide();
@@ -265,7 +265,7 @@ define([ 'basicInfo'
 						_areaItemCategories.show();
 						_optionList = obj.categories;
 						for( var idx = 0; idx < _optionList.length; idx++ ) {
-							_f.addOptionItemCategories(_areaItemCategories, _optionList[idx]);
+							$a.t.makeForm.addNewEtcInfo(_areaItemCategories, _optionList[idx]);
 						}
 					}
 				}
@@ -280,37 +280,6 @@ define([ 'basicInfo'
 						_areaItemCategories.hide();
 					}
 				});
-			},
-			/**
-			 * 생성 규칙의 세부 category( Options )을 추가 한다.
-			 */
-			addOptionItemCategories : function( categoryEl, categoryObj ) {
-				
-				var _param = $a.t.makeForm.getNewFormObj({
-					label : null,
-					inputCls : "w-30 front-btn category-key",
-					validation: {
-						required : true,
-					}
-				});
-				var elDtlOpt = $a.t.makeForm.addNewForm(categoryEl,_param);
-				_param.inputCls = "w-40 category-val";
-				$a.t.makeForm.appendFormEl(elDtlOpt,_param);
-
-				if( categoryObj !== undefined ) {
-					var categoryFormGroup = categoryEl.children(".form-group").last();
-					categoryFormGroup.find(".category-key").val(categoryObj.code);
-					categoryFormGroup.find(".category-val").val(categoryObj.value);
-				}
-				
-				$a.t.button.render(elDtlOpt,{
-					name :'<i class="fa fa-minus"></i>',
-					btnCls:"btn-default btn-xs m-l-5",
-					callbackFunc : function(e) {
-						elDtlOpt.closest(".form-group").remove();
-					}
-				});
-				elDtlOpt.children("input").eq(0).focus();
 			},
 			/**
 			 * 생성한 규칙을 JSONObject String 형태로 리턴한다.
@@ -337,8 +306,8 @@ define([ 'basicInfo'
 						optObj.categories = [];
 						for( var jdx = 0 ; jdx < categoryFormGroup.length; jdx++ )  {
 							categoryForm = categoryFormGroup.eq(jdx);
-							categoryKey = categoryForm.find(".category-key").val();
-							categoryVal = categoryForm.find(".category-val").val();
+							categoryKey = categoryForm.find(".etcInfo-key").val();
+							categoryVal = categoryForm.find(".etcInfo-val").val();
 							optObj.categories.push({
 								code  : categoryKey,
 								value : categoryVal

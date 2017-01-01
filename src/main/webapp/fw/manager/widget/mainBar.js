@@ -1,16 +1,16 @@
-define(['mngEvent', 'wgHelper',
-        'text!../../../../../fw/manager/tmpl/mainEditor.html'
-        ], function ($aEvent, $aWg, _tmpl) {
+define(['mngEvent', 'wgHelper', 
+        'text!fw/manager/tmpl/mainEditor.html'
+        ], function ($aEvent, $aWg,  _tmpl) {
 	
 	'use strict';
-		
-	var _this = {};
+	
 	var _pm = {
 		iconCss : null,
 		title   : null
 	} ; // param
 	
 	var _els = {} ; // elements
+	
 	var _f = {
 		
 		html : {
@@ -23,8 +23,8 @@ define(['mngEvent', 'wgHelper',
 				return rtnHtml; 
 			}, 
 		},
-		init : function(elObj) {
-			_els.areaMainBar = elObj.areaMainBar;
+		init : function() {
+			_els.areaMainBar = $aWg.els.areaMainBar;
 			_els.areaMainBar.html(_f.html.mainBar());
 			_els.label = _els.areaMainBar.find("h3");
 			_els.icon = _els.label.find("i");
@@ -40,18 +40,17 @@ define(['mngEvent', 'wgHelper',
 			
 		},
 		addButton : function( btnObj ){
-			
-			$aWg.button.render(_els.btnGroup, $.extend(true, {btnCls:"btn-default btn-sm"}, btnObj));
+			return $aWg.button.render(_els.btnGroup, $.extend(true, {btnCls:"btn-default btn-sm"}, btnObj));
 		},
 		clearButton : function() {
 			_els.btnGroup.empty();
 		},
 	};
-			
-	_this.initialize = _f.init;
-	_this.render = _f.render;
-	_this.addButton = _f.addButton;
-	_this.clearButton = _f.clearButton;
 	
-	return _this;
+	return {
+		initialize : _f.init,
+		render     : _f.render,
+		addButton  : _f.addButton,
+		clearButton : _f.clearButton
+	};
 });

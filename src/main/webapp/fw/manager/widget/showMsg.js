@@ -23,8 +23,8 @@ define(['mngEvent', 'wgHelper'
 		},
 		init : function(elObj) {
 
-			_els.areaMain   = elObj.areaMain;
-			_els.areaShowMsg = elObj.areaShowMsg;
+			_els.areaMain   = $aWg.els.areaMain;
+			_els.areaShowMsg = $aWg.els.areaShowMsg;
 			
 		},
 		render : function(obj){
