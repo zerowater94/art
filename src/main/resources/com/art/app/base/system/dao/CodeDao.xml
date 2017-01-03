@@ -20,6 +20,14 @@
 		ORDER BY code_group, code_ord
     </select>
     
+    <select id="selectMaxOrder" resultType="com.art.app.base.system.domain.CodeVO">
+        SELECT MAX(COALESCE(code_ord,0)) order
+		FROM   tco_code
+        WHERE  1 = 1
+        AND    code_type = #{codeType}
+        AND    code_group = #{codeGroup}
+        GROUP BY code_type, code_group
+    </select>
     
     
     <insert id="insert" parameterType="com.art.app.base.system.domain.CodeVO">
@@ -43,6 +51,14 @@
         	   code_ord    = #{codeOrd},
         	   etc_info    = #{etcInfo},
         	   description = #{description},
+        	   upd_user_id = #{currUserId},
+        	   upd_dtm     = #{currDateTime}
+        WHERE  code_id     = #{codeId}
+    </update>
+    
+    <update id="updateOrder" parameterType="com.art.app.base.system.domain.CodeVO">
+        UPDATE tco_code 
+        SET    code_ord    = #{codeOrd} ,
         	   upd_user_id = #{currUserId},
         	   upd_dtm     = #{currDateTime}
         WHERE  code_id     = #{codeId}

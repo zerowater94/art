@@ -6,6 +6,7 @@ define(['mngEvent', 'wgHelper'
 	var _pm = {
 		title        : null,
 		hideTitle    : false,
+		buttons      : [],
 		formList     : null,
 		searchFunc   : null
 	} ; // param
@@ -21,13 +22,12 @@ define(['mngEvent', 'wgHelper'
 			var _opt = $.extend(true, {} ,_pm, obj );
 			el.empty();
 			// row box 생성
-			var searchBox = $aWg.rowBox.render(el,{
-				title    : _opt.title,
-				buttons  : [{
-					name : $aWg.msg.search,
-					callbackFunc : _opt.searchFunc
-				}]
+			_opt.buttons.push({
+				name     : $aWg.msg.search,
+				btnCls   : 'btn-default btn-xs pull-right',
+				callbackFunc : _opt.searchFunc
 			});
+			var searchBox = $aWg.rowBox.render(el,_opt);
 			
 			searchBox.elBoxBody.addClass("search-area");
 			var elForms = $aWg.makeForm.execBatch(searchBox.elBoxBody, _opt.formList);
@@ -48,7 +48,7 @@ define(['mngEvent', 'wgHelper'
 				},
 				clearValues : function() {
 					this.setValues({});
-				},
+				}
 			};
 		},	
 	};

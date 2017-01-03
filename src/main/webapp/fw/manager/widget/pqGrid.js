@@ -61,8 +61,10 @@ define(['mngEvent', 'wgHelper'
 			return _g;
 		},
 		render : function(el, obj){
-
-			var grid = _f.makeGrid(el, $.extend(true, {}, _pm, obj));
+			
+			var _opt = $.extend(true, {}, _pm, obj);
+			var grid = _f.makeGrid(el, _opt);
+			var rowCount = 0 ;
 			var _reloadData = function(data) {
 				
 				var _obj ;
@@ -76,6 +78,7 @@ define(['mngEvent', 'wgHelper'
 				}else {
 					_obj = data;
 				}
+		        rowCount = _obj.dataModel.data.length;
 		        grid.pqGrid('option', _obj).pqGrid('refreshDataAndView');
 			};
 			return {
@@ -83,9 +86,48 @@ define(['mngEvent', 'wgHelper'
 				setSelection : function(rowIndex) {
 					grid.pqGrid('setSelection', {rowIndx:rowIndex});
 				},
+				getSelection : function() {
+					var selRow = this.getSelectionRows();
+					if ( selRow.length > 0 )
+						return selRow[0];
+					else
+						return null;
+				},
+				getSelectionRows : function() {
+					return grid.pqGrid( "selection",   { type:'row', method:'getSelection' }  );
+				},
+				getData : function() {
+					var dataInx = [];
+					for( var idx = 0 ; idx < _opt.colModel.length; idx++ ) {
+						dataInx.push(_opt.colModel[idx].dataIndx);
+					}
+					return grid.pqGrid( "getData",  { dataIndx: dataInx } );
+				},
 				resetSelection : function() {
 					grid.pqGrid('setSelection', {rowIndx:null});
 				},
+				removeRow : function(rowIndex) {
+					grid.pqGrid( "deleteRow", { rowIndx: rowIndex } );
+				},
+				addRow : function(rowIndex, rowData) {
+					grid.pqGrid( "addRow", { rowIndx: rowIndex , rowData : rowData} );
+				},
+				rowUp : function() {
+					var uiRow = this.getSelection();
+					if( uiRow == null ||uiRow.rowIndx == 0 ) 
+						return false;
+					this.removeRow(uiRow.rowIndx);
+					this.addRow(uiRow.rowIndx-1, uiRow.rowData);
+					return true;
+				},
+				rowDown : function() {
+					var uiRow = this.getSelection();
+					if( uiRow == null || uiRow.rowIndx >= rowCount-1 ) 
+						return false;
+					this.removeRow(uiRow.rowIndx);
+					this.addRow(uiRow.rowIndx+1, uiRow.rowData);
+					return true;
+				}
 			};
 		}
 	};

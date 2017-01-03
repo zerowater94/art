@@ -63,6 +63,7 @@
 
 .area-color {background-color:#fbfcff; border:1px dashed #ddd; padding:10px;border-radius: 0.6em !important;}
 
+
 @media ( min-width:768px ) {
     .head .main-bar {background-color:#827e7e}
     .head .main-bar h3 {color:#ffffff; }

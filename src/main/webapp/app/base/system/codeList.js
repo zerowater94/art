@@ -57,25 +57,47 @@ define([ 'basicInfo'
 				
 				_vws.searchGroup = $a.t.search.render(_els.areaSearchGroup,{
 					title      : $a.getMsg("lbl.codeGroup"),
-					formList   : [{ id:"codeGroup",    type:"text", label:$a.getMsg("lbl.codeGroup")}],
+					formList   : [{ id:"codeValue",    type:"text", label:$a.getMsg("lbl.codeValue")}],
 					searchFunc : _f.searchGroupCodeList
 				});
 				
 				_vws.searchCode = $a.t.search.render(_els.areaSearchCode,{
 					title      : $a.getMsg("lbl.noSelectCodeGroup"),
+					buttons    : [{ name : $a.getMsg("lbl.up"),
+									id   : 'btn-order-up',
+									callbackFunc : function(){
+										if( _vws.gridCode.rowUp() )
+											_els.btnSaveOrder.addClass("btn-warning");
+									},
+								},{ name : $a.getMsg("lbl.down"),
+									id   : 'btn-order-down',
+									callbackFunc : function(){
+										if( _vws.gridCode.rowDown() )
+											_els.btnSaveOrder.addClass("btn-warning");
+									},
+								},{ name : $a.getMsg("lbl.save"),
+									id   : 'btn-save-order',
+									callbackFunc : function(){
+										_f.updateOrder();
+									},
+								}],
 					formList   : [{ id:"code",     type:"text", label:$a.getMsg("lbl.code")},
 						  		  { id:"codeValue",type:"text", label:$a.getMsg("lbl.codeValue")}],
 					searchFunc : _f.searchCodeList
 				});
-
+				
+				_els.btnOrderUp   = _els.areaSearchCode.find("#btn-order-up");
+				_els.btnOrderDown = _els.areaSearchCode.find("#btn-order-down");
+				_els.btnSaveOrder = _els.areaSearchCode.find("#btn-save-order");
+				_f.selectCode();
 			},
 			searchGroupCodeList : function() {
+				var paramData = _vws.searchGroup.getValues();
+				paramData.codeType =  _dts.codeTypeObj.GROUP;
 				$a.send({
 					url : $a.getDefaultUrl()+"/base/system/code/list",
 					type : "get",
-					data : {
-						codeType : _dts.codeTypeObj.GROUP
-					},
+					data : paramData,
 					success : function(data) {
 						_vws.gridGroup.reloadData({
 							dataModel : {
@@ -119,20 +141,23 @@ define([ 'basicInfo'
 						_dts.editData = ui.rowData;
 						_dts.editData.isInputMode = false;
 						_f.selectedCodeGroup();
-						$a.t.mainEditor.setTitle($a.getMsg("lbl.codeGroup"));
+						
 					}
 				});
 				
 				_vws.gridCode = $a.t.grid.render(_els.areaGridCode, {
 					height:150,
 					colModel : [{ dataIndx : "code",     title: $a.getMsg("lbl.code"),     width: '30%', editable: false   },
-					            { dataIndx : "codeValue",title: $a.getMsg("lbl.codeValue"), width: '70%', editable: false  }],
+					            { dataIndx : "codeValue",title: $a.getMsg("lbl.codeValue"), width: '70%', editable: false  },
+					            { dataIndx : "codeId"   ,title: $a.getMsg("lbl.codeId")    , hidden: true  }],
 					rowClick : function( event, ui ) {
 						var rowData = ui.rowData;
+						_dts.selectedData.code = ui.rowData;
 						_dts.editData = ui.rowData;
 						_dts.editData.isInputMode = false;
 						$a.t.mainEditor.showEditor(rowData);
 						$a.t.mainEditor.setTitle($a.getMsg("lbl.code"));
+						_f.selectCode();
 					},
 				});
 				
@@ -215,10 +240,10 @@ define([ 'basicInfo'
 				
 				$a.t.mainEditor.showEditor(obj);
 				$a.t.mainEditor.setTitle($a.getMsg("lbl.addCode"));
-				_els.forms.editor.codeGroup.show();
+				_els.forms.editor.codeGroup.area.show();
 				if ( obj.codeType == _dts.codeTypeObj.GROUP ) {
 					$a.t.mainEditor.setTitle($a.getMsg("lbl.addCodeGroup"));
-					_els.forms.editor.codeGroup.hide();
+					_els.forms.editor.codeGroup.area.hide();
 				}
 					
 			},
@@ -229,6 +254,22 @@ define([ 'basicInfo'
 				_els.btnAddCode.show();
 				_vws.searchCode.changeTitle(_dts.selectedData.group.codeValue);
 				_f.searchCodeList();
+				
+				$a.t.mainEditor.setTitle($a.getMsg("lbl.codeGroup"));
+				_dts.selectedData.code = null;
+				_f.selectCode();
+				
+			},
+			selectCode : function() {
+				if ( _dts.selectedData.code == null ) {
+					_els.btnOrderUp.hide();
+					_els.btnOrderDown.hide();
+					_els.btnSaveOrder.hide();
+				} else {
+					_els.btnOrderUp.show();
+					_els.btnOrderDown.show();
+					_els.btnSaveOrder.show();
+				}
 			},
 			insertData : function() {
 				
@@ -251,6 +292,23 @@ define([ 'basicInfo'
 						$a.show.success($a.getMsg("msg.success.insert"));
 						_f.searchGroupCodeList();
 						_f.closeEditor();
+					}
+				});
+			},
+			updateOrder : function() {
+				
+				var codeData = _vws.gridCode.getData();
+				
+				for ( var idx = 0 ; idx < codeData.length; idx++ ) {
+					codeData[idx].codeOrd = (idx+1); 
+				}
+				$a.send({
+					url  : $a.getDefaultUrl()+"/base/system/code/save/order",
+					type : "put", 
+					data : codeData,
+					success : function(data) {
+						$a.show.success($a.getMsg("msg.success.update"));
+						_els.btnSaveOrder.removeClass("btn-warning");
 					}
 				});
 			},

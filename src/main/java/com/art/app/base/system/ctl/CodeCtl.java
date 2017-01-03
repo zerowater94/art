@@ -30,6 +30,14 @@ public class CodeCtl extends AbstractCtl
 		return service.getList(param);
 	}
 	
+	@RequestMapping(value="/maxOrder", method = RequestMethod.GET)
+	public CodeVO getMaxOrder( CodeVO param ) throws Exception
+	{
+		if( CommonUtil.isNull(param.getCodeGroup()) )
+			throw new BadRequestException(BasicInfo.fail(super.getSessionLocale()).poorParam());
+		return service.getMaxOrder(param);
+	}
+	
 	
 	@RequestMapping(value="/save", method = RequestMethod.POST)
 	public ResultVO insertData(@RequestBody CodeVO param ) throws Exception
@@ -53,8 +61,18 @@ public class CodeCtl extends AbstractCtl
 		return rstVO;
 	}
 	
+	@RequestMapping(value="/save/order", method = RequestMethod.PUT)
+	public ResultVO updateData(@RequestBody List<CodeVO> param ) throws Exception
+	{
+		logger.debug("call updateData : " + param.size() );
+		ResultVO rstVO = service.updateOrder(param);
+		if ( !rstVO.getResult() )
+			throw new ArtException(BasicInfo.fail(super.getSessionLocale()).update());
+		return rstVO;
+	}
 	
-	@RequestMapping(value="/save", method = RequestMethod.DELETE)
+	
+	@RequestMapping(value="/delete", method = RequestMethod.DELETE)
 	public ResultVO deleteData(@RequestBody CodeVO param ) throws Exception
 	{
 		logger.debug("call deleteData : " +param.getCodeId());

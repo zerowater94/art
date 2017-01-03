@@ -23,6 +23,11 @@ public class CodeServiceImpl extends AbstractService implements CodeService
 		return dao.selectList(param);
 	}
 	
+	public CodeVO getMaxOrder(CodeVO param) throws Exception
+	{
+		return dao.selectMaxOrder(param);
+	}
+	
 	public ResultVO insert(CodeVO param) throws Exception
 	{
 		ResultVO rstVO = new ResultVO();
@@ -39,6 +44,20 @@ public class CodeServiceImpl extends AbstractService implements CodeService
 		rstVO.setExecCnt(dao.update(param));
 		if ( rstVO.getExecCnt() > 0 )
 			rstVO.setResult(true);
+		return rstVO;
+	}
+	
+	public ResultVO updateOrder(List<CodeVO> param) throws Exception
+	{
+		ResultVO rstVO = new ResultVO();
+		int execCnt = 0 ;
+		for( CodeVO vo : param) 
+		{
+			execCnt += dao.updateOrder(vo);
+		}
+		if ( execCnt == param.size() )
+			rstVO.setResult(true);
+		rstVO.setExecCnt(execCnt);
 		return rstVO;
 	}
 	

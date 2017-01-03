@@ -157,7 +157,7 @@ define(['mngEvent', 'basicUtil' ,
 		},
 		addNewForm : function( el, obj ) {
 			
-			var _areaForm, _elRtnForm, _elInput, _elLabel;  
+			var _areaForm, _rtnFormInfo;  
 			var _opt = $.extend(true,{}, _pm, obj );
 			
 			if ( _opt.type == 'etc-info') {
@@ -171,35 +171,35 @@ define(['mngEvent', 'basicUtil' ,
 			if( obj.label != null ) {
 				areaForm.html(_f.html.addLabel(_opt));
 			}
-			_f.appendFormEl(areaForm, _opt);
+			_rtnFormInfo = _f.appendFormEl(areaForm, _opt);
 			
 			// etc info일 경우( 가변코드 관리 )
 			if ( _opt.type == 'etc-info') {
 				_f.addNewForm( el, {
 					id: _opt.id+"-keyValue", type:"custom", label:null
-				}).addClass("area-color"); // 재귀 함수 
+				}).area.addClass("area-color"); // 재귀 함수 
 			}
 			
-			return areaForm;
+			return _rtnFormInfo;
 		},
 		appendFormEl : function( elFormGroup, obj ) {
 			
 			if ( obj.type == 'select' ) {
-				_f.select(elFormGroup, obj);
+				return _f.select(elFormGroup, obj);
 			} else if ( obj.type == 'radio' ) {
-				_f.radio(elFormGroup, obj);
+				return _f.radio(elFormGroup, obj);
 			} else if ( obj.type == 'checkbox' ) {
-				_f.checkbox(elFormGroup, obj);
+				return _f.checkbox(elFormGroup, obj);
 			} else if ( obj.type == 'textarea' ) {
-				_f.textarea(elFormGroup, obj);
+				return _f.textarea(elFormGroup, obj);
 			} else if ( obj.type == 'date' ) {
-				_f.date(elFormGroup, obj);
+				return _f.date(elFormGroup, obj);
 			} else if ( obj.type == 'etc-info' ) {
-				_f.etcInfo(elFormGroup, obj);
+				return _f.etcInfo(elFormGroup, obj);
 			} else if ( obj.type == 'custom' ) {
-				_f.custom(elFormGroup, obj);
+				return _f.custom(elFormGroup, obj);
 			} else {
-				_f.text(elFormGroup, obj);
+				return _f.text(elFormGroup, obj);
 			}
 		},
 		addNewEtcInfo : function( el, obj ) {
@@ -210,23 +210,23 @@ define(['mngEvent', 'basicUtil' ,
 					required : true,
 				}
 			});
-			var elEtcInfo = this.addNewForm(el, elParam);
+			var elAreaEtcInfo = this.addNewForm(el, elParam).area;
 			elParam.inputCls = "w-70 etcInfo-val";
 			elParam.addedBtn = {
 				name :'<i class="fa fa-minus"></i>',
 				btnCls:"btn-default btn-xs m-l-5",
 				callbackFunc : function(e) {
-					elEtcInfo.closest(".form-group").remove();
+					elAreaEtcInfo.closest(".form-group").remove();
 				}
 			}; 
-			this.appendFormEl(elEtcInfo,elParam);
+			this.appendFormEl(elAreaEtcInfo,elParam);
 			
 			if( obj !== undefined ) {
-				elEtcInfo.find(".etcInfo-key").val(obj.code);
-				elEtcInfo.find(".etcInfo-val").val(obj.value);
+				elAreaEtcInfo.find(".etcInfo-key").val(obj.code);
+				elAreaEtcInfo.find(".etcInfo-val").val(obj.value);
 			}
 			
-			elEtcInfo.children("input").eq(0).focus();
+			elAreaEtcInfo.children("input").eq(0).focus();
 		},
 		setValidAttr : function( obj,  _elInput ) {
 			
@@ -273,11 +273,15 @@ define(['mngEvent', 'basicUtil' ,
 			}
 			
 			_f.setValidAttr(obj, elInput);
+			
+			return {
+				area : el,
+			};
 		},
 		select : function( el, obj ) {
 
 			var _selOptions = {
-				optionsList : null,
+				optionList : null,
 				blankStr    : _msg.blankStr,
 				blankOption : true,
 				defaultParam : null,
@@ -297,28 +301,38 @@ define(['mngEvent', 'basicUtil' ,
 				$aWgButton.render(el.find(".input-group-btn"), obj.addedBtn);
 			}
 			
-			if( _typeObj.blankOption ) {
-				elSelect.append("<option value=''>"+_typeObj.blankStr+"</option>");
-			}
-			if( _typeObj.optionList != null ) {
-				var _obj;
-				for( var idx = 0 ; idx < _typeObj.optionList.length; idx++ ) {
-					_obj = _typeObj.optionList[idx];
-					
-					if( typeof _obj == 'object')
-						elSelect.append("<option value='"+_obj[_typeObj.jsonReader.code]+"'>"+_obj[_typeObj.jsonReader.value]+"</option>");
-					else
-						elSelect.append("<option value='"+_obj+"'>"+_obj+"</option>");
+			var _reloadOptions = function( _paramData ) {
+				elSelect.empty();
+				if( _typeObj.blankOption ) {
+					elSelect.append("<option value=''>"+_typeObj.blankStr+"</option>");
 				}
-			}
+				if( _paramData.optionList != null ) {
+					var _obj;
+					for( var idx = 0 ; idx < _paramData.optionList.length; idx++ ) {
+						_obj = _paramData.optionList[idx];
+						
+						if( typeof _obj == 'object')
+							elSelect.append("<option value='"+_obj[_typeObj.jsonReader.code]+"'>"+_obj[_typeObj.jsonReader.value]+"</option>");
+						else
+							elSelect.append("<option value='"+_obj+"'>"+_obj+"</option>");
+					}
+				}
+				
+				if( _paramData.defaultParam != null )
+					elSelect.val(_paramData.defaultParam);
+			};
 			
-			if( _typeObj.defaultParam != null )
-				elSelect.val(_typeObj.defaultParam);
+			_reloadOptions(_typeObj);
 			
 			if ( _typeObj.callbackChange != null ) 
 				$aEvent.addEvent(elSelect,"change",_typeObj.callbackChange);
 			
 			_f.setValidAttr(obj, elSelect);
+			
+			return {
+				area : el,
+				reloadOptions : _reloadOptions
+			};
 		},
 		radio : function(el, obj) {
 			var _radioOptions = {
@@ -350,6 +364,10 @@ define(['mngEvent', 'basicUtil' ,
 				$aEvent.addEvent(elRadio,"click",_typeObj.callbackClick);
 			
 			_f.setValidAttr(obj, elRadio);
+			
+			return {
+				area : el,
+			};
 		},
 		checkbox : function(el, obj) {
 			var _chkboxOptions = {
@@ -386,6 +404,10 @@ define(['mngEvent', 'basicUtil' ,
 				$aEvent.addEvent(elCheckbox,"click",_typeObj.callbackClick);
 			
 			_f.setValidAttr(obj, elCheckbox);
+			
+			return {
+				area : el,
+			};
 		},
 		textarea : function( el, obj ) {
 			
@@ -398,10 +420,18 @@ define(['mngEvent', 'basicUtil' ,
 			var elInput = el.find("textarea");
 			elInput.attr("rows",_typeObj.rows);
 			_f.setValidAttr(obj, elInput);
+			
+			return {
+				area : el,
+			};
 		},
 		date : function( el, obj ) {
 			
 			el.append(_f.html.form.date(obj));
+			
+			return {
+				area : el,
+			};
 		},
 		etcInfo : function( el, obj ) {
 			el.append(_f.html.form.text(obj));
@@ -416,10 +446,18 @@ define(['mngEvent', 'basicUtil' ,
 			});
 			obj.validation.readOnly = true;
 			_f.setValidAttr(obj, elInput);
+			
+			return {
+				area : el,
+			};
 		},
 		custom : function(el, obj ) {
 			
 			el.append(_f.html.addDiv(obj));
+			
+			return {
+				area : el,
+			};
 		},
 		
 		execBatch : function( el, formList ) {
@@ -528,5 +566,6 @@ define(['mngEvent', 'basicUtil' ,
 		execBatch     : _f.execBatch,
 		getFormValues : _f.getFormValues,
 		setFormValues : _f.setFormValues,
+		addNewEtcInfo : _f.addNewEtcInfo,
 	};
 });

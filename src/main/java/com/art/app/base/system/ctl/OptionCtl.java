@@ -73,7 +73,7 @@ public class OptionCtl extends AbstractCtl
 		return rstVO;
 	}
 	
-	@RequestMapping(value="/save", method = RequestMethod.DELETE)
+	@RequestMapping(value="/delete", method = RequestMethod.DELETE)
 	public ResultVO deleteData(@RequestBody OptionVO param ) throws Exception
 	{
 		logger.debug("call deleteData : " + param.getCategory() + " , " +param.getOptionId());

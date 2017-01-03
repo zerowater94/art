@@ -64,9 +64,6 @@ define([ 'basicInfo'
 					},
 					callbackFunc : _f.searchOptionList
 				});
-				
-//				_els.areaSearch.find(".dropdown").append("<span id='area-search-result'></span>");
-//				_els.areaSearchResult = _els.areaSearch.find("#area-search-result");
 			},
 			searchCategoryList : function() {
 				$a.send({
@@ -149,11 +146,11 @@ define([ 'basicInfo'
 		                    ],
 				};
 				_els.elForms.editor = $a.t.mainEditor.render(_param);
-				_els.elForms.editor.optionBuilder.hide();
+				_els.elForms.editor.optionBuilder.area.hide();
 				
 				// popover 생성.
-				_f.makePopover(_els.elForms.editor.category.find("#add-category"));
-				_f.makePopoverExpand(_els.elForms.editor.optionValue.find("#show-optionValue"));
+				_f.makePopover(_els.elForms.editor.category.area.find("#add-category"));
+				_f.makePopoverExpand(_els.elForms.editor.optionValue.area.find("#show-optionValue"));
 				_f.makeOptionBuild();
 			},
 			closeEditor : function() {
@@ -177,7 +174,7 @@ define([ 'basicInfo'
 			 * building 하기 위한 옵션 설정 항목이 추가된다
 			 */
 			makeOptionBuild : function() {
-				var _elBuilder = _els.elForms.editor.optionBuilder;
+				var _elBuilder = _els.elForms.editor.optionBuilder.area;
 				_elBuilder.show();
 				var _vRowBox = $a.t.rowBox.render(_elBuilder,{
 					title : $a.getMsg("lbl.makeRuleDetail"),
@@ -194,7 +191,7 @@ define([ 'basicInfo'
 			 * 선택된 Options의 생성 규칙 입력 form을 생성한다.
 			 */
 			setOptionBuilder : function(arry) {
-				var elBuilder = _els.elForms.editor.optionBuilder;
+				var elBuilder = _els.elForms.editor.optionBuilder.area;
 				_els.elBuiliderBox.empty();
 				if ( arry == undefined )
 					return;
@@ -222,7 +219,7 @@ define([ 'basicInfo'
 						defaultParam : 'text'
 					}
 				};
-				var _areaOptItem = $a.t.makeForm.addNewForm(_els.elBuiliderBox,_param);
+				var _areaOptItem = $a.t.makeForm.addNewForm(_els.elBuiliderBox,_param).area;
 				_param = $a.t.makeForm.getNewFormObj({
 					inputCls : "w-50 end-btn item-expl",
 				});
@@ -249,7 +246,7 @@ define([ 'basicInfo'
 				_param.type = "custom";
 				$a.t.makeForm.appendFormEl(_areaOptItem,_param);
 				
-				_areaItemCategories = _areaOptItem.find("#"+_param.id);
+				_areaItemCategories = _areaOptItem.find("#area-item-options");
 				_areaItemCategories.addClass("area-color").addClass("item-categories");
 				
 				_btnAddItem.hide();
@@ -285,7 +282,7 @@ define([ 'basicInfo'
 			 * 생성한 규칙을 JSONObject String 형태로 리턴한다.
 			 */
 			getOptionValues : function() {
-				var elBuilder = _els.elForms.editor.optionBuilder;
+				var elBuilder = _els.elForms.editor.optionBuilder.area;
 				var elFormGroups = elBuilder.find(".form-group select");
 				var cnt = elFormGroups.length;
 				var formGroup, elSelect, elExpl, elItems, elCategories;
@@ -334,7 +331,7 @@ define([ 'basicInfo'
 			 */
 			addCategory : function( popOverEl ) {
 				if ( $a.v.isValidBatchData(popOverEl) ) {
-					var inputCategory = _els.elForms.editor.category.find("#category");
+					var inputCategory = _els.elForms.editor.category.area.find("#category");
 					var inputVal = popOverEl.find("#category").val();
 					inputCategory.append("<option value='"+inputVal+"'>"+inputVal+"</option>");
 					inputCategory.val(inputVal);
@@ -367,7 +364,7 @@ define([ 'basicInfo'
 						_els.elForms.category = $a.t.makeForm.execBatch(popOverEl,_param);
 						var elPopoverCategory = popOverEl.find("#area-category");
 						
-						$a.t.button.render(_els.elForms.category.category,{
+						$a.t.button.render(_els.elForms.category.category.area,{
 							name :$a.getMsg("lbl.add"), 
 							btnCls:"btn-default btn-xs m-l-10",
 							callbackFunc :  function() {
@@ -375,7 +372,7 @@ define([ 'basicInfo'
 							} ,
 						});
 						
-						_els.elForms.category.category.find("input").keypress(function(e){
+						_els.elForms.category.category.area.find("input").keypress(function(e){
 							if (e.keyCode == 13){
 								_callbackFunc(e);
 						    }  
@@ -392,7 +389,7 @@ define([ 'basicInfo'
 					popoverCss : "popover-optionValue",
 					shownFunc : function(event, popOverEl) {
 						
-						var val = _els.elForms.editor.optionValue.find("#optionValue").val();
+						var val = _els.elForms.editor.optionValue.area.find("#optionValue").val();
 						if( !$a.u.isEmpty(val) ) {
 							var valObj = $.parseJSON(val);
 							$.each(valObj, function(key, func) {
@@ -483,7 +480,7 @@ define([ 'basicInfo'
 				$a.print.confirm($a.getMsg("msg.confirm.delete"), function(){
 					
 					$a.send({
-						url  : $a.getDefaultUrl()+"/base/system/option/save",
+						url  : $a.getDefaultUrl()+"/base/system/option/delete",
 						type : "delete", 
 						data : obj,
 						success : function(data) {
