@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.art.app.base.system.domain.OptionVO;
 import com.art.app.base.system.service.OptionService;
 import com.art.app.common.basic.ctl.AbstractCtl;
-import com.art.app.common.component.BasicInfo;
 import com.art.fw.domain.ResultVO;
 import com.art.fw.exception.ArtException;
 import com.art.fw.exception.BadRequestException;
@@ -43,7 +42,7 @@ public class OptionCtl extends AbstractCtl
 		logger.debug("call insertdata : " + param.getCategory() + " , " +param.getOptionId());
 		ResultVO rstVO = service.insert(param);
 		if ( !rstVO.getResult() )
-			throw new ArtException(BasicInfo.fail(super.getSessionLocale()).insert());
+			throw new ArtException(rstVO);
 		return rstVO;
 	}
 	
@@ -53,10 +52,10 @@ public class OptionCtl extends AbstractCtl
 		logger.debug("call updateData : " + param.getCategory() + " , " +param.getOptionId());
 		
 		if( CommonUtil.isNull(param.getOptionId()) )
-			throw new BadRequestException(BasicInfo.fail(super.getSessionLocale()).poorParam());
+			throw new BadRequestException();
 		ResultVO rstVO = service.update(param);
 		if ( !rstVO.getResult() )
-			throw new ArtException(BasicInfo.fail(super.getSessionLocale()).update());
+			throw new ArtException(rstVO);
 		return rstVO;
 	}
 	
@@ -66,10 +65,10 @@ public class OptionCtl extends AbstractCtl
 		logger.debug("call updateValue : " + param.getOptionId() + " , " +param.getOptionValue());
 		
 		if( CommonUtil.isNull(param.getOptionId()) )
-			throw new BadRequestException(BasicInfo.fail(super.getSessionLocale()).poorParam());
+			throw new BadRequestException();
 		ResultVO rstVO = service.updateValue(param);
 		if ( !rstVO.getResult() )
-			throw new ArtException(BasicInfo.fail(super.getSessionLocale()).update());
+			throw new ArtException(rstVO);
 		return rstVO;
 	}
 	
@@ -79,10 +78,10 @@ public class OptionCtl extends AbstractCtl
 		logger.debug("call deleteData : " + param.getCategory() + " , " +param.getOptionId());
 		
 		if( CommonUtil.isNull(param.getOptionId()) )
-			throw new BadRequestException(BasicInfo.fail(super.getSessionLocale()).poorParam());
+			throw new BadRequestException();
 		ResultVO rstVO = service.delete(param);
 		if ( !rstVO.getResult() )
-			throw new ArtException(BasicInfo.fail(super.getSessionLocale()).delete());
+			throw new ArtException(rstVO);
 		return rstVO;
 	}
 }

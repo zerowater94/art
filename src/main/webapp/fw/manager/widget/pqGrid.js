@@ -16,6 +16,7 @@ define(['mngEvent', 'wgHelper'
 		showTitle : false, 
 		resizable:false,
 		draggable:false,
+		selectionModel : {type: 'row', mode: 'single'},
 		scrollModel: { autoFit: true },
         collapsible: { on: true, collapsed: false },
 	} ; // param
@@ -95,6 +96,9 @@ define(['mngEvent', 'wgHelper'
 				},
 				getSelectionRows : function() {
 					return grid.pqGrid( "selection",   { type:'row', method:'getSelection' }  );
+				},
+				getRowData : function( rowIndex ) {
+					return grid.pqGrid( "getRowData", {rowIndxPage: rowIndex} );
 				},
 				getData : function() {
 					var dataInx = [];

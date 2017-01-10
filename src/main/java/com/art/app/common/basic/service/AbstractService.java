@@ -17,8 +17,9 @@ public abstract class AbstractService
 	@Qualifier("txManager-basic")
 	protected PlatformTransactionManager  txManager;
 	
+	protected TransactionStatus tx = null;
 	
-	protected TransactionStatus startTransaction( TransactionStatus txStatus )
+	protected TransactionStatus startTransaction()
 	{
 		DefaultTransactionDefinition def = new DefaultTransactionDefinition();
 		def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);

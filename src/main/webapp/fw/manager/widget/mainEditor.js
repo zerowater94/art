@@ -88,10 +88,8 @@ define(['mngEvent', 'wgHelper',
 		},
 		setTitle : function( title ) {
 			_els.editTitle.html(title+"&nbsp;&nbsp;<i class='fa fa-plus-square'></i>");
-			_f.setTitleIcon();
 		},
 		setTitleIcon : function( inputMode ) {
-
 			if ( inputMode == undefined ) {
 				_els.editTitle.find("i").removeClass();
 				return;
@@ -129,21 +127,25 @@ define(['mngEvent', 'wgHelper',
 				if ( _pm.callBackShow != null )
 					_pm.callBackShow();
 				
-				if( obj == undefined || obj == null ) {
-					_f.clearValues();
-					_f.setTitleIcon('I');
-				} else {
-					_f.setValues(obj);
-					if ( obj.isInputMode != undefined && obj.isInputMode  )
-						_f.setTitleIcon('I');
-					else
-						_f.setTitleIcon('U');
-					
-					if ( obj.shown !== undefined )
-						obj.shown();
-				}
+				if ( obj.shown !== undefined )
+					obj.shown();
+				
 				$aEvent.execWinResize();
 			}, showTime);
+			
+			if( obj == undefined || obj == null ) {
+				_f.clearValues();
+				_f.setTitleIcon('I');
+			} else {
+				_f.setValues(obj);
+				if ( obj.title != undefined )
+					_f.setTitle(obj.title);
+				
+				if ( obj.isInputMode != undefined && obj.isInputMode  )
+					_f.setTitleIcon('I');
+				else
+					_f.setTitleIcon('U');
+			}
 		},
 		hideEditor : function() {
 			

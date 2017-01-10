@@ -82,7 +82,8 @@ define(['alertify', 'blockUi',  'basicUtil', 'basicValid',
 					try {
 						// JSON object 형태임.
 						var errObj = $.parseJSON(xhr.responseText);
-						console.error(xhr.status+"\n"+errObj.resultMessage+"\n"+errObj.url);
+						console.log(errObj);
+						console.error(xhr.status+"\n"+errObj.resultCode+"\n"+errObj.resultMessage+"\n"+errObj.url);
 						if( errObj.resultMessage == '' )
 							_this.print.alert(_errMsg.failProcess); // 에러 메시지 출력
 						else

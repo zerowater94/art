@@ -26,6 +26,7 @@ public class BasicConfig extends AbstractBasic
 	
 	public static final String DEF_MSG_MODULE = "common";
 	
+	
 	/**********************************************************************
 	 * 
 	 *  basic Properties....( app.properties )
@@ -174,5 +175,26 @@ public class BasicConfig extends AbstractBasic
 		}
 			
 		return rtnMap.get(module);
+	}
+	
+	/**********************************************************************
+	 * 
+	 *  Result Code Message...
+	 * 
+	 ***********************************************************************/
+	public void setLoadResultCode(boolean bln) 
+	{
+		BasicResultCode.reloadResultCode();
+	}
+	
+	
+	public static String getResultCode(String key, String locale)
+	{
+		return BasicResultCode.getResultCodeMap(locale).get(key).getCode();
+	}
+	
+	public static String getResultMsg(String key, String locale)
+	{
+		return BasicResultCode.getResultCodeMap(locale).get(key).getValue();
 	}
 }

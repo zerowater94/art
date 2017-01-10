@@ -20,13 +20,30 @@
 		ORDER BY code_group, code_ord
     </select>
     
+    <select id="selectData" resultType="com.art.app.base.system.domain.CodeVO">
+        SELECT  code_id, site_id, comp_id, code_group, code, code_value, 
+        		code_type, use_yn, code_ord, description, etc_info,
+        	    reg_user_id, reg_dtm, upd_user_id, upd_dtm
+		FROM    tco_code
+        WHERE   1 = 1
+        AND     code_id = #{codeId}
+    </select>
+    
     <select id="selectMaxOrder" resultType="com.art.app.base.system.domain.CodeVO">
-        SELECT MAX(COALESCE(code_ord,0)) order
+        SELECT MAX(COALESCE(code_ord,0)) code_ord
 		FROM   tco_code
         WHERE  1 = 1
         AND    code_type = #{codeType}
         AND    code_group = #{codeGroup}
-        GROUP BY code_type, code_group
+        GROUP BY code_group
+    </select>
+    
+    <select id="selectCodeGroupCount" resultType="com.art.app.base.system.domain.CodeVO">
+        SELECT COUNT(1) count
+		FROM   tco_code
+        WHERE  1 = 1
+        AND    code_type = #{codeType}
+        AND    code_group = #{codeGroup}
     </select>
     
     
@@ -64,9 +81,27 @@
         WHERE  code_id     = #{codeId}
     </update>
     
+    <update id="updateOrderGap" parameterType="com.art.app.base.system.domain.CodeVO">
+        UPDATE tco_code 
+        SET    code_ord    = code_ord ${gap} ,
+        	   upd_user_id = #{currUserId},
+        	   upd_dtm     = #{currDateTime}
+        WHERE  code_group  = #{codeGroup}
+        AND    code_ord   >= #{sIndex}
+        <if test="eIndex > 0"><![CDATA[
+        	AND    code_ord   <= #{eIndex}
+        ]]> </if>
+        
+    </update>
+    
     <delete id="delete" parameterType="com.art.app.base.system.domain.CodeVO">
         DELETE FROM tco_code
         WHERE  code_id     = #{codeId}
+    </delete>
+    
+    <delete id="deleteGroup" parameterType="com.art.app.base.system.domain.CodeVO">
+        DELETE FROM tco_code
+        WHERE  code_group  = #{codeGroup}
     </delete>
     
 </mapper> 

@@ -21,6 +21,7 @@ import com.art.fw.domain.SessionInfoVO;
 import com.art.fw.exception.ArtException;
 import com.art.fw.exception.AuthException;
 import com.art.fw.exception.BadRequestException;
+import com.art.fw.resource.BasicResultCode;
 
 public abstract class AbstractCtl 
 {
@@ -107,29 +108,47 @@ public abstract class AbstractCtl
 	@ExceptionHandler({Exception.class, ArtException.class, AuthException.class, BadRequestException.class})
 	public ResultVO fail(HttpServletRequest request, HttpServletResponse response, Exception exception) 
 	{
-		ResultVO error = new ResultVO();
-		
-	    error.setResultMessage( exception.getMessage());
-	    error.setUrl(request.getRequestURL().toString() +" \n"+exception.getClass().getName());
-	    this.logger.error("Exeption====================> "+ exception.getClass().getName());
-	    if( exception.getClass().getName().equals(AuthException.class.getName()) )
+		ResultVO error = null;
+	    System.out.println("exception.getClass().getName() : "+ exception.getClass().getName());
+	    if( exception.getClass().getName().equals(ArtException.class.getName()) )
 	    {
-	    	response.setStatus(HttpStatus.FORBIDDEN.value());
-	    }else if( exception.getClass().getName().equals(BadRequestException.class.getName()) )
-	    {
-	    	response.setStatus(HttpStatus.BAD_REQUEST.value());
-	    	
+	    	error = ((ArtException)exception).getResultVO();
+	    	if( error == null )
+	    	{
+	    		error = new ResultVO();
+	    		error.setResultMessage( exception.getMessage());	
+	    	} else 
+	    	{
+	    		error.setResultMessage(BasicInfo.getResultMsg(error.getResultCode(), this.getSessionLocale()));
+	    	}
+	    	response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 	    }else
 	    {
-	    	if( exception.getClass().getName().equals(NullPointerException.class.getName()) )
-	    		error.setResultMessage( NullPointerException.class.getName() );
-	    	else if ( exception.getClass().getName().indexOf("org.springframework.dao") > -1) 
-	    		error.setResultMessage( BasicInfo.fail(this.getSessionLocale()).daoError() );
-	    	
-	    	response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+	    	error = new ResultVO();
+		    
+	    	if( exception.getClass().getName().equals(AuthException.class.getName()) )
+		    {
+		    	response.setStatus(HttpStatus.FORBIDDEN.value());
+		    	error.setResultMessage( BasicInfo.getResultMsg(BasicResultCode.NO_AUTH, this.getSessionLocale()));
+		    }else if( exception.getClass().getName().equals(BadRequestException.class.getName()) )
+		    {
+		    	response.setStatus(HttpStatus.BAD_REQUEST.value());
+		    	error.setResultMessage( BasicInfo.getResultMsg(BasicResultCode.INSUFFICIENT_PARAM, this.getSessionLocale()));
+		    }else
+		    {
+		    	if( exception.getClass().getName().equals(NullPointerException.class.getName()) )
+		    		error.setResultMessage( NullPointerException.class.getName() );
+		    	else if ( exception.getClass().getName().indexOf("org.springframework.dao") > -1) 
+		    		error.setResultMessage( BasicInfo.getResultMsg(BasicResultCode.SQL_ERROR, this.getSessionLocale()));
+		    	response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+		    }
 	    }
+
+	    error.setUrl(request.getRequestURL().toString() +" \n"+exception.getClass().getName());
+	    
+	    this.logger.error("Exeption Trace====================> "+ exception.getClass().getName());
 	    StackTraceElement[] errors = exception.getStackTrace();
-	    this.logger.error(""+ exception);
+	    this.logger.error("["+error.getResultCode()+"]"+ error.getResultMessage() );
 	    for( StackTraceElement trace : errors )
 	    {
 	    	if( trace.getClassName().indexOf("com.art") > -1 )

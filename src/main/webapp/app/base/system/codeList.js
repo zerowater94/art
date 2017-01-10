@@ -34,36 +34,44 @@ define([ 'basicInfo'
 				_els.areaGridCode    = thisEl.find("#grid-list-code");
 			},
 			setupMainBar : function(){
-				_els.btnAddGroup = $a.t.mainBar.addButton({ 
-					name : $a.getMsg("lbl.addCodeGroup"), 
-					callbackFunc : function(e){
-						_f.showInputEditor({
-							codeType : _dts.codeTypeObj.GROUP
-						});
-					} 
-			    });
-				_els.btnAddCode = $a.t.mainBar.addButton({ 
-					name : $a.getMsg("lbl.addCode"), 
-					callbackFunc : function(e){
-						_f.showInputEditor({
-							codeType  : _dts.codeTypeObj.CODE,
-							codeGroup : _dts.selectedData.group.code 
-						});
-					} 
-			    });
-				_els.btnAddCode.hide();
+				
 			},
 			makeSearchArea : function() {
 				
 				_vws.searchGroup = $a.t.search.render(_els.areaSearchGroup,{
 					title      : $a.getMsg("lbl.codeGroup"),
+					buttons    : [{ name : $a.getMsg("lbl.addCodeGroup"),
+									id   : 'btn-group-add',
+									callbackFunc : function(){
+										_f.showInputEditor({
+											codeType : _dts.codeTypeObj.GROUP,
+											codeOrd  : 0,
+										});
+									},
+								},{ name : $a.getMsg("lbl.delete"),
+									id   : 'btn-group-delete',
+									callbackFunc : function(){
+										_f.showInputEditor({
+											codeType : _dts.codeTypeObj.GROUP,
+											codeOrd  : 0,
+										});
+									},
+								},],
 					formList   : [{ id:"codeValue",    type:"text", label:$a.getMsg("lbl.codeValue")}],
 					searchFunc : _f.searchGroupCodeList
 				});
 				
 				_vws.searchCode = $a.t.search.render(_els.areaSearchCode,{
 					title      : $a.getMsg("lbl.noSelectCodeGroup"),
-					buttons    : [{ name : $a.getMsg("lbl.up"),
+					buttons    : [{ name : $a.getMsg("lbl.addCode"),
+									id   : 'btn-code-add',
+									callbackFunc : function(){
+										_f.showInputEditor({
+											codeType  : _dts.codeTypeObj.CODE,
+											codeGroup : _dts.selectedData.group.code 
+										});
+									},
+								},{ name : $a.getMsg("lbl.up"),
 									id   : 'btn-order-up',
 									callbackFunc : function(){
 										if( _vws.gridCode.rowUp() )
@@ -80,16 +88,22 @@ define([ 'basicInfo'
 									callbackFunc : function(){
 										_f.updateOrder();
 									},
+								},{ name : $a.getMsg("lbl.delete"),
+									id   : 'btn-code-delete',
+									callbackFunc : function(){
+										_f.deleteData();
+									},
 								}],
 					formList   : [{ id:"code",     type:"text", label:$a.getMsg("lbl.code")},
 						  		  { id:"codeValue",type:"text", label:$a.getMsg("lbl.codeValue")}],
 					searchFunc : _f.searchCodeList
 				});
-				
+				_els.btnAddCode   = _els.areaSearchCode.find("#btn-code-add");
 				_els.btnOrderUp   = _els.areaSearchCode.find("#btn-order-up");
 				_els.btnOrderDown = _els.areaSearchCode.find("#btn-order-down");
 				_els.btnSaveOrder = _els.areaSearchCode.find("#btn-save-order");
-				_f.selectCode();
+				_els.btnDeleteCode = _els.areaSearchCode.find("#btn-code-delete");
+				_f.setupSelectedCode();
 			},
 			searchGroupCodeList : function() {
 				var paramData = _vws.searchGroup.getValues();
@@ -125,6 +139,33 @@ define([ 'basicInfo'
 					}
 				});
 			},
+			searchMaxOrder : function( codeGroup ) {
+				$a.send({
+					url : $a.getDefaultUrl()+"/base/system/code/maxOrder",
+					type : "get",
+					data : {
+						codeType  : _dts.codeTypeObj.CODE,
+						codeGroup :  codeGroup
+					},
+					success : function(data) {
+						var maxOrder = data.codeOrd;
+						var param = {
+							optionList : [],
+						};
+						var idx = 1;
+						for( idx = 1 ; idx <= maxOrder; idx++ ) {
+							param.optionList.push(idx);
+						}
+						if ( _dts.editData.isInputMode ) {
+							param.optionList.push(idx);
+							param.defaultParam = (idx);
+						} else {
+							param.defaultParam = _dts.selectedData.code.codeOrd;
+						}
+						_els.forms.editor.codeOrd.reloadOptions(param);
+					}
+				});
+			},
 			makeGrid : function() {
 				
 				_vws.gridGroup = $a.t.grid.render(_els.areaGridGroup, {
@@ -134,7 +175,7 @@ define([ 'basicInfo'
 					rowClick : function( event, ui ) {
 						var rowData = ui.rowData;
 						// include rowSelect function.
-						$a.t.mainEditor.showEditor(rowData);
+						_f.showEditor(rowData);
 					},
 					rowSelect: function( event, ui ) {
 						_dts.selectedData.group = ui.rowData;
@@ -155,9 +196,8 @@ define([ 'basicInfo'
 						_dts.selectedData.code = ui.rowData;
 						_dts.editData = ui.rowData;
 						_dts.editData.isInputMode = false;
-						$a.t.mainEditor.showEditor(rowData);
-						$a.t.mainEditor.setTitle($a.getMsg("lbl.code"));
-						_f.selectCode();
+						_f.showEditor(rowData);
+						_f.setupSelectedCode();
 					},
 				});
 				
@@ -169,7 +209,6 @@ define([ 'basicInfo'
 				_f.showEditor(obj);
 			},
 			setupEditor : function() {
-				
 				var codeTyps = [{
 					code :_dts.codeTypeObj.GROUP, value : $a.getMsg("lbl.codeGroup")
 				},{
@@ -214,13 +253,23 @@ define([ 'basicInfo'
 						    		maxLength : 200,
 						    	}
 						      },
+						      { id:"codeOrd",  type:"select", label:$a.getMsg("lbl.codeOrder"), 
+		                    	validation : {
+						        	required  :true
+						        },
+		                    	typeOpt : {
+		                    		blankOption:false,
+		                    		optionList :[],
+		                    	}
+		                      },
 		                      { id:"useYn",  type:"select", label:$a.getMsg("lbl.useYn"), 
 		                    	validation : {
 						        	required  :true
 						        },
 		                    	typeOpt : {
 		                    		blankOption:false,
-		                    		optionList:$a.d.values.useYn
+		                    		optionList:$a.d.values.useYn,
+		                    		defaultParam : "Y",
 		                    	}
 		                      },
 		                      { id:"description", type:"textarea", label:$a.getMsg("lbl.description"),
@@ -238,14 +287,23 @@ define([ 'basicInfo'
 			},
 			showEditor : function( obj ) {
 				
-				$a.t.mainEditor.showEditor(obj);
-				$a.t.mainEditor.setTitle($a.getMsg("lbl.addCode"));
 				_els.forms.editor.codeGroup.area.show();
 				if ( obj.codeType == _dts.codeTypeObj.GROUP ) {
-					$a.t.mainEditor.setTitle($a.getMsg("lbl.addCodeGroup"));
+					obj.title = $a.getMsg("lbl.codeGroup");
 					_els.forms.editor.codeGroup.area.hide();
-				}
 					
+					_els.forms.editor.codeOrd.reloadOptions({
+						optionList   : [0],
+						defaultParam : 0
+					});
+					
+				} else {
+					_f.searchMaxOrder(_dts.selectedData.group.code);
+					obj.title = $a.getMsg("lbl.code");
+				}
+
+				$a.t.mainEditor.showEditor(obj);
+				
 			},
 			selectedCodeGroup : function() {
 				if ( _dts.selectedData.group == null )
@@ -257,18 +315,20 @@ define([ 'basicInfo'
 				
 				$a.t.mainEditor.setTitle($a.getMsg("lbl.codeGroup"));
 				_dts.selectedData.code = null;
-				_f.selectCode();
+				_f.setupSelectedCode();
 				
 			},
-			selectCode : function() {
+			setupSelectedCode : function() {
 				if ( _dts.selectedData.code == null ) {
 					_els.btnOrderUp.hide();
 					_els.btnOrderDown.hide();
 					_els.btnSaveOrder.hide();
+					_els.btnDeleteCode.hide();
 				} else {
 					_els.btnOrderUp.show();
 					_els.btnOrderDown.show();
 					_els.btnSaveOrder.show();
+					_els.btnDeleteCode.show();
 				}
 			},
 			insertData : function() {
@@ -283,7 +343,7 @@ define([ 'basicInfo'
 				formData.codeId = _dts.editData.codeId;
 				if ( formData.codeType == _dts.codeTypeObj.GROUP )
 					formData.codeGroup = formData.code;
-				
+				console.log(formData);
 				$a.send({
 					url  : $a.getDefaultUrl()+"/base/system/code/save",
 					type : (_dts.editData.isInputMode)?"post":"put", 
@@ -297,9 +357,10 @@ define([ 'basicInfo'
 			},
 			updateOrder : function() {
 				
-				var codeData = _vws.gridCode.getData();
-				
-				for ( var idx = 0 ; idx < codeData.length; idx++ ) {
+				var dataLen = _vws.gridCode.getData().length;
+				var codeData = [];
+				for ( var idx = 0 ; idx < dataLen; idx++ ) {
+					codeData[idx] = _vws.gridCode.getRowData(idx)
 					codeData[idx].codeOrd = (idx+1); 
 				}
 				$a.send({
@@ -312,6 +373,23 @@ define([ 'basicInfo'
 					}
 				});
 			},
+			deleteData : function() {
+				if ( _dts.selectedData.code == null ) {
+					$a.print.alert($a.getMsg("msg.noSelectedData"));
+				}
+				 $a.print.confirm($a.getMsg("msg.confirm.delete"),function(){
+					 $a.send({
+						url  : $a.getDefaultUrl()+"/base/system/code/delete",
+						type : "delete", 
+						data : _dts.selectedData.code,
+						success : function(data) {
+							$a.show.success($a.getMsg("msg.success.delete"));
+							_f.searchCodeList();
+						}
+					});
+				 });
+				
+			}
 		}; // functions..
 		
 		/*************************************************

@@ -22,7 +22,7 @@ define(['mngEvent', 'basicUtil' ,
 					html += '<div class="icons">'+obj.iconCls+'</div>';	
 				}
 				html += '<h5></h5>';
-				html += '<div class="toolbar"><nav style="padding:8px;" class="btn-group"></nav></div>';
+				html += '<div class="toolbar"><nav style="padding-top:6px;" class="btn-group"></nav></div>';
 				html += '</header>';
 				html += '<div class="body"></div><div>';
 				html += "</div>";

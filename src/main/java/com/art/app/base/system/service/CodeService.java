@@ -17,5 +17,7 @@ public interface CodeService
 	
 	public ResultVO updateOrder(List<CodeVO> param) throws Exception;
 	
-	public ResultVO delete(CodeVO param) throws Exception;
+	public ResultVO deleteCode(CodeVO param) throws Exception;
+	
+	public ResultVO deleteGroup(CodeVO param) throws Exception;
 }

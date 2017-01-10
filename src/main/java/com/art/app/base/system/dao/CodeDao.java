@@ -8,7 +8,11 @@ public interface CodeDao
 {
 	public List<CodeVO> selectList( CodeVO param ) throws Exception;
 	
+	public CodeVO selectData(CodeVO param) throws Exception;
+	
 	public CodeVO selectMaxOrder(CodeVO param) throws Exception;
+	
+	public CodeVO selectCodeGroupCount(CodeVO param) throws Exception;
 	
 	public int insert(CodeVO param) throws Exception;
 	
@@ -16,5 +20,9 @@ public interface CodeDao
 	
 	public int updateOrder(CodeVO param) throws Exception;
 	
+	public int updateOrderGap(CodeVO param) throws Exception;
+	
 	public int delete(CodeVO param) throws Exception;
+	
+	public int deleteGroup(CodeVO param) throws Exception;
 }

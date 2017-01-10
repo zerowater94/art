@@ -20,10 +20,15 @@ public abstract class AbstractVO
 	private String siteId = "";
 	private String compId = "";
 	
+	private int count = 0;
+	
+	// order 변경 관련
+	private String gap = "";
+	private int sIndex = 0 ;
+	private int eIndex = 0 ;
 	
 	// 기타 Json string형태의 정보
 	private String etcInfo  = "";
-	
 	
 	// 등록일/등록자/변경일/변경자
 	private String currUserId = "";
@@ -58,6 +63,27 @@ public abstract class AbstractVO
 	{
 		if( str != null )
 			this.compId = str;
+	}
+	
+	public void setCount(int cnt)
+	{
+		this.count = cnt;
+	}
+	
+	public void setGap(String str)
+	{
+		if( str != null )
+			this.gap = str;
+	}
+	
+	public void setSIndex(int inx)
+	{
+		this.sIndex = inx;
+	}
+	
+	public void setEIndex(int inx)
+	{
+		this.eIndex = inx;
 	}
 	
 	public void setEtcInfo(String str)
@@ -109,6 +135,13 @@ public abstract class AbstractVO
 	public String getSiteId() { return this.siteId; }
 	public String getCompId() { return this.compId; }
 	
+	public int getCount() { return this.count; }
+	@JsonIgnore
+	public String getGap() { return this.gap; }
+	@JsonIgnore
+	public int getSIndex() { return this.sIndex; }
+	@JsonIgnore
+	public int getEIndex() { return this.eIndex; }
 	public String getEtcInfo() { return this.etcInfo; }
 	
 	

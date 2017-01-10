@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.art.app.base.system.domain.CodeVO;
 import com.art.app.base.system.service.CodeService;
 import com.art.app.common.basic.ctl.AbstractCtl;
-import com.art.app.common.component.BasicInfo;
 import com.art.fw.domain.ResultVO;
 import com.art.fw.exception.ArtException;
 import com.art.fw.exception.BadRequestException;
@@ -34,7 +33,7 @@ public class CodeCtl extends AbstractCtl
 	public CodeVO getMaxOrder( CodeVO param ) throws Exception
 	{
 		if( CommonUtil.isNull(param.getCodeGroup()) )
-			throw new BadRequestException(BasicInfo.fail(super.getSessionLocale()).poorParam());
+			throw new BadRequestException();
 		return service.getMaxOrder(param);
 	}
 	
@@ -45,7 +44,7 @@ public class CodeCtl extends AbstractCtl
 		logger.debug("call insertdata : " + param.getCodeGroup() + " , " +param.getCode());
 		ResultVO rstVO = service.insert(param);
 		if ( !rstVO.getResult() )
-			throw new ArtException(BasicInfo.fail(super.getSessionLocale()).insert());
+			throw new ArtException(rstVO);
 		return rstVO;
 	}
 	
@@ -54,10 +53,10 @@ public class CodeCtl extends AbstractCtl
 	{
 		logger.debug("call updateData : " + param.getCodeGroup() + " , " +param.getCodeId());
 		if( CommonUtil.isNull(param.getCodeId()) )
-			throw new BadRequestException(BasicInfo.fail(super.getSessionLocale()).poorParam());
+			throw new BadRequestException();
 		ResultVO rstVO = service.update(param);
 		if ( !rstVO.getResult() )
-			throw new ArtException(BasicInfo.fail(super.getSessionLocale()).update());
+			throw new ArtException(rstVO);
 		return rstVO;
 	}
 	
@@ -67,7 +66,7 @@ public class CodeCtl extends AbstractCtl
 		logger.debug("call updateData : " + param.size() );
 		ResultVO rstVO = service.updateOrder(param);
 		if ( !rstVO.getResult() )
-			throw new ArtException(BasicInfo.fail(super.getSessionLocale()).update());
+			throw new ArtException(rstVO);
 		return rstVO;
 	}
 	
@@ -76,12 +75,23 @@ public class CodeCtl extends AbstractCtl
 	public ResultVO deleteData(@RequestBody CodeVO param ) throws Exception
 	{
 		logger.debug("call deleteData : " +param.getCodeId());
-		
 		if( CommonUtil.isNull(param.getCodeId()) )
-			throw new BadRequestException(BasicInfo.fail(super.getSessionLocale()).poorParam());
-		ResultVO rstVO = service.delete(param);
+			throw new BadRequestException();
+		ResultVO rstVO = service.deleteCode(param);
 		if ( !rstVO.getResult() )
-			throw new ArtException(BasicInfo.fail(super.getSessionLocale()).delete());
+			throw new ArtException(rstVO);
+		return rstVO;
+	}
+	
+	@RequestMapping(value="/delete/group", method = RequestMethod.DELETE)
+	public ResultVO deleteDataGroup(@RequestBody CodeVO param ) throws Exception
+	{
+		logger.debug("call deleteDataGroup : " +param.getCodeGroup());
+		if( CommonUtil.isNull(param.getCodeGroup()) )
+			throw new BadRequestException();
+		ResultVO rstVO = service.deleteGroup(param);
+		if ( !rstVO.getResult() )
+			throw new ArtException(rstVO);
 		return rstVO;
 	}
 }
