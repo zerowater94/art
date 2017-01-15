@@ -167,7 +167,8 @@ define([ 'basicInfo' , 'app/main/mainHelper'
 					menuType : null,
 					subMenus : [{iconCss  : "fa fa-h-square",menuName : $a.getMsg("lbl.manageOption"), maneId : "menu-4-1", menuLvl  : 2, url:"app/base/system/optionList"},
 					            {iconCss  : "fa fa-h-square",menuName : "코드", maneId : "menu-4-2", menuLvl  : 2, url:"app/base/system/codeList"},
-					            {iconCss  : "fa fa-h-square",menuName : "메뉴관리", maneId : "menu-4-3", menuLvl  : 2, url:"app/base/system/menuList"}
+					            {iconCss  : "fa fa-h-square",menuName : "메뉴관리", maneId : "menu-4-3", menuLvl  : 2, url:"app/base/system/menuList"},
+					            {iconCss  : "fa fa-h-square",menuName : "조직관리", maneId : "menu-4-4", menuLvl  : 2, url:"app/base/system/orgList"}
 					,]
 				}];
 				

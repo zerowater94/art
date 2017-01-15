@@ -260,6 +260,7 @@ define(['alertify', 'blockUi',  'basicUtil', 'basicValid',
 			if( _p.isMainContents )
 				_this.goMainContents(_p.paramData);
 			new _view(_p.el).render(_p.paramData);
+			_this.e.execWinResize();
         });
 	};
 	// contents 화면을 초기화 한다.

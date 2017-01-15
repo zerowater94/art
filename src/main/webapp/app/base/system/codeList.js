@@ -417,7 +417,6 @@ define([ 'basicInfo'
 			_f.makeSearchArea();
 			_f.setupEditor();
 			_f.makeGrid();
-			$a.e.execWinResize();
 		};
 		
 		return _this;
