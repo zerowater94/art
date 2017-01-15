@@ -9,6 +9,7 @@ define(['mngEvent', 'wgHelper',
 	
 	var _pm = {
 		title : null,
+		direction    : "right",
 		isWritable   : false,
 		titleIcon    : null,
 		showToolbar  : true,
@@ -19,6 +20,10 @@ define(['mngEvent', 'wgHelper',
 	} ; // param
 	
 	var _els = {} ; // elements
+	var _dts = {
+		isBottom : false
+	};
+
 	var _f = {
 		
 		html : {
@@ -47,12 +52,28 @@ define(['mngEvent', 'wgHelper',
 			_els.editTitle = _els.editPanel.find(".panel-title");
 			_els.editBody = _els.editPanel.find(".panel-body");
 			_els.editToolbar = _els.editPanel.find(".panel-toolbar");
+			_els.btnChgLocation = _els.editPanel.find(".location");
+			_els.btnChgLocationImg = _els.btnChgLocation.find("i");
 			$aEvent.addEvent(_els.editPanel.find(".close"), "click", _f.hideEditor);
+			$aEvent.addEvent(_els.editPanel.find(".location"),"click",_f.changeLocation);
 			
+		},
+		setLocation : function() {
+			
+			if( _els.areaEditor.hasClass("panel-bottom") ) {
+				_dts.isBottom = true;
+				_els.areaMain.addClass("editor-bottom");
+				_els.btnChgLocationImg.removeClass().addClass("fa fa-arrow-right");
+			}else {
+				_dts.isBottom = false;
+				_els.areaMain.removeClass("editor-bottom");
+				_els.btnChgLocationImg.removeClass().addClass("fa fa-arrow-down");
+			}
 		},
 		render : function( obj ) {
 			_pm = {
 				title : null,
+				direction    : "right",
 				isWritable   : false,
 				titleIcon    : null,
 				showToolbar  : true,
@@ -63,6 +84,12 @@ define(['mngEvent', 'wgHelper',
 			};
 
 			$.extend(true, _pm, obj );
+			
+			_els.areaEditor.removeClass("panel-right").removeClass("panel-bottom");
+			_els.areaEditor.addClass("panel-"+_pm.direction);
+			
+			_f.setLocation();
+
 			_f.setTitle(_pm.title);
 			if(_pm.titleICon != null )
 				_f.setTitleIcon('edit');
@@ -75,11 +102,24 @@ define(['mngEvent', 'wgHelper',
 					$aWg.button.render(_els.editToolbar, $.extend(true, {btnCls:"btn-default btn-sm"}, _pm.buttons[idx]));
 				}
 			}
+			// 
+			var formObj ; 
+			for( var idx =0 ; idx < _pm.formList.length; idx++ ) {
+				formObj = _pm.formList[idx];
+
+				if ( !( formObj.type == 'textarea' || formObj.type == 'etc-info' || formObj.type == 'custom') ) {
+					
+					if ( formObj.formGroupCls == undefined ) {
+						formObj.formGroupCls = "input-group multi-rows";
+					} else {
+						formObj.formGroupCls += " input-group multi-rows";
+					}
+				}
+			}
 			
 			var rtnObj = $aWg.makeForm.execBatch(_els.editBody, _pm.formList);
 			
-			_els.areaEditor.width(320).css({
-				position: "absolute",
+			_els.areaEditor.css({
 				right : -(_els.areaEditor.width())
 			});
 			_els.areaEditor.hide();
@@ -106,32 +146,18 @@ define(['mngEvent', 'wgHelper',
 		},
 		showEditor : function(obj){
 			
-			var showTime = 500;
-			if ( _els.areaEditor.is(":visible") )
-				showTime = 0 ;
 			
 			_els.areaEditor.show();
 			
-			_els.areaMain.closest(".area-inner").animate({
-	            marginRight: _els.areaEditor.width(),
-	        }, showTime );
-			
-			_els.areaEditor.animate({
-	            right: 2, 
-	            opacity:1,
-	            display:'block'
-	        }, showTime );
-			
-			setTimeout(function(){
+			_f.resizeMainArea(true);
+			_f.showHideEditor(true);
 
-				if ( _pm.callBackShow != null )
-					_pm.callBackShow();
-				
-				if ( obj.shown !== undefined )
-					obj.shown();
-				
-				$aEvent.execWinResize();
-			}, showTime);
+			
+			if ( _pm.callBackShow != null )
+				_pm.callBackShow();
+			
+			if ( obj.shown !== undefined )
+				obj.shown();
 			
 			if( obj == undefined || obj == null ) {
 				_f.clearValues();
@@ -146,27 +172,80 @@ define(['mngEvent', 'wgHelper',
 				else
 					_f.setTitleIcon('U');
 			}
+			
+			$aEvent.execWinResize();
 		},
 		hideEditor : function() {
 			
-			_els.areaMain.closest(".area-inner").animate({
-				marginRight: "0px"
-	        }, 500 );
+			_f.resizeMainArea(false);
+			_f.showHideEditor(false);
 
-			_els.areaEditor.animate({
-	            right  : -(_els.areaMain.width()+10),
-	            opacity:0,
-	        }, 500 );
+			if ( _pm.callBackHide != null )
+				_pm.callBackHide();
+			_els.areaEditor.hide();
 			
-			setTimeout(function(){
-				
-				if ( _pm.callBackHide != null )
-					_pm.callBackHide();
-				_els.areaEditor.hide();
-				
-				$aEvent.execWinResize();
-			}, 500);
+			$aEvent.execWinResize();
+		},
+		showHideEditor : function( isShow ) {
 			
+			if ( isShow ) {
+				_els.areaEditor.show();
+				if( _dts.isBottom) {
+					_els.areaEditor.css({
+			            right  :"0px",
+			            opacity:1,
+			        } );
+					_els.editBody.find(".form-group.multi-rows").addClass("bottom");
+					
+				} else {
+					_els.areaEditor.css({
+			            right  : 2,
+			            opacity:1,
+			        } );
+					_els.editBody.find(".form-group.bottom").removeClass("bottom");
+				}
+
+			} else {
+
+				if( _dts.isBottom) {
+					_els.areaEditor.css({
+			            right  :"0px",
+			            opacity:0,
+			        } );
+				} else {
+					_els.areaEditor.css({
+			            right  : -(_els.areaMain.width()+10),
+			            opacity:0,
+			        } );
+				}
+			}
+		},
+		resizeMainArea : function( isEditorShow ) {
+			
+			var rightMargin = "0px";
+
+			if ( isEditorShow && !_dts.isBottom ) {
+				rightMargin = _els.areaEditor.width();
+			}
+			_els.areaMain.closest(".area-inner").css({
+	            marginRight: rightMargin,
+	        });
+			
+		},
+		changeLocation : function( e ) {
+			
+			_f.showHideEditor(false);
+			if( _els.areaEditor.hasClass("panel-right") ) {
+				_els.areaEditor.removeClass("panel-right").addClass("panel-bottom");
+			}else {
+				_els.areaEditor.removeClass("panel-bottom").addClass("panel-right");
+			}
+			_f.setLocation();
+			_f.showHideEditor(true);
+			_f.resizeMainArea(true);
+			$(this).blur();
+			
+			$aEvent.execWinResize();
 		},
 		getValues : function() {
 			return $aWg.makeForm.getFormValues(_els.editBody, _pm.formList);

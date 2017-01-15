@@ -51,6 +51,7 @@ define(['mngEvent', 'wgHelper'
 					width :el.width(),
 					height : _els.areaMain.height()-obj.height,
 				}).pqGrid('refresh');
+				
 			});
 			
 			_g.on( "pqpagerchange", function( event, ui ) {

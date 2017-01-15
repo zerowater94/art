@@ -27,6 +27,7 @@ define([ 'basicInfo' , 'app/main/mainHelper'
 				thisEl.html(tmpl({}));
 				_els.body           = thisEl;
 				_els.areaTop        = thisEl.find("#top");
+				_els.areaFooter     = thisEl.find("footer");
 				_els.areaUserAcess  = thisEl.find(".user-media");
 				_els.areaMainBar    = thisEl.find(".main-bar");
 				_els.areaContents   = thisEl.find("#content");
@@ -59,21 +60,43 @@ define([ 'basicInfo' , 'app/main/mainHelper'
 			},
 			setMainStyle : function() {
 				
-				var topBottomHeight = 164;
-				if( _els.areaTop.find("nav").hasClass("navbar-fixed-top"))
-					topBottomHeight = 114;
+				var bottomEditorHeight = 300;
+				var topBottomHeight = _els.areaFooter.outerHeight()+_els.areaMainBar.outerHeight()+1; 
 				
+				if( _els.areaTop.find("nav").hasClass("navbar-static-top"))
+					topBottomHeight += _els.areaTop.outerHeight();
+				
+				var margin = (_els.areaContentOut.css("padding").slice(0, -2))*2;
+				topBottomHeight += margin;
 				var _editPanel = $a.getMainEditor().find(".panel");
+				
 				$a.e.addWinResizeEvent("WIN-MAIN_resize-contents", function(){
+					var _heightMain = $(window).height()-topBottomHeight;
+					var _heightEditorBody = _heightMain;
 					
+					if ( $a.getMainEditor().hasClass("panel-bottom") ) {
+						if ( $a.getMainEditor().is(":visible") ) {
+							bottomEditorHeight = _heightMain*0.4;
+						} else {
+							bottomEditorHeight = 0;
+						}
+						_heightEditorBody  = bottomEditorHeight;
+						_heightMain       -= bottomEditorHeight;
+						// editor margin 계산.
+						if ( $a.getMainEditor().is(":visible") ) {
+							_heightMain       -= (margin-1);
+						}
+					}
+					
+					_heightEditorBody -= _editPanel.find("#editor-header").outerHeight();
+					_heightEditorBody -= _editPanel.find("#editor-tail").outerHeight();
+
 					$a.getMainArea().css({
-						height : $(window).height()-topBottomHeight
+						height : _heightMain
 					});
-					var _heightBody = $a.getMainArea().outerHeight()-2;
-					_heightBody -= _editPanel.find("#editor-header").outerHeight();
-					_heightBody -= _editPanel.find("#editor-tail").outerHeight();
+					
 					_editPanel.find("#editor-body").css({
-						maxHeight : _heightBody
+						maxHeight : _heightEditorBody
 					});
 				});
 				

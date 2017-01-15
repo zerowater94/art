@@ -19,6 +19,7 @@ public class BasicResultCode extends AbstractBasic
 	public static final String NO_AUTH 			  = "11";
 	public static final String INSUFFICIENT_PARAM = "12";
 	public static final String ILLEGAL_ACCESS 	  = "13";
+	public static final String FAIL_HTTP_CONVERTER= "14";
 	
 	public static final String NO_LOGIN_ID        = "21";
 	public static final String INCOLLECT_PWD      = "22";
@@ -84,6 +85,8 @@ public class BasicResultCode extends AbstractBasic
 				return CommonUtil.null2str(BasicInfo.getDefaultMsg("msg.fail.poorParam", locale),"Insufficient paremeter");
 			case "ILLEGAL_ACCESS":
 				return CommonUtil.null2str(BasicInfo.getDefaultMsg("msg.illegalAccess", locale),"Illegal Access");
+			case "FAIL_HTTP_CONVERTER":
+				return CommonUtil.null2str(BasicInfo.getDefaultMsg("msg.fail.converHttpParam", locale),"Http parameter converter");
 			case "NO_LOGIN_ID":
 				return CommonUtil.null2str(BasicInfo.getDefaultMsg("msg.fail.uncollectLogin", locale),"Not found login id");
 			case "INCOLLECT_PWD":

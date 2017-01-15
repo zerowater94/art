@@ -50,12 +50,7 @@ define([ 'basicInfo'
 									},
 								},{ name : $a.getMsg("lbl.delete"),
 									id   : 'btn-group-delete',
-									callbackFunc : function(){
-										_f.showInputEditor({
-											codeType : _dts.codeTypeObj.GROUP,
-											codeOrd  : 0,
-										});
-									},
+									callbackFunc : _f.deleteCodeGroup,
 								},],
 					formList   : [{ id:"codeValue",    type:"text", label:$a.getMsg("lbl.codeValue")}],
 					searchFunc : _f.searchGroupCodeList
@@ -158,9 +153,9 @@ define([ 'basicInfo'
 						}
 						if ( _dts.editData.isInputMode ) {
 							param.optionList.push(idx);
-							param.defaultParam = (idx);
+							_dts.editData.codeOrd = idx;
 						} else {
-							param.defaultParam = _dts.selectedData.code.codeOrd;
+							_dts.editData.codeOrd = _dts.selectedData.code.codeOrd;
 						}
 						_els.forms.editor.codeOrd.reloadOptions(param);
 					}
@@ -175,7 +170,7 @@ define([ 'basicInfo'
 					rowClick : function( event, ui ) {
 						var rowData = ui.rowData;
 						// include rowSelect function.
-						_f.showEditor(rowData);
+						_f.showEditor();
 					},
 					rowSelect: function( event, ui ) {
 						_dts.selectedData.group = ui.rowData;
@@ -196,7 +191,7 @@ define([ 'basicInfo'
 						_dts.selectedData.code = ui.rowData;
 						_dts.editData = ui.rowData;
 						_dts.editData.isInputMode = false;
-						_f.showEditor(rowData);
+						_f.showEditor();
 						_f.setupSelectedCode();
 					},
 				});
@@ -206,7 +201,7 @@ define([ 'basicInfo'
 			showInputEditor : function(obj) {
 				obj.isInputMode = true ;
 				_dts.editData = obj;
-				_f.showEditor(obj);
+				_f.showEditor();
 			},
 			setupEditor : function() {
 				var codeTyps = [{
@@ -216,6 +211,7 @@ define([ 'basicInfo'
 				}];
 				var _param = {
 					title : $a.getMsg("lbl.addCode"),
+					direction    : "bottom",
 					callBackHide : function() {
 
 					},
@@ -285,25 +281,24 @@ define([ 'basicInfo'
 			closeEditor : function() {
 				$a.t.mainEditor.hideEditor();
 			},
-			showEditor : function( obj ) {
+			showEditor : function(  ) {
 				
 				_els.forms.editor.codeGroup.area.show();
-				if ( obj.codeType == _dts.codeTypeObj.GROUP ) {
-					obj.title = $a.getMsg("lbl.codeGroup");
+				if ( _dts.editData.codeType == _dts.codeTypeObj.GROUP ) {
+					_dts.editData.title = $a.getMsg("lbl.codeGroup");
 					_els.forms.editor.codeGroup.area.hide();
 					
 					_els.forms.editor.codeOrd.reloadOptions({
-						optionList   : [0],
-						defaultParam : 0
+						optionList   : [0]
 					});
 					
 				} else {
 					_f.searchMaxOrder(_dts.selectedData.group.code);
-					obj.title = $a.getMsg("lbl.code");
+					_dts.editData.title = $a.getMsg("lbl.code");
 				}
-
-				$a.t.mainEditor.showEditor(obj);
-				
+				if ( _dts.editData.isInputMode )
+					_dts.editData.useYn = "Y";
+				$a.t.mainEditor.showEditor(_dts.editData);
 			},
 			selectedCodeGroup : function() {
 				if ( _dts.selectedData.group == null )
@@ -343,7 +338,7 @@ define([ 'basicInfo'
 				formData.codeId = _dts.editData.codeId;
 				if ( formData.codeType == _dts.codeTypeObj.GROUP )
 					formData.codeGroup = formData.code;
-				console.log(formData);
+				
 				$a.send({
 					url  : $a.getDefaultUrl()+"/base/system/code/save",
 					type : (_dts.editData.isInputMode)?"post":"put", 
@@ -376,6 +371,7 @@ define([ 'basicInfo'
 			deleteData : function() {
 				if ( _dts.selectedData.code == null ) {
 					$a.print.alert($a.getMsg("msg.noSelectedData"));
+					return;
 				}
 				 $a.print.confirm($a.getMsg("msg.confirm.delete"),function(){
 					 $a.send({
@@ -388,6 +384,25 @@ define([ 'basicInfo'
 						}
 					});
 				 });
+				
+			},
+			deleteCodeGroup : function() {
+				if ( _dts.selectedData.group == null ) {
+					$a.print.alert($a.getMsg("msg.noSelectedData"));
+					return;
+				}
+				
+				$a.print.confirm($a.getMsg("msg.confirm.detele.codeGroup"),function(){
+					$a.send({
+						url  : $a.getDefaultUrl()+"/base/system/code/delete/group",
+						type : "delete", 
+						data : _dts.selectedData.group,
+						success : function(data) {
+							$a.show.success($a.getMsg("msg.success.delete"));
+							_f.searchGroupCodeList();
+						}
+					});
+				});
 				
 			}
 		}; // functions..
@@ -402,6 +417,7 @@ define([ 'basicInfo'
 			_f.makeSearchArea();
 			_f.setupEditor();
 			_f.makeGrid();
+			$a.e.execWinResize();
 		};
 		
 		return _this;

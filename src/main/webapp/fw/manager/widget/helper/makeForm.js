@@ -317,9 +317,10 @@ define(['mngEvent', 'basicUtil' ,
 							elSelect.append("<option value='"+_obj+"'>"+_obj+"</option>");
 					}
 				}
-				
+
 				if( _paramData.defaultParam != null )
 					elSelect.val(_paramData.defaultParam);
+				
 			};
 			
 			_reloadOptions(_typeObj);

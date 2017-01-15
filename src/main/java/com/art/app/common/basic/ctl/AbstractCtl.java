@@ -140,6 +140,8 @@ public abstract class AbstractCtl
 		    		error.setResultMessage( NullPointerException.class.getName() );
 		    	else if ( exception.getClass().getName().indexOf("org.springframework.dao") > -1) 
 		    		error.setResultMessage( BasicInfo.getResultMsg(BasicResultCode.SQL_ERROR, this.getSessionLocale()));
+		    	else if ( exception.getClass().getName().indexOf("org.springframework.http") > -1) 
+		    		error.setResultMessage( BasicInfo.getResultMsg(BasicResultCode.FAIL_HTTP_CONVERTER, this.getSessionLocale()));
 		    	response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 		    }
 	    }

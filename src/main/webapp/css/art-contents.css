@@ -22,12 +22,19 @@
 .form-group .help-block-art .label { font-size:85%;}
 .form-group .help-block-art .close { font-weight:500;font-size:18px;}
 
-#main-editor { position: absolute;border-radius : 4px;display:none;}
+#main-area.editor-bottom {float: none; width: auto;}
+
+#main-editor { border-radius : 4px;display:none;opacity:0;}
+#main-editor.panel-right {width:320px; position: absolute;}
+#main-editor.panel-bottom {margin-top:5px;}
+        
 #main-editor .panel { margin-bottom : 2px;}
+#main-editor .panel .panel-heading button.location { font-size: 13px;margin:5px;}
 #main-editor .panel-toolbar { width:100%;padding:2px 10px;text-align:right;border-top:1px solid #ddd;border-bottom:1px solid #ddd;background-color:#f5f5f5;border-radius: 0px 0px 4px 4px; }
 #main-editor .panel-body {color : #333; padding:5px; }
 #main-editor .panel-body {padding-bottom:5px !important;}
 .edit-area .form-group {width:100%; min-height: 1px; margin-bottom :5px !important;}
+.edit-area .form-group.bottom {width:49%; min-height: 1px; margin-bottom :5px !important; margin-right:5px !important;float:left;}
 .edit-area .form-group .title {min-width:100px;width:30%; padding: 4px 10px;text-align:left;margin-bottom:1px;font-size:0.83em;}
 .edit-area .form-group .title.required {background-color:#f9ebeb;}
 .edit-area .form-group .title.required:after {content:" *";font-weight:600; color:#CC0000; }
