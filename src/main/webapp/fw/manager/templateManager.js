@@ -6,8 +6,9 @@ define(['jquery','mngEvent',
         'fw/manager/widget/search',
         'fw/manager/widget/showMsg',
         'fw/manager/widget/popover',
-        'fw/manager/widget/toolbar'
-        ], function ($, $aEvent, $aWg, _vEditor,_vDetail, _vMainBar, _vSearch, _vShowMsg, _vPopover, _vToolbar) {
+        'fw/manager/widget/toolbar',
+        'fw/manager/widget/tree'
+        ], function ($, $aEvent, $aWg, _vEditor,_vDetail, _vMainBar, _vSearch, _vShowMsg, _vPopover, _vToolbar, _vTree) {
 	
 	'use strict';
 		
@@ -23,6 +24,8 @@ define(['jquery','mngEvent',
 			_this.showMsg = _vShowMsg; 
 			_this.popover = _vPopover ; 
 			_this.toolbar = _vToolbar; 
+			_this.tree    = _vTree;
+			
 			requirejs(['../../libs/pq-grid/pqgrid.min'], function(  ) {
 				requirejs(['../../fw/manager/widget/pqGrid'], function( _vGrid ) {
 					_this.grid = _vGrid ;
@@ -35,6 +38,7 @@ define(['jquery','mngEvent',
 			_this.mainDetail.initialize();
 			_this.showMsg.initialize();
 			_this.popover.initialize();
+			_this.tree.initialize();
 		}
 	};
 	
