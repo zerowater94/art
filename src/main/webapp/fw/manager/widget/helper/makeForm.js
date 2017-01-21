@@ -1,6 +1,7 @@
 define(['mngEvent', 'basicUtil' ,
-	'fw/manager/widget/helper/button'
-        ], function ($aEvent, $aUtil, $aWgButton ) {
+	'fw/manager/widget/helper/button',
+	'fw/manager/widget/helper/makeFormFile'
+        ], function ($aEvent, $aUtil, $aWgButton, $aWgFile ) {
 	
 	'use strict';
 	
