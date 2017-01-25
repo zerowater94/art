@@ -40,18 +40,6 @@ define(['mngEvent', 'wgHelper'
 		isRootElement : function( pmObj, parentKey ) {
 			return (parentKey == null || parentKey == '' || parentKey == pmObj.jsonKey.rootId );
 		},
-//		parseTreeData : function( pmObj, data ) {
-//			
-//			if ( data == undefined || data == null )
-//				return [];
-//			var idx;
-//			var treeData = {}, treeStrunct , obj;
-//			for( idx = 0; idx < data.length; idx++ ) {
-//				obj = data[idx];
-//				if( _f.isRootElement(pmObj, obj[pmObj.jsonKey.rootId] ) )
-//					treeData.prototype..nodeName = obj
-//			}
-//		},
 		makeTree : function(el, param ){
 			el.html(_f.html.ul());
 			var topUl = el.find("ul"), pUl, pData, rowData ;
@@ -81,16 +69,22 @@ define(['mngEvent', 'wgHelper'
 					if( rowData.__loopCnt_ == undefined )
 						rowData.__loopCnt_ = 0;
 					rowData.__loopCnt_++;
-					remainData.push(rowData);
+					if( rowData.__loopCnt_  < 3 ) {
+						remainData.push(rowData);
+					} else {
+						// 3번 이상 체크후 루트에 붙임.
+						topUl.append(_f.html.li(rowData[keys.id]));
+						rowData.__el_ = topUl.find("li [item-id='"+rowData[keys.id]+"']");
+					}
+					
 					
 				} else {
 					pUl.append(_f.html.li(rowData[keys.id]));
 					rowData.__el_ = pUl.find("li [item-id='"+rowData[keys.id]+"']");
 					if ( pData !== undefined ) {
 						pData.__hasChild_++; // 하위 개수 증가
-						rowData.__level_ = pData.__level_+1;
+						rowData.__level_ = pData.__level_+1; // 현재 레벨 세팅
 					}
-					
 				}
 				
 				remainData.splice(0,1); // 첫번째 Object 삭제.
