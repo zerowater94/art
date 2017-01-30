@@ -44,6 +44,7 @@ define([  'text!fw/manager/tmpl/dropDown.html'
 			
 			var _funcAddEvent = function() {
 				_elBtnLabel.html($(this).text());
+				_elBtnLabel.attr("select-id", $(this).attr("id"));
 				if( _opt.callbackFunc != null ) {
 					_opt.callbackFunc({
 						id : $(this).attr("id")
