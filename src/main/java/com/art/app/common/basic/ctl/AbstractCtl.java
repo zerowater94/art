@@ -116,7 +116,7 @@ public abstract class AbstractCtl
 	    	if( error == null )
 	    	{
 	    		error = new ResultVO();
-	    		error.setResultMessage( exception.getMessage());	
+	    		error.setResultMessage( BasicInfo.getResultMsg(BasicResultCode.UNKNOWN_ERROR, this.getSessionLocale()));	
 	    	} else 
 	    	{
 	    		error.setResultMessage(BasicInfo.getResultMsg(error.getResultCode(), this.getSessionLocale()));

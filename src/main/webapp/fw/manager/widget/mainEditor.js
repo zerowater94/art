@@ -1,6 +1,6 @@
-define(['mngEvent', 'wgHelper',
+define(['mngEvent', 'basicValid', 'wgHelper',
         'text!fw/manager/tmpl/mainEditor.html'
-        ], function ($aEvent, $aWg, _tmpl) {
+        ], function ($aEvent, $aValid, $aWg, _tmpl) {
 	
 	'use strict';
 	
@@ -156,13 +156,16 @@ define(['mngEvent', 'wgHelper',
 			if ( _pm.callBackShow != null )
 				_pm.callBackShow();
 			
-			if ( obj.shown !== undefined )
-				obj.shown();
+			
 			
 			if( obj == undefined || obj == null ) {
 				_f.clearValues();
 				_f.setTitleIcon('I');
 			} else {
+
+				if ( obj.shown !== undefined )
+					obj.shown();
+				
 				_f.setValues(obj);
 				if ( obj.title != undefined )
 					_f.setTitle(obj.title);
@@ -171,6 +174,7 @@ define(['mngEvent', 'wgHelper',
 					_f.setTitleIcon('I');
 				else
 					_f.setTitleIcon('U');
+				
 			}
 			
 			$aEvent.execWinResize();
@@ -259,6 +263,9 @@ define(['mngEvent', 'wgHelper',
 		getMainBody : function() {
 			return _els.editBody;
 		},
+		isValidFormData : function() {
+			return $aValid.isValidBatchData(_els.editBody); 
+		},
 	};
 			
 	_this.initialize  = _f.init;
@@ -270,6 +277,7 @@ define(['mngEvent', 'wgHelper',
 	_this.clearValues = _f.clearValues;
 	_this.setValues   = _f.setValues;
 	_this.getValues   = _f.getValues;
+	_this.isValidFormData = _f.isValidFormData;
 	
 	return _this;
 	

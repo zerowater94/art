@@ -24,7 +24,7 @@ define(['mngEvent', 'basicUtil' ,
 				html += '<h5></h5>';
 				html += '<div class="toolbar"><nav style="padding-top:6px;" class="btn-group"></nav></div>';
 				html += '</header>';
-				html += '<div class="body"></div><div>';
+				html += '<div class="body"></div>';
 				html += "</div>";
 				return html;
 			}

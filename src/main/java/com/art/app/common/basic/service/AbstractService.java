@@ -9,6 +9,8 @@ import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
+import com.art.fw.domain.ResultVO;
+
 public abstract class AbstractService 
 {
 	protected Logger logger = LoggerFactory.getLogger(this.getClass()) ;

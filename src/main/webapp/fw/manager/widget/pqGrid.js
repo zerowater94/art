@@ -12,6 +12,7 @@ define(['mngEvent', 'wgHelper'
 		},
 		width  : "auto",
 		height : 200,
+		resizeHeight : true,
 		title: "No Title",
 		showTitle : false, 
 		resizable:false,
@@ -43,13 +44,13 @@ define(['mngEvent', 'wgHelper'
 			
 			el.html("<div></div>");
 			var _g = el.find("div");
-			
 			_g.pqGrid(obj);
-			
+
 			$aEvent.addWinResizeEvent("resize-"+el.selector+"-grid", function(){
+				
 				_g.pqGrid('option', {
 					width :el.width(),
-					height : _els.areaMain.height()-obj.height,
+					height : (obj.resizeHeight)?_els.areaMain.height()-obj.height:obj.height,
 				}).pqGrid('refresh');
 				
 			});

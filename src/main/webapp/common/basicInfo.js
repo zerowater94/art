@@ -515,6 +515,27 @@ define(['alertify', 'blockUi',  'basicUtil', 'basicValid',
 	_this.d = MngData;
 	_this.u = $aUtil;
 	_this.v = $aValid;
+	_this.app = function(obj){
+		return $.extend(true, {
+			pm : {},
+			els : {},
+			dts : {}
+		},obj);
+	};
+	_this.ctl = function( obj ) {
+		return Backbone.View.extend( $.extend(true, {
+			pm : {},
+			els : {},
+			dts : {},
+			vws : {},
+			initialize : function(el) {
+				this.$el = el;
+			},
+			render : function() {
+				_this.print.alert("not implemented..");
+			}
+		},obj) );
+	};
 	
 	_this.addWinResizeEvent = function(name, callbackFunc){
 		

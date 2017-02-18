@@ -33,8 +33,8 @@ define(['mngEvent', 'wgHelper'
 			ul : function(id) {
 				return "<ul ul-item-id='"+id+"'></ul>";
 			},
-			li : function(id) {
-				return "<li item-id='"+id+"'></li>";
+			li : function(rowData, keys) {
+				return "<li item-id='"+rowData[keys.id]+"'>"+rowData[keys.name]+"</li>";
 			}
 		},
 		isRootElement : function( pmObj, parentKey ) {
@@ -73,13 +73,13 @@ define(['mngEvent', 'wgHelper'
 						remainData.push(rowData);
 					} else {
 						// 3번 이상 체크후 루트에 붙임.
-						topUl.append(_f.html.li(rowData[keys.id]));
+						topUl.append(_f.html.li(rowData, keys));
 						rowData.__el_ = topUl.find("li [item-id='"+rowData[keys.id]+"']");
 					}
 					
 					
 				} else {
-					pUl.append(_f.html.li(rowData[keys.id]));
+					pUl.append(_f.html.li(rowData, keys));
 					rowData.__el_ = pUl.find("li [item-id='"+rowData[keys.id]+"']");
 					if ( pData !== undefined ) {
 						pData.__hasChild_++; // 하위 개수 증가
@@ -97,7 +97,7 @@ define(['mngEvent', 'wgHelper'
 	
 	var _tree = function(el, obj) {
 		var _o = $.extend(true, {}, _pm, obj);
-		
+		_f.makeTree(el, obj);
 	};
 			
 	_this.initialize = _f.init;

@@ -401,8 +401,6 @@ define([ 'basicInfo'
 			},
 			searchOptionList : function( selectDropDownObj ) {
 				
-				alert(_els.areaSearch.find(".select-text").text());
-				alert(_els.areaSearch.find(".select-text").attr("select-id"));
 				$a.send({
 					url : $a.getDefaultUrl()+"/base/system/option/list",
 					type : "get",
