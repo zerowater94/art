@@ -2,6 +2,21 @@ define(['jquery'], function ($) {
     
     var _this = this;
     
+    _this.isNull = function( param ) {
+    	return (param == undefined || param == null );
+    };
+    
+    _this.null2Obj = function( param , defParam ) {
+    	if( _this.isNull(param) ) {
+    		if( _this.isNull(defParam ) )
+    			return null;
+    		else
+    			return defParam;
+    	}
+    	return param;
+    	
+    };
+    
     _this.inputOnlyNumber = function(obj)  {
         obj.val(obj.val().replace(/[^0-9]/g,""));
     };
@@ -11,23 +26,19 @@ define(['jquery'], function ($) {
         obj.val(obj.val().replace(/[^\!-z]/g,""));
     };
 
-    _this.isEmpty = function(data)
-    {
+    _this.isEmpty = function(data)  {
     	if( data == undefined || data == null )
     		return true;
     	
-        for (var i=0; i < data.length; i++)
-        {
-            if (data.substring(i, i+1) != " ")
-            {
+        for (var i=0; i < data.length; i++)  {
+            if (data.substring(i, i+1) != " ")  {
                 return false;
             }
         }
         return true;
     };
 
-    _this.getLength = function(s,b,i,c)
-    {
+    _this.getLength = function(s,b,i,c)   {
     	if( s == undefined || s == null )
     		return 0;
     	
@@ -35,39 +46,33 @@ define(['jquery'], function ($) {
         return b;
     };
 
-    _this.isEnglish = function(str)
-    {
+    _this.isEnglish = function(str)  {
         var reEng = /^[a-z]+$/;
         return reEng.test(str);
     };
 
-    _this.isNumber = function(str)
-    {
+    _this.isNumber = function(str) {
         var reEng = /^[0-9]+$/;
         return reEng.test(str);
     };
 
-    _this.isEngNumber = function(str)
-    {
+    _this.isEngNumber = function(str)  {
         var reEng = /[a-zA-Z0-9]/g;
         return reEng.test(str);
     };
 
-    _this.isDate = function(str)
-    {
+    _this.isDate = function(str)  {
         var chkDate = str.replace(/[/\-.:]/g,"");
         // pattern yyyymmdd ()()() 기준
         var reDate = /(?:19|20\d{2})(?:0[1-9]|1[0-2])(?:0[1-9]|[12][0-9]|3[01])/;
         return reDate.test(chkDate);
     };
 
-    _this.compareDateToDay = function(compareDate)
-    {
+    _this.compareDateToDay = function(compareDate)  {
         return _this.compareDate(compareDate, $.datepicker.formatDate('yy/mm/dd', new Date()));
     };
 
-    _this.compareDate = function(beforeDate, afterDate)
-    {
+    _this.compareDate = function(beforeDate, afterDate) {
         var bDate = beforeDate.replace(/[/\-.:]/g,"");
         var aDate = afterDate.replace(/[/\-.:]/g,"");
 
@@ -80,8 +85,7 @@ define(['jquery'], function ($) {
             return false;
     };
 
-    _this.isInHangul = function(str)
-    {
+    _this.isInHangul = function(str)  {
         var tempStr = "";
         var temp = 0;
         var onechar;	 
@@ -99,36 +103,31 @@ define(['jquery'], function ($) {
         return false;
     };
 
-    _this.isNonHangul = function(str)
-    {
+    _this.isNonHangul = function(str) {
         var reEng = /[a-zA-Z0-9\/-=&_+]+\|{0,1}/g;
         return reEng.test(str);
 
     };
 
-    _this.addCommaStr = function(data)
-    {
+    _this.addCommaStr = function(data) {
         data = data.replace(/[A-Za-z$-,]/g, "");
         data = data.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
         return data;
     };
 
 
-    _this.removeCommaStr = function(data)
-    { 
+    _this.removeCommaStr = function(data)   { 
         data = data.replace(/[A-Za-z$-,]/g, "");
         return data;
     };
 
-    _this.setClientIPAddr = function(jsSelector)
-    {
+    _this.setClientIPAddr = function(jsSelector) {
         $.getJSON("http://jsonip.com?callback=?", function (data)   {
             jsSelector.val(data.ip);
         });
     };
 
-    _this.convertHangul = function(val)
-    {
+    _this.convertHangul = function(val) {
         var han = new Array("","일","이","삼","사","오","육","칠","팔","구");  
         var dan = new Array("","십","백","천");
         var unit = new Array('','만 ','억 ','조 ','경 ');
@@ -187,8 +186,7 @@ define(['jquery'], function ($) {
      * @param searchStr
      * @param replaceStr
      */
-    _this.replaceAll = function (str, searchStr, replaceStr)
-    {
+    _this.replaceAll = function (str, searchStr, replaceStr)  {
         var tempStr = str;
         var rtnStr = "";
         var cnt = 0;
@@ -211,8 +209,7 @@ define(['jquery'], function ($) {
      * @param str
      * @returns
      */
-    _this.toHtmlFormat = function (str)
-    {
+    _this.toHtmlFormat = function (str)  {
         var self = this;
         if( str == undefined || str == "" || str == null )
             return "&nbsp;";
@@ -231,8 +228,7 @@ define(['jquery'], function ($) {
      * @param str
      * @returns
      */
-    _this.htmlToText = function (str)
-    {
+    _this.htmlToText = function (str)  {
         var self = this;
         if( str == undefined || str == "" || str == null )
             return "";
@@ -253,8 +249,7 @@ define(['jquery'], function ($) {
      * <br>제외
      * @param str
      */
-    _this.htmlToText2 = function(str)
-    {
+    _this.htmlToText2 = function(str) {
         var self = this;
         if( str == undefined || str == "" || str == null )
             return "";
@@ -268,8 +263,7 @@ define(['jquery'], function ($) {
     };
 
 
-    _this.htmlToJSText = function (str)
-    {
+    _this.htmlToJSText = function (str)  {
         var self = this;
         if( str == undefined || str == "" || str == null )
             return "";
@@ -296,8 +290,7 @@ define(['jquery'], function ($) {
     /**
      * comma를 삭제 한다.
      */
-    _this.delComma = function(data)
-    { 
+    _this.delComma = function(data)  { 
         data = data.replace(/[A-Za-z$-,]/g, "");
         return data;
     };

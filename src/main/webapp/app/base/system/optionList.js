@@ -145,7 +145,8 @@ define([ 'basicInfo'
 		                      { id:"optionBuilder", type:"custom", label:null, formGroupCls:"" },
 		                    ],
 				};
-				_els.elForms.editor = $a.t.mainEditor.render(_param);
+				_vws.editor = $a.t.mainEditor.render(_param);
+				_els.elForms.editor = _vws.editor.getForms();
 				_els.elForms.editor.optionBuilder.area.hide();
 				
 				// popover 생성.
@@ -159,7 +160,7 @@ define([ 'basicInfo'
 			},
 			showEditor : function( obj ) {
 				
-				$a.t.mainEditor.showEditor(obj);
+				_vws.editor.showEditor(obj);
 				$a.t.popover.closeAllPopover();
 			},
 			/**
@@ -191,6 +192,7 @@ define([ 'basicInfo'
 			 * 선택된 Options의 생성 규칙 입력 form을 생성한다.
 			 */
 			setOptionBuilder : function(arry) {
+				
 				var elBuilder = _els.elForms.editor.optionBuilder.area;
 				_els.elBuiliderBox.empty();
 				if ( arry == undefined )
@@ -427,11 +429,11 @@ define([ 'basicInfo'
 			 */
 			insertData : function() {
 				
-				var mainEditor = $a.t.mainEditor.getMainBody();
+				var mainEditor = _vws.editor.getMainBody();
 				if( !$a.v.isValidBatchData(mainEditor) ) 
 					return;
 				
-				var formData = $a.t.mainEditor.getValues();
+				var formData = _vws.editor.getValues();
 				formData.siteId = "site-a";
 				formData.compId = "comp-1";
 				formData.optionId = (_dts.selectedData==null)?"":_dts.selectedData.optionId;
@@ -528,16 +530,18 @@ define([ 'basicInfo'
 					name :'<i class="fa fa-pencil"></i>', 
 					callbackFunc : function(e) {
 						_dts.selectedData = obj;
-						_dts.selectedData.shown = function() {
-							var builderArray;
-							try {
-								builderArray = $.parseJSON(_dts.selectedData.optionBuilder);
-							}catch ( ex ) {
-								builderArray = [];
+						_f.showEditor({
+							data : _dts.selectedData,
+							shown : function() {
+								var builderArray;
+								try {
+									builderArray = $.parseJSON(_dts.selectedData.optionBuilder);
+								}catch ( ex ) {
+									builderArray = [];
+								}
+								_f.setOptionBuilder(builderArray);
 							}
-							_f.setOptionBuilder(builderArray);
-						}
-						_f.showEditor(_dts.selectedData);
+						});
 					}
 				});
 				vRowBox.addButton({

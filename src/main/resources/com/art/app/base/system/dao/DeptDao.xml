@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="com.art.app.base.system.dao.DeptDao">
+ 
+    <select id="selectList" resultType="com.art.app.base.system.domain.DeptVO">
+        SELECT  comp_id, dept_id, dept_code, dept_name, p_dept_id, use_yn, 
+        		dept_lvl, dept_ord,etc_info, description,
+        		reg_user_id, reg_dtm, upd_user_id, upd_dtm
+		FROM    tco_dept
+        WHERE   1 = 1
+        AND     comp_id = #{compId}
+		ORDER BY dept_lvl, p_dept_id, dept_ord
+    </select>
+    
+    <select id="selectData" resultType="com.art.app.base.system.domain.DeptVO">
+        SELECT  comp_id, dept_id, dept_code, dept_name, p_dept_id, use_yn, 
+        		dept_lvl, dept_ord,etc_info, description,
+        		reg_user_id, reg_dtm, upd_user_id, upd_dtm
+		FROM    tco_dept
+        WHERE   1 = 1
+        AND     dept_id = #{deptId}
+    </select>
+    
+    <select id="selectMaxOrder" resultType="com.art.app.base.system.domain.DeptVO">
+        SELECT COALESCE(MAX(dept_ord),0) dept_ord
+		FROM   tco_dept
+        WHERE  1 = 1
+        AND    comp_id   = #{compId}
+        AND    p_dept_id = #{pDeptId}
+    </select>
+    
+    <insert id="insert" parameterType="com.art.app.base.system.domain.DeptVO">
+        INSERT INTO tco_dept (
+        	comp_id, dept_id, dept_code, dept_name, p_dept_id, use_yn, 
+       		dept_lvl, dept_ord,etc_info, description,
+       		reg_user_id, reg_dtm, upd_user_id, upd_dtm
+        )VALUES(
+        	#{compId}, #{deptId}, #{deptCode}, #{deptName}, #{pDeptId}, #{useYn}, 
+        	#{deptLvl}, #{deptOrd}, #{etcInfo}, #{description},
+        	#{currUserId}, #{currDateTime},#{currUserId}, #{currDateTime}
+        )
+    </insert>
+    
+    <update id="update" parameterType="com.art.app.base.system.domain.DeptVO">
+        UPDATE tco_dept 
+        SET    dept_code    = #{deptCode},
+        	   dept_name    = #{deptName},
+        	   use_yn       = #{useYn},
+        	   dept_lvl     = #{deptLvl},
+        	   dept_ord     = #{deptOrd},
+        	   etc_info     = #{etcInfo},
+        	   description  = #{description},
+        	   upd_user_id  = #{currUserId},
+        	   upd_dtm      = #{currDateTime}
+        WHERE  dept_id      = #{deptId}
+    </update>
+    
+    <update id="updateOrder" parameterType="com.art.app.base.system.domain.DeptVO">
+        UPDATE tco_dept 
+        SET    dept_ord    = #{deptOrd} ,
+        	   upd_user_id = #{currUserId},
+        	   upd_dtm     = #{currDateTime}
+        WHERE  dept_id     = #{deptId}
+    </update>
+    
+    <delete id="delete" parameterType="com.art.app.base.system.domain.DeptVO">
+        DELETE FROM tco_dept
+        WHERE  dept_id = #{compId}
+    </delete>
+    
+</mapper> 

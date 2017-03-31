@@ -6,33 +6,36 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.art.app.base.system.dao.CompDao;
+import com.art.app.base.system.dao.DeptDao;
 import com.art.app.base.system.domain.CompVO;
+import com.art.app.base.system.domain.DeptVO;
 import com.art.app.base.system.service.CompService;
+import com.art.app.base.system.service.DeptService;
 import com.art.app.common.basic.service.AbstractService;
 import com.art.fw.domain.ResultVO;
 import com.art.fw.util.CommonUtil;
 
 @Service
-public class CompServiceImpl extends AbstractService implements CompService
+public class DeptServiceImpl extends AbstractService implements DeptService
 {
 	@Autowired
-	private CompDao dao ;
+	private DeptDao dao ;
 
 	@Override
-	public List<CompVO> getList(CompVO param) throws Exception {
+	public List<DeptVO> getList(DeptVO param) throws Exception {
 		return dao.selectList(param);
 	}
 
 	@Override
-	public CompVO getData(CompVO param) throws Exception {
+	public DeptVO getData(DeptVO param) throws Exception {
 		return dao.selectData(param);
 	}
 
 	@Override
-	public ResultVO insert(CompVO param) throws Exception {
+	public ResultVO insert(DeptVO param) throws Exception {
 		ResultVO rstVO = new ResultVO();
-		param.setCompId(CommonUtil.getGuid());
-		param.setCompOrd(dao.selectMaxOrder(param).getCompOrd()+1);
+		param.setDeptId(CommonUtil.getGuid());
+		param.setDeptOrd(dao.selectMaxOrder(param).getDeptOrd()+1);
 		rstVO.setExecCnt(dao.insert(param));
 		if( rstVO.getExecCnt() > 0 )
 			rstVO.setResult(true);
@@ -40,7 +43,7 @@ public class CompServiceImpl extends AbstractService implements CompService
 	}
 
 	@Override
-	public ResultVO update(CompVO param) throws Exception {
+	public ResultVO update(DeptVO param) throws Exception {
 		ResultVO rstVO = new ResultVO();
 		rstVO.setExecCnt(dao.update(param));
 		if( rstVO.getExecCnt() > 0 )
@@ -49,11 +52,11 @@ public class CompServiceImpl extends AbstractService implements CompService
 	}
 	
 	@Override
-	public ResultVO updateOrder(List<CompVO> param) throws Exception
+	public ResultVO updateOrder(List<DeptVO> param) throws Exception
 	{
 		ResultVO rstVO = new ResultVO();
 		int execCnt = 0 ;
-		for( CompVO vo : param) 
+		for( DeptVO vo : param) 
 		{
 			execCnt += dao.updateOrder(vo);
 		}
@@ -64,7 +67,7 @@ public class CompServiceImpl extends AbstractService implements CompService
 	}
 
 	@Override
-	public ResultVO delete(CompVO param) throws Exception {
+	public ResultVO delete(DeptVO param) throws Exception {
 		ResultVO rstVO = new ResultVO();
 		rstVO.setExecCnt(dao.delete(param));
 		if( rstVO.getExecCnt() > 0 )

@@ -522,18 +522,20 @@ define(['alertify', 'blockUi',  'basicUtil', 'basicValid',
 			dts : {}
 		},obj);
 	};
+
 	_this.ctl = function( obj ) {
+		
 		return Backbone.View.extend( $.extend(true, {
 			pm : {},
-			els : {},
-			dts : {},
-			vws : {},
 			initialize : function(el) {
 				this.$el = el;
 			},
-			render : function() {
-				_this.print.alert("not implemented..");
-			}
+			render : function(obj) {
+				var errMsg = 'not implemented[ render ] ..';
+				_this.print.alert(errMsg, function(){
+					console.error(errMsg);
+				});
+			},
 		},obj) );
 	};
 	

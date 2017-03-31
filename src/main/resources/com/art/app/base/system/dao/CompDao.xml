@@ -21,6 +21,12 @@
         AND     comp_id = #{compId}
     </select>
     
+    <select id="selectMaxOrder" resultType="com.art.app.base.system.domain.CompVO">
+        SELECT COALESCE(MAX(comp_ord),0) comp_ord
+		FROM   tco_comp
+        WHERE  1 = 1
+        AND    site_id = #{siteId}
+    </select>
     
     <insert id="insert" parameterType="com.art.app.base.system.domain.CompVO">
         INSERT INTO tco_comp (

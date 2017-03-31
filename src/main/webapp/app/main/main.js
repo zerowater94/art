@@ -36,7 +36,7 @@ define([ 'basicInfo' , 'app/main/mainHelper'
 				_els.areaTopNav     = _els.areaTop.find(".topnav");
 				_els.areaTopLeftNav = _els.areaTop.find(".navbar-ex1-collapse");
 				_els.areaMenuUl     = thisEl.find("#menu");
-				
+				_els.styleSwitcher  = thisEl.find("#style-switcher");
 		    },
 			setMainInitialize : function(){
 				
@@ -50,10 +50,17 @@ define([ 'basicInfo' , 'app/main/mainHelper'
 						areaEditor  : $a.getMainEditor(),
 						areaMainBar : _els.areaMainBar,
 						areaShowMsg : _els.areaContents.find("#main-msg"),
+						styleSwitcher : _els.styleSwitcher,
 					},
 					msg : {
-						blankStr : $a.getMsg("lbl.blankStr"),
-						search   : $a.getMsg("lbl.search")
+						blankStr   : $a.getMsg("lbl.blankStr"),
+						search     : $a.getMsg("lbl.search"),
+						addItem    : $a.getMsg("lbl.addItem"),
+						editName   : $a.getMsg("lbl.editName"),
+						deleteItem : $a.getMsg("lbl.deleteItem"),
+						moveUp     : $a.getMsg("lbl.up"),
+						moveDown   : $a.getMsg("lbl.down"),
+						close      : $a.getMsg("lbl.close")
 					}
 				});
 				

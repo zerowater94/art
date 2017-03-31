@@ -22,6 +22,13 @@
 .form-group .help-block-art .label { font-size:85%;}
 .form-group .help-block-art .close { font-weight:500;font-size:18px;}
 
+.style-switcher {background-color: #222;position: fixed;right: -212px;top: 95px; width: 212px;z-index: 999;transition: all 1s;}
+.style-switcher h5 { background-color: #333; color: #fff;  margin: 0; padding: 8px; line-height: 23px; text-shadow: 0 1px 0 #000; border-top: 1px solid #666;}
+.style-switcher h5 a {background: #333;border-bottom-left-radius: 4px; border-top-left-radius: 4px;
+color: #E1E1E8;left: -39px;padding: 4px 4px 5px;position: absolute;
+text-decoration: none; top: 0;border: 1px solid #666;outline: 0 none;}
+
+
 #main-area.editor-bottom {float: none; width: auto;}
 
 #main-editor { border-radius : 4px;display:none;opacity:0;}
@@ -70,6 +77,22 @@
 
 .area-color {background-color:#fbfcff; border:1px dashed #ddd; padding:10px;border-radius: 0.6em !important;}
 
+.tree, .tree ul { margin:0; padding:0; list-style:none;}
+.tree ul {margin-left:1em;position:relative}
+.tree ul ul {margin-left:.5em}
+.tree ul:before {content:"";display:block;width:0;position:absolute;top:0;bottom:0;left:0;border-left:1px solid}
+.tree li {margin:0;padding:0 0 0 1em;line-height:1.5em; position:relative;}
+.tree li.root-branch {padding:0em !important;}
+.tree ul li:before {content:"";display:block;width:10px;height:0;border-top:1px solid;margin-top:-1px;position:absolute;top:1em;left:0}
+.tree ul li:last-child:before {background:#fff;height:auto;top:1em;bottom:0}
+.tree li label.selected {font-weight:700 !important;font-size:0.9em !important;background-color:#e8e6e6;}
+.indicator {margin-right:5px;}
+.tree li label{font-size:0.83em !important;color : #333 !important;font-weight: 400 !important;margin-bottom:0px !important;}
+.tree li a {text-decoration: none;color:#369;}
+.tree li i, label {cursor:pointer}
+.tree li button, .tree li button:active, .tree li button:focus {text-decoration: none;color:#369;background:transparent;margin:0px 0px 0px 0px;padding:1px 3px;outline: 0;font-size:0.8em;}
+
+.bootstrapMenu ul li a{padding:3px 5px;}
 
 @media ( min-width:768px ) {
     .head .main-bar {background-color:#827e7e}

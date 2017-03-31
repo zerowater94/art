@@ -5,8 +5,11 @@ define(['mngEvent', 'basicUtil',
     	'fw/manager/widget/helper/dropDown',
     	'fw/manager/widget/helper/areaBox',
     	'fw/manager/widget/helper/addRow',
+    	'fw/manager/widget/helper/contextMenuBs',
+    	'fw/manager/widget/helper/styleSwitcher',
     	'fw/manager/widget/helper/relocationEl',
-        ], function ($aEvent, $aUtil, $aWgButton, $aWgMakeForm, $aWgRowBox, $aWgDropDown, $aWgAreaBox, $aWgAddRow, $aWgRelocationEl) {
+        ], function ($aEvent, $aUtil, $aWgButton, $aWgMakeForm, $aWgRowBox, $aWgDropDown, 
+        		$aWgAreaBox, $aWgAddRow, $aContextMenu, $aStyleSwitcher, $aWgRelocationEl) {
 	
 	'use strict';
 	
@@ -17,23 +20,8 @@ define(['mngEvent', 'basicUtil',
 		areaMain : null,
 		areaEditor : null,
 		areaMainBar : null,
-		areaShowMsg : null
-	};
-	
-	_this.msg = {
-		blankStr : "::::::",
-		search   : "Search"
-	};
-	
-	
-	_this.setElements = function( elObj ) {
-		$.extend(true, _this.els, elObj);
-	};
-	
-	_this.setMessage  = function( obj ) {
-		$.extend(true, {} , _this.msg, obj);
-		
-		$aWgMakeForm.initMsg(_this.msg);
+		areaShowMsg : null,
+		styleSwitcher : null,
 	};
 	
 	_this.button      = $aWgButton;
@@ -43,6 +31,25 @@ define(['mngEvent', 'basicUtil',
 	_this.relocationEl= $aWgRelocationEl;
 	_this.addRow      = $aWgAddRow;
 	_this.areaBox     = $aWgAreaBox;
+	_this.contextMenu = $aContextMenu;
+	_this.styleSwitcher = $aStyleSwitcher;
+	
+	
+	_this.setElements = function( elObj ) {
+		$.extend(true, _this.els, elObj);
+		_this.styleSwitcher.initialize(_this.els.styleSwitcher);
+	};
+	
+	_this.setMessage  = function( msgObj  ) {
+		
+		_this.makeForm.initMsg(msgObj);
+		_this.contextMenu.initMsg(msgObj);
+	};
+	
+	
+	
+	
+	
 	
 	return _this;
 });

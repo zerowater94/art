@@ -1,6 +1,6 @@
 requirejs.config({
     baseUrl: '',
-   // urlArgs: "bust=" + (new Date()).getTime(),
+    urlArgs: "bust=" + (new Date()).getTime(),
     paths: {
     	'jquery'      	    : 'libs/jquery/jquery-1.11.3.min',
     	'jquery-ui'      	: 'libs/jquery/jquery-ui.min',
@@ -11,6 +11,7 @@ requirejs.config({
 	    'bootstrap-file'    : 'libs/fileinput/js/fileinput.min',
 	    'bootstrap' 		: 'libs/bootstrap/js/bootstrap.min',
 	    'bootstrap-dialog'  : 'libs/bootstrap/js/bootstrap-dialog',
+	    'bootstrap-menu'    : 'libs/bootstrap/js/BootstrapMenu.min',
 		'blockUi'           : 'libs/jquery.blockui/jquery.blockUI',
 		'alertify'			: 'libs/alertify/js/alertify.min',
 		'amChart'			: 'libs/amcharts/amcharts',

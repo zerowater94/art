@@ -14,6 +14,18 @@ define(['jquery','mngEvent',
 		
 	var _this = {};
 	
+	var msg = {
+		blankStr   : "::::::",
+		search     : "Search",
+		addItem    : "Add Item",
+		editName   : "Change Name",
+		deleteItem : "Delete Item",
+		moveUp     : "Move Up",
+		moveDown   : "Move Down",
+		close      : "close"
+	};
+		
+	
 	var _f = {
 		initialize : function( obj ) {
 				
@@ -36,16 +48,18 @@ define(['jquery','mngEvent',
 			_this.mainBar.initialize();
 			_this.mainEditor.initialize();
 			_this.mainDetail.initialize();
+			_this.search.initMsg(msg);
 			_this.showMsg.initialize();
 			_this.popover.initialize();
 			_this.tree.initialize();
+			_this.tree.initMsg(msg);
 		}
 	};
 	
 	_this.initialize = function(obj) {
 		
 		$aWg.setElements(obj.els);
-		$aWg.setMessage(obj.msg);
+		$aWg.setMessage($.extend(true, msg, obj.msg));
 		$.extend(true, _this, $aWg);
 		_f.initialize(obj);
 	};

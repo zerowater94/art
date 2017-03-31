@@ -108,11 +108,7 @@ define([ 'basicInfo'
 					type : "get",
 					data : paramData,
 					success : function(data) {
-						_vws.gridGroup.reloadData({
-							dataModel : {
-								data : data
-							}
-						});
+						_vws.gridGroup.reloadData(data);
 						_vws.gridGroup.setSelection(0);
 					}
 				});
@@ -126,11 +122,7 @@ define([ 'basicInfo'
 					type : "get",
 					data : paramData,
 					success : function(data) {
-						_vws.gridCode.reloadData({
-							dataModel : {
-								data : data
-							}
-						});
+						_vws.gridCode.reloadData(data);
 					}
 				});
 			},
@@ -165,8 +157,8 @@ define([ 'basicInfo'
 				
 				_vws.gridGroup = $a.t.grid.render(_els.areaGridGroup, {
 					height:150,
-					colModel : [{ dataIndx : "code",     title: $a.getMsg("lbl.code"),     width: 50, editable: false   },
-					            { dataIndx : "codeValue",title: $a.getMsg("lbl.codeValue"), width: 200, editable: false  }],
+					colModel : [{ dataIndx : "code",     title: $a.getMsg("lbl.code"),     width: '30%', editable: false   },
+					            { dataIndx : "codeValue",title: $a.getMsg("lbl.codeValue"), width: '70%', editable: false  }],
 					rowClick : function( event, ui ) {
 						var rowData = ui.rowData;
 						// include rowSelect function.
@@ -276,10 +268,11 @@ define([ 'basicInfo'
 		                      { id:"etcInfo", type:"etc-info", label:$a.getMsg("lbl.etcInfo"), }
 		                    ],
 				};
-				_els.forms.editor = $a.t.mainEditor.render(_param);
+				_vws.editor = $a.t.mainEditor.render(_param);
+				_els.forms.editor = _vws.editor.getForms();
 			},
 			closeEditor : function() {
-				$a.t.mainEditor.hideEditor();
+				_vws.editor.hideEditor();
 			},
 			showEditor : function(  ) {
 				
@@ -298,7 +291,9 @@ define([ 'basicInfo'
 				}
 				if ( _dts.editData.isInputMode )
 					_dts.editData.useYn = "Y";
-				$a.t.mainEditor.showEditor(_dts.editData);
+				_vws.editor.showEditor({
+					data : _dts.editData
+				});
 			},
 			selectedCodeGroup : function() {
 				if ( _dts.selectedData.group == null )
@@ -308,7 +303,7 @@ define([ 'basicInfo'
 				_vws.searchCode.changeTitle(_dts.selectedData.group.codeValue);
 				_f.searchCodeList();
 				
-				$a.t.mainEditor.setTitle($a.getMsg("lbl.codeGroup"));
+				_vws.editor.setTitle($a.getMsg("lbl.codeGroup"));
 				_dts.selectedData.code = null;
 				_f.setupSelectedCode();
 				
@@ -328,11 +323,11 @@ define([ 'basicInfo'
 			},
 			insertData : function() {
 				
-				var mainEditor = $a.t.mainEditor.getMainBody();
+				var mainEditor = _vws.editor.getMainBody();
 				if( !$a.v.isValidBatchData(mainEditor) ) 
 					return;
 				
-				var formData = $a.t.mainEditor.getValues();
+				var formData = _vws.editor.getValues();
 				formData.siteId = "PUBLIC";
 				formData.compId = "PUBLIC";
 				formData.codeId = _dts.editData.codeId;

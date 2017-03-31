@@ -15,15 +15,23 @@ define(['mngEvent', 'wgHelper'
 		id   : null,
 		type : "text" // text / select / checkbox, radio ,
 	};
+	var _msg = {
+		blankStr   : "::::::",
+		search     : "Search",
+	};
 	
 	var _f = {
+		initMsg : function( obj ) {
+			
+			$.extend(true, _msg, obj);
+		},
 		render : function(el, obj){
 			
 			var _opt = $.extend(true, {} ,_pm, obj );
 			el.empty();
 			// row box 생성
 			_opt.buttons.push({
-				name     : $aWg.msg.search,
+				name     : _msg.search,
 				btnCls   : 'btn-default btn-xs pull-right',
 				callbackFunc : _opt.searchFunc
 			});
@@ -55,6 +63,7 @@ define(['mngEvent', 'wgHelper'
 	
 	
 	return {
-		render : _f.render
+		initMsg : _f.initMsg, 
+		render  : _f.render
 	};
 });

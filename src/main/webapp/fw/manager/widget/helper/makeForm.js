@@ -25,21 +25,28 @@ define(['mngEvent', 'basicUtil' ,
 			notKor     : null,
 		},
 		addedBtn : null,
-		typeOpt  : null,
+		typeOpt  : null
 	};
 	
-	var _msg = {};
+	var _msg = {
+		blankStr   : "::::::",
+		search     : "Search",
+	};
 	
 	var _f = {
 		initMsg : function( obj ) {
 			
 			$.extend(true, _msg, obj);
 		},
-		null2Str : function( value ) {
-			if( value == undefined || value == null )
-				return "";
-			else
+		null2Str : function( value, defaultValue ) {
+			
+			if ( value !== undefined && value != null )
 				return value;
+			
+			if( defaultValue !== undefined )
+				return defaultValue;
+			
+			return "";
 		},
 		html   : {
 			formInputArea : function(obj) {
@@ -546,7 +553,11 @@ define(['mngEvent', 'basicUtil' ,
 						_f.addNewEtcInfo(elEtcInfo, inVal[jdx]);
 					}
 				} else {
-					el.find("#"+fObj.id).val(_f.null2Str(obj[fObj.id])); //text , textarea, select
+					var defaultValue;
+					if( fObj.typeOpt !== undefined && fObj.typeOpt !== null )
+						defaultValue = fObj.typeOpt.defaultParam;
+
+					el.find("#"+fObj.id).val(_f.null2Str(obj[fObj.id], defaultValue) ); //text , textarea, select
 				}
 			}
 		}

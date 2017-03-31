@@ -74,7 +74,7 @@ define([ 'basicInfo'
 				
 				$(document).bind("contextmenu",function(e){
 					e.preventDefault();
-					$a.print.alert("Not arrowed...right click..");
+					console.log("Not arrowed...right click..");
 			    });
 			},
 			goLoginPage : function() {
