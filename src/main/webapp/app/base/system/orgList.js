@@ -204,7 +204,7 @@ define([ 'basicInfo'
 		},
 		rowBoxDept : function() {
 			var _self = this;
-			this.rowBoxDept = $a.t.rowBox.render(this.$el, {
+			var _editorParam = {
 				title : $a.getMsg("lbl.orgDeptMng"),
 				buttons    : [{ name : $a.getMsg("lbl.add"),
 								id   : 'btn-dept-add',
@@ -222,16 +222,17 @@ define([ 'basicInfo'
 									_self.changeTreeData(false);
 									_self.searchDeptList();
 								},
-							}],
-			} );
-			this.areaDeptTree = this.rowBoxDept.elBoxBody ;
-			var rowBoxBtns    = this.rowBoxDept.elBoxBtn;
-			this.btnAddDept   = rowBoxBtns.find("#btn-dept-add");
-			this.btnSaveDept  = rowBoxBtns.find("#btn-dept-save");
-			this.btnOriginDept  = rowBoxBtns.find("#btn-dept-origin");
-			this.btnAddDept.hide();
-			this.btnSaveDept.addClass("btn-warning");
-			this.changeTreeData(false);
+							}],	
+			};
+			_self.rowBoxDept   = $a.t.rowBox.render(this.$el,_editorParam);
+			_self.areaDeptTree = _self.rowBoxDept.elBoxBody ;
+			var rowBoxBtns     = _self.rowBoxDept.elBoxBtn;
+			_self.btnAddDept   = rowBoxBtns.find("#btn-dept-add");
+			_self.btnSaveDept  = rowBoxBtns.find("#btn-dept-save");
+			_self.btnOriginDept  = rowBoxBtns.find("#btn-dept-origin");
+			_self.btnAddDept.hide();
+			_self.btnSaveDept.addClass("btn-warning");
+			_self.changeTreeData(false);
 		},
 		changeTreeData : function( isChanged ) {
 			if( isChanged ) {
@@ -312,9 +313,7 @@ define([ 'basicInfo'
 		},
 		setupEditorDept : function(param) {
 			var _self = this;
-			
 			_self.selectedDeptData = $a.u.null2Obj(param);
-			
 			_self.deptEditor = $a.t.mainEditor.render({
 				title : $a.getMsg("lbl.orgDeptMng"),
 				buttons :[{

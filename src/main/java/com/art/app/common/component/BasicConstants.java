@@ -85,6 +85,22 @@ public class BasicConstants
         private LOGIN_TYPE(String value) { this.code = value; }
 	}
 	
+	/***************************************************************
+	 * 사용자 Status 
+	 ****************************************************************/
+	public enum USER_STATUS
+	{
+		NORMAR("101","재직"), 
+		RETIREMENT("999","퇴직" );
+		public String code;
+		public String description;
+        private USER_STATUS(String code, String description) 
+        { 
+        	this.code = code; 
+        	this.description = description;
+        }
+	}
+	
 	
 	/***************************************************************
 	 * 구분자 

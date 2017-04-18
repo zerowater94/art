@@ -67,7 +67,7 @@
     
     <delete id="delete" parameterType="com.art.app.base.system.domain.DeptVO">
         DELETE FROM tco_dept
-        WHERE  dept_id = #{compId}
+        WHERE  dept_id = #{deptId}
     </delete>
     
 </mapper> 

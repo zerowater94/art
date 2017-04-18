@@ -80,22 +80,6 @@ define(['bootstrap-menu'
 				}
 					
 			}
-//			var calcMenu = function( menuKey ){
-//				var clickAction = param.clickAction[menuKey]; 
-//				if ( param.useMenu[menuKey] || clickAction != null ) {
-//					param.actions[menuKey] = menuInfo[menuKey];
-//					if ( clickAction != null) {
-//						param.actions[menuKey].onClick = clickAction;
-//					}
-//				}	
-//			};
-//			
-//			calcMenu('addItem');
-//			calcMenu('editName');
-//			calcMenu('deleteItem');
-//			calcMenu('moveUp');
-//			calcMenu('moveDown');
-//			calcMenu('close');
 		},
 		contextMenus : {},
 		removeBeforeCtx : function( ctxKey, ctxMenu ) {

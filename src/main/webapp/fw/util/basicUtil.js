@@ -3,7 +3,7 @@ define(['jquery'], function ($) {
     var _this = this;
     
     _this.isNull = function( param ) {
-    	return (param == undefined || param == null );
+    	return (param == undefined || param == null || $.isEmptyObject(param) );
     };
     
     _this.null2Obj = function( param , defParam ) {
@@ -25,6 +25,10 @@ define(['jquery'], function ($) {
     _this.inputOnlyEng = function(obj) {
         obj.val(obj.val().replace(/[^\!-z]/g,""));
     };
+    
+    _this.inputNoneKor = function(obj) {
+    	obj.val(obj.val().replace(/[^a-zA-Z0-9\/-=&_+!@#$-]/g,""));
+    }
 
     _this.isEmpty = function(data)  {
     	if( data == undefined || data == null )
