@@ -28,6 +28,12 @@
 color: #E1E1E8;left: -39px;padding: 4px 4px 5px;position: absolute;
 text-decoration: none; top: 0;border: 1px solid #666;outline: 0 none;}
 
+#search-bar-user {position: fixed;right:0px;bottom: 0px;width:250px;background-color:#303030 !important;}
+#search-bar-user .search-bar {padding:9px !important;float:none;}
+#search-bar-user .search-bar.show-body {padding:3px 3px 0px 3px !important;}
+#search-bar-user .search-bar input{ height:30px !important;}
+#search-bar-user .search-bar-body  {border: 0px !important;border-radius:4px; margin:3px; padding:5px;background-color:#FFFFFF;display:none;}
+#search-bar-user .search-bar-body.show-body {display:block;}
 
 #main-area.editor-bottom {float: none; width: auto;}
 

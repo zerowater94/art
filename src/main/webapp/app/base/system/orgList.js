@@ -272,7 +272,7 @@ define([ 'basicInfo'
 				jsonKey : {
 					id : "deptId",
 		            name : "deptName", 
-		            parentId : "pDeptId",
+		            parentId : "parentDeptId",
 		            rootId : _self.selectedCompData.compId,
 				},
 				clickAction : function( treeDeptObj ) {
@@ -281,7 +281,6 @@ define([ 'basicInfo'
 				rightActions : {
 					addItem : {
 						onClick : function(selectedDeptData) {
-							console.log($a.t);
 							$a.t.styleSwitcher.active(true);
 							_self.setupEditorDept(selectedDeptData);
 						}
@@ -322,7 +321,7 @@ define([ 'basicInfo'
 						_self.saveDept();
 					}
 				}],
-				formList:[{ id:"pDeptName", type:"text", label:$a.getMsg("lbl.parentDeptName"), 
+				formList:[{ id:"parentDeptName", type:"text", label:$a.getMsg("lbl.parentDeptName"), 
 					      	validation : {
 					      		readOnly   : true
 					      	}
@@ -357,11 +356,14 @@ define([ 'basicInfo'
                 ],
 			});
 			_self.deptEditor.showEditor(param);
-			if( _self.selectedDeptData == null ) {
+			console.log(param);
+			if (_self.selectedDeptData == null ) {
 				_self.deptEditor.setValues({
-					pDeptName : _self.selectedCompData.deptName
+					parentDeptName : _self.selectedCompData.deptName
 				});
-			};
+			} else {
+				_self.deptEditor.setValues(_self.selectedDeptData);
+			}
 		},
 		saveDept : function() {
 			var _self = this;
@@ -414,8 +416,9 @@ define([ 'basicInfo'
 		makeUserListGrid : function() {
 			this.gridUsers = $a.t.grid.render(this.areaUserListGrid, {
 				height:150,
-				colModel : [{ dataIndx : "userName",  title: $a.getMsg("lbl.userName"),    width: 100, editable: false   },
-				            { dataIndx : "deptName",  title: $a.getMsg("lbl.deptName"),    width: 200, editable: false  }],
+				colModel : [{ dataIndx : "userName",  title: $a.getMsg("lbl.userName"),    width:100, editable: false   },
+				            { dataIndx : "userGrade",  title: $a.getMsg("lbl.userGrade"),    width:50, editable: false  },
+				            { dataIndx : "userRole",  title: $a.getMsg("lbl.userRole"),    width:50, editable: false  }],
 				rowClick : function( event, ui ) {
 					var rowData = ui.rowData;
 					_f.showEditor();

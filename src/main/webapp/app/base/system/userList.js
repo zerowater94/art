@@ -32,6 +32,15 @@ define([ 'basicInfo'
 			};
 			this.rowBoxUser = $a.t.search.render(this.areaUserSearch,viewParam);
 		},
+		gridRender:{
+			userStatus : function(ui){
+            	if ($a.u.isNull(ui.cellData)) {
+            		return "";
+            	} else {
+            		return $a.getMsg("USER_STATUS_"+ui.cellData);
+            	}	
+            }
+		},
 		makeUserListGrid : function() {
 			var _self = this;
 			var gridParam = {
@@ -39,14 +48,8 @@ define([ 'basicInfo'
 				colModel : [{dataIndx : "loginId",     title: $a.getMsg("lbl.loginId"),      width: 100, editable: false},
 				            {dataIndx : "userName",    title: $a.getMsg("lbl.userName"),     width: 100, editable: false},
 				            {dataIndx : "userNickName",title: $a.getMsg("lbl.userNickName"), width: 200, editable: false  },
-				            {dataIndx : "userStatus",  title: $a.getMsg("lbl.userStatus"),    width: 100, editable: false,render:function( ui ){
-				            	if ($a.u.isNull(ui.cellData)) {
-				            		return "";
-				            	} else {
-				            		return $a.getMsg("USER_STATUS_"+ui.cellData);
-				            	}	
-				            }}
-				            ],
+				            {dataIndx : "userStatus",  title: $a.getMsg("lbl.userStatus"),   width: 100, editable: false, 
+				             render:_self.gridRender.userStatus} ],
 				rowClick : function( event, ui ) {
 					var rowData = ui.rowData;
 					_self.showEditor(rowData);

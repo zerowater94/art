@@ -29,6 +29,7 @@ define([ 'basicInfo' , 'app/main/mainHelper'
 				_els.areaTop        = thisEl.find("#top");
 				_els.areaFooter     = thisEl.find("footer");
 				_els.areaUserAcess  = thisEl.find(".user-media");
+				_els.areaUserSearch = thisEl.find('#search-bar-user');
 				_els.areaMainBar    = thisEl.find(".main-bar");
 				_els.areaContents   = thisEl.find("#content");
 				_els.areaContentOut = _els.areaContents.find(".outer");
@@ -49,8 +50,9 @@ define([ 'basicInfo' , 'app/main/mainHelper'
 						areaMain    : $a.getMainArea(),
 						areaEditor  : $a.getMainEditor(),
 						areaMainBar : _els.areaMainBar,
-						areaShowMsg : _els.areaContents.find("#main-msg"),
-						styleSwitcher : _els.styleSwitcher,
+						areaSearchUser : _els.areaUserSearch,
+						areaShowMsg    : _els.areaContents.find("#main-msg"),
+						styleSwitcher  : _els.styleSwitcher,
 					},
 					msg : {
 						blankStr   : $a.getMsg("lbl.blankStr"),

@@ -3,24 +3,27 @@
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
  
 <mapper namespace="com.art.app.base.system.dao.DeptDao">
- 
+ 	<sql id="columns">
+ 		a.comp_id, a.dept_id, a.dept_code, a.dept_name, a.parent_dept_id, a.use_yn, 
+   		a.dept_lvl, a.dept_ord, a.etc_info, a.description,
+   		a.reg_user_id, a.reg_dtm, a.upd_user_id, a.upd_dtm
+ 	</sql>
     <select id="selectList" resultType="com.art.app.base.system.domain.DeptVO">
-        SELECT  comp_id, dept_id, dept_code, dept_name, p_dept_id, use_yn, 
-        		dept_lvl, dept_ord,etc_info, description,
-        		reg_user_id, reg_dtm, upd_user_id, upd_dtm
-		FROM    tco_dept
+        SELECT  <include refid="columns" /> 
+        	   , b.dept_name parent_dept_name
+		FROM    tco_dept a
+		        LEFT OUTER JOIN tco_dept b
+		           ON  b.dept_id = a.parent_dept_id
         WHERE   1 = 1
-        AND     comp_id = #{compId}
-		ORDER BY dept_lvl, p_dept_id, dept_ord
+        AND     a.comp_id = #{compId}
+		ORDER BY a.dept_lvl, a.parent_dept_id, a.dept_ord
     </select>
     
     <select id="selectData" resultType="com.art.app.base.system.domain.DeptVO">
-        SELECT  comp_id, dept_id, dept_code, dept_name, p_dept_id, use_yn, 
-        		dept_lvl, dept_ord,etc_info, description,
-        		reg_user_id, reg_dtm, upd_user_id, upd_dtm
-		FROM    tco_dept
+        SELECT  <include refid="columns" /> 
+		FROM    tco_dept a
         WHERE   1 = 1
-        AND     dept_id = #{deptId}
+        AND     a.dept_id = #{deptId}
     </select>
     
     <select id="selectMaxOrder" resultType="com.art.app.base.system.domain.DeptVO">
@@ -32,12 +35,10 @@
     </select>
     
     <insert id="insert" parameterType="com.art.app.base.system.domain.DeptVO">
-        INSERT INTO tco_dept (
-        	comp_id, dept_id, dept_code, dept_name, p_dept_id, use_yn, 
-       		dept_lvl, dept_ord,etc_info, description,
-       		reg_user_id, reg_dtm, upd_user_id, upd_dtm
+        INSERT INTO tco_dept a (
+        	<include refid="columns" /> 
         )VALUES(
-        	#{compId}, #{deptId}, #{deptCode}, #{deptName}, #{pDeptId}, #{useYn}, 
+        	#{compId}, #{deptId}, #{deptCode}, #{deptName}, #{parentDeptId}, #{useYn}, 
         	#{deptLvl}, #{deptOrd}, #{etcInfo}, #{description},
         	#{currUserId}, #{currDateTime},#{currUserId}, #{currDateTime}
         )

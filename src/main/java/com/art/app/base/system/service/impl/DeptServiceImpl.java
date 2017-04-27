@@ -5,11 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.art.app.base.system.dao.CompDao;
 import com.art.app.base.system.dao.DeptDao;
-import com.art.app.base.system.domain.CompVO;
 import com.art.app.base.system.domain.DeptVO;
-import com.art.app.base.system.service.CompService;
 import com.art.app.base.system.service.DeptService;
 import com.art.app.common.basic.service.AbstractService;
 import com.art.fw.domain.ResultVO;

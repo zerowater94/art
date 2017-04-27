@@ -20,6 +20,7 @@ define(['mngEvent', 'basicUtil',
 		areaMain : null,
 		areaEditor : null,
 		areaMainBar : null,
+		areaSearchUser : null,
 		areaShowMsg : null,
 		styleSwitcher : null,
 	};
@@ -45,11 +46,7 @@ define(['mngEvent', 'basicUtil',
 		_this.makeForm.initMsg(msgObj);
 		_this.contextMenu.initMsg(msgObj);
 	};
-	
-	
-	
-	
-	
-	
+
+
 	return _this;
 });

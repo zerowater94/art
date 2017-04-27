@@ -7,7 +7,8 @@ public class DeptVO extends AbstractVO
 	private String deptId = "";
 	private String deptCode = "";
 	private String deptName = "";
-	private String pDeptId = "";
+	private String parentDeptId = "";
+	private String parentDeptName = "";
 	private String useYn = "";
 	private int deptLvl = 0;
 	private int deptOrd = 0;
@@ -19,7 +20,8 @@ public class DeptVO extends AbstractVO
 	public String getDeptId() { return deptId; }
 	public String getDeptCode() { return deptCode; }
 	public String getDeptName() { return deptName; }
-	public String getpDeptId() { return pDeptId; }
+	public String getParentDeptId() { return parentDeptId; }
+	public String getParentDeptName() { return parentDeptName; }
 	public String getUseYn() { return useYn; }
 	public int getDeptLvl() { return deptLvl; }
 	public int getDeptOrd() { return deptOrd; }
@@ -45,14 +47,19 @@ public class DeptVO extends AbstractVO
 		if ( deptName != null )
 			this.deptName = deptName;
 	}
-	public void setpDeptId(String pDeptId) 
+	public void setParentDeptId(String pDeptId) 
 	{
 		if ( pDeptId != null )
-			this.pDeptId = pDeptId;
+			this.parentDeptId = pDeptId;
+	}
+	public void setParentDeptName(String pDeptName)
+	{
+		if (pDeptName != null )
+			this.parentDeptName = pDeptName;
 	}
 	public void setUseYn(String useYn) 
 	{
-		if ( pDeptId != null )
+		if ( useYn != null )
 			this.useYn = useYn;
 	}
 	public void setDeptLvl(int deptLvl) 
@@ -68,7 +75,5 @@ public class DeptVO extends AbstractVO
 		if ( description != null )
 			this.description = description;
 	}
-	
-
 
 }
