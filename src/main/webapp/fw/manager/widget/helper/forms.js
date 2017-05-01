@@ -32,30 +32,26 @@ define(['mngEvent', 'basicUtil' ,
 			search     : "Search",
 		},
 		initialize : function( msgObj ) {
-			$.extend(true, this.msg, msgObj);
+			
 		}
 	};
 
 	var wgApp = Backbone.View.extend({
 		els : {},
-		initialize : function(el, msgObj) {
-			this.$el = el;
-			$.extend(true, _msg, msgObj);
-		},
-		render : function(obj) {
+		initialize : function(msgObj) {
 			
-		}
+		},
 	});
 	
 	
 	return {
 		app : null,
-		initialize : function() {
+		initialize : function(msgObj) {
 			this.app = new wgApp($aWg.els.areaSearchUser);
-			this.app.render();
+			$.extend(true, _msg, msgObj);
 		},
-		showSearchUser : function() {
-			
-		}
+		makeForms : function() {},
+		setValues : function() {},
+		getValues : function() {}
 	};
 });
