@@ -149,6 +149,9 @@ define(['mngEvent', 'basicUtil' ,
 					html += '</div>';
 					return html;
 				},
+				sortable : function(obj) {
+					return "<ul id='"+obj.id+"'></ul>";
+				}
 			}
 		},	
 		formList : function() {
@@ -168,7 +171,7 @@ define(['mngEvent', 'basicUtil' ,
 			var _areaForm, _rtnFormInfo;  
 			var _opt = $.extend(true,{}, _pm, obj );
 			
-			if ( _opt.type == 'etc-info') {
+			if ( _opt.type == 'etc-info' || _opt.type == 'sortable' ) {
 				el.append(_f.html.formInputArea(_opt));
 				el = el.find('#area-'+_opt.id);
 			}
@@ -186,6 +189,10 @@ define(['mngEvent', 'basicUtil' ,
 				_f.addNewForm( el, {
 					id: _opt.id+"-keyValue", type:"custom", label:null
 				}).area.addClass("area-color"); // 재귀 함수 
+			} else if ( _opt.type == 'sortable') {
+				el.append(_f.html.form.sortable({
+					id: _opt.id+"-keyValue"
+				}));
 			}
 			
 			return _rtnFormInfo;
@@ -206,6 +213,8 @@ define(['mngEvent', 'basicUtil' ,
 				return _f.etcInfo(elFormGroup, obj);
 			} else if ( obj.type == 'custom' ) {
 				return _f.custom(elFormGroup, obj);
+			} else if ( obj.type == 'sortable' ) {
+				return _f.sortable(elFormGroup, obj);
 			} else {
 				return _f.text(elFormGroup, obj);
 			}
@@ -442,6 +451,32 @@ define(['mngEvent', 'basicUtil' ,
 				area : el,
 			};
 		},
+		sortable : function(el, obj) {
+			var _sortableOptions = {
+				dataList : null,
+				jsonReader  : {
+					id    : "id",
+					value : "value"
+				}
+			};
+			
+			el.append(_f.html.form.text(obj));
+			var elInput = el.find("input");
+			el.append(_f.html.addBtnGroup());			
+			$aWgButton.render(el.find(".input-group-btn"), {
+				name :'<i class="fa fa-plus"></i>',
+				btnCls:"btn-default btn-xs",
+				callbackFunc : function() {
+	        		// _f.addNewEtcInfo( el.parent("#area-"+obj.id).find("#"+obj.id+"-keyValue"));
+	        	}
+			});
+			obj.validation.readOnly = true;
+			_f.setValidAttr(obj, elInput);
+			
+			return {
+				area : el,
+			};
+		},
 		etcInfo : function( el, obj ) {
 			el.append(_f.html.form.text(obj));
 			var elInput = el.find("input");
@@ -513,6 +548,16 @@ define(['mngEvent', 'basicUtil' ,
 						});
 				   });
 					rtnObj[obj.id] = JSON.stringify(inVal);
+				} else if ( obj.type == 'sortable') {
+//					var inVal = [];
+//					var formEtcInfo = el.find("#"+obj.id+"-keyValue");
+//					formEtcInfo.find(".form-group").each(function() {
+//						inVal.push({
+//							code  : $(this).find(".etcInfo-key").val() ,
+//							value : $(this).find(".etcInfo-val").val() ,
+//						});
+//				   });
+//					rtnObj[obj.id] = JSON.stringify(inVal);
 				} else {
 					rtnObj[obj.id] = el.find("#"+obj.id).val(); //text , textarea, select
 				}	
@@ -552,6 +597,24 @@ define(['mngEvent', 'basicUtil' ,
 					for( var jdx = 0 ; jdx < inVal.length; jdx++ ) {
 						_f.addNewEtcInfo(elEtcInfo, inVal[jdx]);
 					}
+				} else if ( fObj.type == 'sortable') {
+					var inVal ;
+					try {
+						inVal = $.parseJSON(_f.null2Str(obj[fObj.id]));
+					}catch ( exception ) {
+						inVal = [];
+					}
+					var elSorable = el.find("#"+fObj.id+"-keyValue");
+					elSorable.empty();
+					var _obj;
+					var _paramData;
+					console.log(inVal);
+					for( var jdx = 0 ; jdx < inVal.length; jdx++ ) {
+						_obj = inVal[jdx];
+						_paramData = fObj.typeObj;
+						elSorable.append("<li class='ui-state-default' data-id='"+_obj[_paramData.jsonReader.id]+"'>"+_obj[_paramData.jsonReader.value]+"</li>");
+					}
+					
 				} else {
 					var defaultValue;
 					if( fObj.typeOpt !== undefined && fObj.typeOpt !== null )

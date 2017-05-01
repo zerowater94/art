@@ -97,6 +97,12 @@ define([ 'basicInfo'
 		                		rows : 5
 		                	},
 		                  },
+		                  { id:"deptList", type:"sortable", label:$a.getMsg("lbl.ownDept"), typeOpt : {
+		                	  jsonReader : {
+		                		  id : "deptId",
+		                		  value : "deptName"
+		                	  }
+		                  } },
 		                  { id:"etcInfo", type:"etc-info", label:$a.getMsg("lbl.etcInfo"), }
                 ],
 			};
