@@ -100,6 +100,21 @@ public class BasicConstants
         	this.description = description;
         }
 	}
+	/***************************************************************
+	 * 멤버 형태
+	 ****************************************************************/
+	public enum MEMBER_TYPE
+	{
+		GROUP("G","그룹"), 
+		USER("U","사용자" );
+		public String code;
+		public String description;
+        private MEMBER_TYPE(String code, String description) 
+        { 
+        	this.code = code; 
+        	this.description = description;
+        }
+	}
 	
 	
 	/***************************************************************
@@ -120,5 +135,22 @@ public class BasicConstants
 		GROUP("G"), CODE("C");
 		public String code ; 
         private CODE_TYPE(String value) {this.code = value; }
+	}
+	
+	/***************************************************************
+	 * 부서 형태 
+	 ****************************************************************/
+	public enum USER_DEPT_TYPE
+	{
+		ORIGINAL("O","원부서"), 
+		ADDITIONAL("A","겸직부서" ),
+		DISPATCHED("D","파견부서");
+		public String code;
+		public String description;
+        private USER_DEPT_TYPE(String code, String description) 
+        { 
+        	this.code = code; 
+        	this.description = description;
+        }
 	}
 }

@@ -13,6 +13,30 @@ public class ResultVO // extends CommonVO
 	private int indexKey = -1;
 	private int indexIv = -1;
 	
+	public static ResultVO getExecResultVO(int execCnt)
+	{
+		ResultVO rstVO = new ResultVO();
+		rstVO.setExecCnt(execCnt);
+		if( execCnt > 0 ) 
+			rstVO.setResult(true);
+		return rstVO;
+	}
+	
+	public static ResultVO getExecResultVO(int execCnt, int toExecCnt)
+	{
+		ResultVO rstVO = new ResultVO();
+		rstVO.setExecCnt(execCnt);
+		if( execCnt == toExecCnt ) 
+			rstVO.setResult(true);
+		return rstVO;
+	}
+	
+	public static ResultVO getErrorResultVO(String errorCode)
+	{
+		ResultVO rstVO = new ResultVO();
+		rstVO.setResultCode(errorCode);
+		return rstVO;
+	}
 	
 	/********************************************************
 	 * 

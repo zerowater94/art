@@ -28,11 +28,11 @@
 color: #E1E1E8;left: -39px;padding: 4px 4px 5px;position: absolute;
 text-decoration: none; top: 0;border: 1px solid #666;outline: 0 none;}
 
-#search-bar-user {position: fixed;right:0px;bottom: 0px;width:250px;background-color:#303030 !important;}
+#search-bar-user {position: fixed;right:0px;bottom: 0px;width:250px;background-color:#303030 !important;z-index:1001;}
 #search-bar-user .search-bar {padding:9px !important;float:none;}
 #search-bar-user .search-bar.show-body {padding:3px 3px 0px 3px !important;}
 #search-bar-user .search-bar input{ height:30px !important;}
-#search-bar-user .search-bar-body  {border: 0px !important;border-radius:4px; margin:3px; padding:5px;background-color:#FFFFFF;display:none;}
+#search-bar-user .search-bar-body  {border: 0px !important;border-radius:4px; margin:3px; padding:5px;background-color:#FFFFFF;display:none;min-height:550px;}
 #search-bar-user .search-bar-body.show-body {display:block;}
 
 #main-area.editor-bottom {float: none; width: auto;}
@@ -91,8 +91,10 @@ text-decoration: none; top: 0;border: 1px solid #666;outline: 0 none;}
 .tree li.root-branch {padding:0em !important;}
 .tree ul li:before {content:"";display:block;width:10px;height:0;border-top:1px solid;margin-top:-1px;position:absolute;top:1em;left:0}
 .tree ul li:last-child:before {background:#fff;height:auto;top:1em;bottom:0}
-.tree li label.selected {font-weight:700 !important;font-size:0.9em !important;background-color:#e8e6e6;}
+.tree li span.selected {background-color:#e8e6e6;}
+.tree li span.selected label {font-weight:700 !important;font-size:0.9em !important;}
 .indicator {margin-right:5px;}
+.tree li span.group{border: 1px solid #999;border-radius: 4px;padding:0px 10px 0px 2px; background-color: #fbfbfb;}
 .tree li label{font-size:0.83em !important;color : #333 !important;font-weight: 400 !important;margin-bottom:0px !important;}
 .tree li a {text-decoration: none;color:#369;}
 .tree li i, label {cursor:pointer}

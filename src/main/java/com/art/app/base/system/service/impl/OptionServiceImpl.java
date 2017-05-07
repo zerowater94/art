@@ -13,7 +13,7 @@ import com.art.fw.domain.ResultVO;
 import com.art.fw.util.CommonUtil;
 
 @Service
-public class OptionServiceImpl extends AbstractService implements OptionService
+public class OptionServiceImpl extends AbstractService<OptionVO> implements OptionService
 {
 	@Autowired
 	private OptionDao dao;

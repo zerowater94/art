@@ -11,7 +11,7 @@ import com.art.app.common.component.BasicInfo;
 import com.art.fw.exception.AuthException;
 
 @Service("loginService")
-public class LoginServiceImpl extends AbstractService implements LoginService
+public class LoginServiceImpl extends AbstractService<LoginVO> implements LoginService
 {
 	private final String SETUP_LOGIN_ID  = "setupAdmin";
 	private final String SETUP_LOGIN_PWD = "art@setup!2016";
@@ -37,6 +37,7 @@ public class LoginServiceImpl extends AbstractService implements LoginService
 			}else 
 			{
 				rtnVO = new UserBasicVO();
+				rtnVO.setSiteId(BasicInfo.DEF_PUBLIC_ID);
 				rtnVO.setUserId("general-user");
 				rtnVO.setLoginId(param.getLoginId());
 				rtnVO.setUserName("general-user");
@@ -53,6 +54,7 @@ public class LoginServiceImpl extends AbstractService implements LoginService
 	private UserBasicVO getSetupUserInfo() 
 	{
 		UserBasicVO rtnVO = new UserBasicVO();
+		rtnVO.setSiteId(BasicInfo.DEF_PUBLIC_ID);
 		rtnVO.setUserId(this.SETUP_LOGIN_ID);
 		rtnVO.setLoginId(this.SETUP_LOGIN_ID);
 		rtnVO.setUserName("Setup Admin");

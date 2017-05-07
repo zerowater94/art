@@ -85,10 +85,15 @@ public abstract class AbstractCtl
 			if (binder.getTarget() == null) 
 				return;
 			
+			if (this.getSessionInfo() == null)
+				return;
+			
 			BeanWrapper beanWrapper = new BeanWrapperImpl(binder.getTarget());
 			
 			if (beanWrapper.isReadableProperty("currUserId"))
 				beanWrapper.setPropertyValue("currUserId", this.getSessionInfo().getUserId());
+			if (beanWrapper.isReadableProperty("siteId"))
+				beanWrapper.setPropertyValue("siteId", this.getSessionInfo().getSiteId());
 			
 		} catch (Exception e)
 		{
@@ -109,19 +114,19 @@ public abstract class AbstractCtl
 	public ResultVO fail(HttpServletRequest request, HttpServletResponse response, Exception exception) 
 	{
 		ResultVO error = null;
-	    System.out.println("exception.getClass().getName() : "+ exception.getClass().getName());
 	    if( exception.getClass().getName().equals(ArtException.class.getName()) )
 	    {
 	    	error = ((ArtException)exception).getResultVO();
 	    	if( error == null )
 	    	{
+	    		response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 	    		error = new ResultVO();
 	    		error.setResultMessage( BasicInfo.getResultMsg(BasicResultCode.UNKNOWN_ERROR, this.getSessionLocale()));	
 	    	} else 
 	    	{
+	    		response.setStatus(HttpStatus.BAD_REQUEST.value());
 	    		error.setResultMessage(BasicInfo.getResultMsg(error.getResultCode(), this.getSessionLocale()));
 	    	}
-	    	response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 	    }else
 	    {
 	    	error = new ResultVO();
@@ -147,8 +152,8 @@ public abstract class AbstractCtl
 	    }
 
 	    error.setUrl(request.getRequestURL().toString() +" \n"+exception.getClass().getName());
-	    
 	    this.logger.error("Exeption Trace====================> "+ exception.getClass().getName());
+	    this.logger.error(exception.getLocalizedMessage());
 	    StackTraceElement[] errors = exception.getStackTrace();
 	    this.logger.error("["+error.getResultCode()+"]"+ error.getResultMessage() );
 	    for( StackTraceElement trace : errors )

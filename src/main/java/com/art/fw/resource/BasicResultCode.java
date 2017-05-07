@@ -27,6 +27,8 @@ public class BasicResultCode extends AbstractBasic
 	
 	public static final String ALEADY_DATA        = "31";
 	public static final String SQL_ERROR          = "32";
+	public static final String EXIST_BELONG_DATA  = "33";
+	public static final String NOT_FOUND_DATA     = "34";
 	
 	public static final String FAIL_INSERT 	      = "41";
 	public static final String FAIL_UPDATE 	      = "42";
@@ -95,8 +97,12 @@ public class BasicResultCode extends AbstractBasic
 				return CommonUtil.null2str(BasicInfo.getDefaultMsg("msg.fail.expiredPwdChange", locale),"expired password period");
 			case "ALEADY_DATA":
 				return CommonUtil.null2str(BasicInfo.getDefaultMsg("msg.fail.existSameData", locale),"aleady exist data");
+			case "EXIST_BELONG_DATA":
+				return CommonUtil.null2str(BasicInfo.getDefaultMsg("msg.fail.existBelongData", locale),"exist belong or sub data");
 			case "SQL_ERROR":
 				return CommonUtil.null2str(BasicInfo.getDefaultMsg("msg.fail.execDao", locale),"accure to execute database");
+			case "NOT_FOUND_DATA":
+				return CommonUtil.null2str(BasicInfo.getDefaultMsg("msg.fail.notFoundData", locale),"Not found requested data");
 			case "FAIL_INSERT":
 				return CommonUtil.null2str(BasicInfo.getDefaultMsg("msg.fail.insert", locale),"msg.fail.insert");
 			case "FAIL_UPDATE":

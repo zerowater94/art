@@ -280,6 +280,11 @@ define(['mngEvent', 'basicUtil' ,
 		},
 		text : function( el, obj ) {
 			
+			var _textOptions = {
+				enterAction : null
+			};
+			var _typeObj = $.extend(true,{},_textOptions, obj.typeOpt );
+			
 			el.append(_f.html.form.text(obj));
 			
 			var elInput = el.find("input");
@@ -287,6 +292,10 @@ define(['mngEvent', 'basicUtil' ,
 			if( obj.addedBtn != null ) {
 				el.append(_f.html.addBtnGroup());
 				$aWgButton.render(el.find(".input-group-btn"), obj.addedBtn);
+			}
+			
+			if (_typeObj.enterAction != null) {
+				$aEvent.addEvent(elInput, "keypress", _typeObj.enterAction);
 			}
 			
 			_f.setValidAttr(obj, elInput);

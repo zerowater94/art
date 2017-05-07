@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="com.art.app.base.org.dao.MembersDao">
+ 	
+ 	<sql id="columns">
+ 		a.dept_id, a.user_id, a.grade_code, a.position_code, a.dept_type_code, a.etc_info,
+        a.reg_user_id, a.reg_dtm, a.upd_user_id, a.upd_dtm
+ 	</sql>
+ 	
+    <select id="selectDeptUserList" resultType="com.art.app.base.org.domain.MembersVO">
+    	SELECT true is_group, c.site_id, c.comp_id member_id, c.comp_name member_name, 
+    	       c.comp_code member_code, null parent_member_id, null nick_name, c.etc_info, c.description
+		FROM   tco_comp c
+		WHERE  c.site_id = #{siteId}
+		UNION ALL
+        SELECT true is_group, b.site_id, a.dept_id, a.dept_name, a.dept_code, a.parent_dept_id, '' nick_name, a.etc_info, a.description
+		FROM   tco_dept a
+		       INNER JOIN tco_comp b
+		         ON a.comp_id = b.comp_id
+		WHERE  b.site_id = #{siteId}
+		UNION ALL
+		SELECT false is_group, za.site_id, za.user_id, za.user_name, '' , zb.dept_id , za.user_nick_name, za.etc_info, za.description 
+		FROM   tco_user za
+		       LEFT OUTER JOIN tco_dept_user zb
+		         ON za.user_id = zb.user_id 
+		WHERE  za.site_id = #{siteId}
+		AND    za.user_status =  #{userStatus}
+    </select>
+    
+    <select id="selectList" resultType="com.art.app.base.org.domain.DeptUserVO">
+    	SELECT <include refid="columns" />
+    	      , b.user_name  
+		FROM   tco_dept_user a
+			   INNER JOIN tco_user b
+			     ON a.user_id = b.user_id
+		WHERE  1 = 1
+		<if test="deptId != null and deptId != ''  "><![CDATA[
+            AND    a.dept_id = #{deptId}
+        ]]></if>
+		<if test="userId != null and userId != ''  "><![CDATA[
+            AND    a.user_id = #{deptTypeCode}
+        ]]></if>
+		<if test="deptTypeCode != null and deptTypeCode != ''  "><![CDATA[
+            AND    a.dept_type_code = #{deptTypeCode}
+        ]]></if>
+        <if test="userName != null and userName != ''  "><![CDATA[
+            AND    b.user_name like CONCAT('%', #{userName}, '%') 
+        ]]></if>
+        ORDER BY a.position_code, a.grade_code, b.user_name
+    </select>
+    
+    <select id="selectMultiDeptMemberList" resultType="com.art.app.base.org.domain.DeptUserVO">
+    	SELECT <include refid="columns" />
+    	      , b.user_name  
+		FROM   tco_dept_user a
+			   INNER JOIN tco_user b
+			     ON a.user_id = b.user_id
+		WHERE  1 = 1
+		AND    a.dept_id IN 
+		<foreach item="item" index="index" collection="searchDeptList" open="(" separator="," close=")">
+			#{item.deptId}
+		</foreach>
+        ORDER BY a.position_code, a.grade_code, b.user_name
+    </select>
+    
+    <insert id="insert" parameterType="com.art.app.base.org.domain.DeptUserVO">
+        INSERT INTO tco_dept_user (
+        	dept_id, user_id, grade_code, position_code, dept_type_code,
+        	reg_user_id, reg_dtm, upd_user_id, upd_dtm 
+        )VALUES(
+        	#{deptId}, #{userId}, #{gradeCode}, #{positionCode}, #{deptTypeCode}, 
+        	#{currUserId}, #{currDateTime},#{currUserId}, #{currDateTime}
+        )
+    </insert>
+    
+    <update id="update" parameterType="com.art.app.base.org.domain.DeptUserVO">
+        UPDATE tco_dept_user
+        SET    grade_code = #{gradeCode},
+        	   position_code = #{positionCode},
+        	   dept_type_code = #{dept_type_code},
+        	   upd_user_id = #{currUserId},
+        	   upd_dtm = #{currDateTime}
+        WHERE  dept_id = #{deptId}
+        AND    user_id = #{userId}
+    </update>
+    
+    <delete id="delete" parameterType="com.art.app.base.org.domain.MembersVO">
+        DELETE FROM tco_dept_user
+        WHERE  dept_id = #{deptId}
+    </delete>
+    
+</mapper> 

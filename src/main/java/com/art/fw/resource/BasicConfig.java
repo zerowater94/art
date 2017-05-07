@@ -25,6 +25,7 @@ public class BasicConfig extends AbstractBasic
 	private static String defaultLocale = "";
 	
 	public static final String DEF_MSG_MODULE = "common";
+	public static final String DEF_PUBLIC_ID = "PUBLIC";
 	
 	
 	/**********************************************************************

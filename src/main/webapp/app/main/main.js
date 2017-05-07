@@ -65,7 +65,6 @@ define([ 'basicInfo' , 'app/main/mainHelper'
 						close      : $a.getMsg("lbl.close")
 					}
 				});
-				
 			},
 			setMainStyle : function() {
 				
@@ -177,8 +176,8 @@ define([ 'basicInfo' , 'app/main/mainHelper'
 					subMenus : [{iconCss  : "fa fa-h-square",menuName : $a.getMsg("lbl.manageOption"), maneId : "menu-4-1", menuLvl  : 2, url:"app/base/system/optionList"},
 					            {iconCss  : "fa fa-h-square",menuName : "코드", maneId : "menu-4-2", menuLvl  : 2, url:"app/base/system/codeList"},
 					            {iconCss  : "fa fa-h-square",menuName : "메뉴관리", maneId : "menu-4-3", menuLvl  : 2, url:"app/base/system/menuList"},
-					            {iconCss  : "fa fa-h-square",menuName : "조직관리", maneId : "menu-4-4", menuLvl  : 2, url:"app/base/system/orgList"},
-					            {iconCss  : "fa fa-h-square",menuName : "사용자관리", maneId : "menu-4-5", menuLvl  : 2, url:"app/base/system/userList"}
+					            {iconCss  : "fa fa-h-square",menuName : "조직관리", maneId : "menu-4-4", menuLvl  : 2, url:"app/base/org/orgList"},
+					            {iconCss  : "fa fa-h-square",menuName : "사용자관리", maneId : "menu-4-5", menuLvl  : 2, url:"app/base/org/userList"}
 					,]
 				}];
 				
@@ -208,6 +207,17 @@ define([ 'basicInfo' , 'app/main/mainHelper'
 				
 				_els.areaMenuUl.find("li").addClass("pointers");
 			}, 
+			searchMembers : function() {
+				var members ;
+				$a.send({
+					url : $a.getDefaultUrl()+"/base/org/members/list/all",
+					type : "GET",
+					success : function(data){
+						members = data;
+					}
+				});
+				return members;
+			},
 			addEventMenuShow : function(el, obj) {
 				
 				$a.addEvent(el.find("a"), "click", function() {
@@ -260,6 +270,7 @@ define([ 'basicInfo' , 'app/main/mainHelper'
 			_f.setBrand();
 			_f.setTopNav();
 			_f.searchLeftMenu();
+			$a.t.mainMembers.setReloadFunc(_f.searchMembers);
 			if( _pm.viewName != null ) {
 				_f.getMainContents(_pm);
 			}

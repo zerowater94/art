@@ -8,8 +8,9 @@ define(['mngEvent', 'basicUtil',
     	'fw/manager/widget/helper/contextMenuBs',
     	'fw/manager/widget/helper/styleSwitcher',
     	'fw/manager/widget/helper/relocationEl',
+        'fw/manager/widget/helper/tree'
         ], function ($aEvent, $aUtil, $aWgButton, $aWgMakeForm, $aWgRowBox, $aWgDropDown, 
-        		$aWgAreaBox, $aWgAddRow, $aContextMenu, $aStyleSwitcher, $aWgRelocationEl) {
+        		$aWgAreaBox, $aWgAddRow, $aContextMenu, $aStyleSwitcher, $aWgRelocationEl, $aWgTree) {
 	
 	'use strict';
 	
@@ -34,17 +35,20 @@ define(['mngEvent', 'basicUtil',
 	_this.areaBox     = $aWgAreaBox;
 	_this.contextMenu = $aContextMenu;
 	_this.styleSwitcher = $aStyleSwitcher;
+	_this.tree        =  $aWgTree;
 	
 	
 	_this.setElements = function( elObj ) {
 		$.extend(true, _this.els, elObj);
 		_this.styleSwitcher.initialize(_this.els.styleSwitcher);
+		_this.tree.initialize(_this.els);
 	};
 	
 	_this.setMessage  = function( msgObj  ) {
 		
 		_this.makeForm.initMsg(msgObj);
 		_this.contextMenu.initMsg(msgObj);
+		_this.tree.initMsg(msgObj);
 	};
 
 

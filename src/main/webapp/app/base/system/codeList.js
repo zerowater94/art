@@ -387,7 +387,7 @@ define([ 'basicInfo'
 					return;
 				}
 				
-				$a.print.confirm($a.getMsg("msg.confirm.detele.codeGroup"),function(){
+				$a.print.confirm($a.getMsg("msg.confirm.detele.includeSub"),function(){
 					$a.send({
 						url  : $a.getDefaultUrl()+"/base/system/code/delete/group",
 						type : "delete", 

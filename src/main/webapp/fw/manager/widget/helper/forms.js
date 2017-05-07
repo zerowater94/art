@@ -41,8 +41,13 @@ define(['mngEvent', 'basicUtil' ,
 		initialize : function(msgObj) {
 			
 		},
+		text : function() {
+			
+		},
+		textarea : function() {
+			
+		}
 	});
-	
 	
 	return {
 		app : null,
@@ -50,8 +55,24 @@ define(['mngEvent', 'basicUtil' ,
 			this.app = new wgApp($aWg.els.areaSearchUser);
 			$.extend(true, _msg, msgObj);
 		},
-		makeForms : function() {},
-		setValues : function() {},
-		getValues : function() {}
+		make : function(el, formList) {
+			var _rtnElObj = {};
+			var _obj;
+			
+			if ( formList.length == undefined )
+				return {};
+			
+			for( var idx = 0 ; idx < formList.length; idx++ ) {
+				_obj = formList[idx];
+				_rtnElObj[_obj.id] = _f.addNewForm( el, _obj);
+			}
+			return _rtnElObj;
+		},
+		setValues : function() {
+			
+		},
+		getValues : function() {
+			
+		}
 	};
 });

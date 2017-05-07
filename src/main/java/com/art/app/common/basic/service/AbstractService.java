@@ -1,5 +1,7 @@
 package com.art.app.common.basic.service;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +13,7 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import com.art.fw.domain.ResultVO;
 
-public abstract class AbstractService 
+public abstract class AbstractService<T>
 {
 	protected Logger logger = LoggerFactory.getLogger(this.getClass()) ;
 	
@@ -38,4 +40,29 @@ public abstract class AbstractService
 		txManager.rollback(txStatus);
 	}
 	
+	
+	public List<T> getList(T param) throws Exception
+	{
+		return null;
+	}
+	
+	public T getData(T param) throws Exception
+	{
+		return null;
+	}
+	
+	public ResultVO insert(T param) throws Exception
+	{
+		return null;
+	}
+	
+	public ResultVO update(T param) throws Exception
+	{
+		return null;
+	}
+	
+	public ResultVO delete(T param) throws Exception
+	{
+		return null;
+	}
 }

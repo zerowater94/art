@@ -82,12 +82,12 @@ define(['alertify', 'blockUi',  'basicUtil', 'basicValid',
 					try {
 						// JSON object 형태임.
 						var errObj = $.parseJSON(xhr.responseText);
-						console.log(errObj);
-						console.error(xhr.status+"\n"+errObj.resultCode+"\n"+errObj.resultMessage+"\n"+errObj.url);
 						if( errObj.resultMessage == '' )
 							_this.print.alert(_errMsg.failProcess); // 에러 메시지 출력
 						else
 							_this.print.alert(errObj.resultMessage); // 에러 메시지 출력
+
+						console.error(xhr.status+"\n"+errObj.resultCode+"\n"+errObj.resultMessage+"\n"+errObj.url);
 						
 					}catch ( ex ) {
 						// JSON object 형태가 아님.
@@ -270,6 +270,7 @@ define(['alertify', 'blockUi',  'basicUtil', 'basicValid',
 		_this.t.mainBar.clearButton();
 		_this.t.mainEditor.hideEditor();
 		_this.t.popover.closeAllPopover();
+		_this.t.mainMembers.hide();
 		
 		_this.t.mainBar.render({
 			iconCss  : paramData.iconCss,

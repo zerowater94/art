@@ -16,7 +16,7 @@ import com.art.fw.resource.BasicResultCode;
 import com.art.fw.util.CommonUtil;
 
 @Service
-public class CodeServiceImpl extends AbstractService implements CodeService
+public class CodeServiceImpl extends AbstractService<CodeVO> implements CodeService
 {
 	@Autowired
 	private CodeDao dao;
