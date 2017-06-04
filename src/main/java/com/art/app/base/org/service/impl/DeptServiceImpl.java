@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.art.app.base.org.dao.DeptDao;
-import com.art.app.base.org.dao.MembersDao;
+import com.art.app.base.org.dao.DeptUserDao;
 import com.art.app.base.org.domain.DeptVO;
 import com.art.app.base.org.domain.MembersVO;
 import com.art.app.base.org.service.DeptService;
@@ -23,7 +23,7 @@ public class DeptServiceImpl extends AbstractService<DeptVO> implements DeptServ
 	private DeptDao dao ;
 	
 	@Autowired
-	private MembersDao memberDao;
+	private DeptUserDao memberDao;
 
 	@Override
 	public List<DeptVO> getList(DeptVO param) throws Exception 

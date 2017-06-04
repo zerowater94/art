@@ -23,6 +23,9 @@ define(['mngEvent', 'basicValid', 'wgHelper',
 			title : null
 		},
 		els : {},
+		msg : {
+			close:"close"
+		},
 		init : function() {
 			_f.els.areaMain   = $aWg.els.areaMain;
 			_f.els.areaEditor = $aWg.els.areaEditor;
@@ -39,6 +42,9 @@ define(['mngEvent', 'basicValid', 'wgHelper',
 			$aEvent.addEvent(_f.els.editPanel.find(".close"), "click", _f.hideEditorAndMainArea);
 			$aEvent.addEvent(_f.els.editPanel.find(".location"),"click",_f.changeLocation);
 			
+		},
+		initMsg : function(msgObj) {
+			$.extend(true, _f.msg, msgObj);
 		},
 		setTitle : function( title ) {
 			_f.els.editTitle.html(title+"&nbsp;&nbsp;<i class='fa fa-plus-square'></i>");
@@ -77,9 +83,14 @@ define(['mngEvent', 'basicValid', 'wgHelper',
 			_f.els.editBody.empty();
 		},
 		addToolbarButton : function( buttons ) {
+			
 			for( var idx = 0 ; idx < buttons.length; idx++ ) {
 				$aWg.button.render(_f.els.editToolbar, $.extend(true, {btnCls:"btn-default btn-sm"}, buttons[idx]));
 			}
+			$aWg.button.render(_f.els.editToolbar, $.extend(true, {btnCls:"btn-default btn-sm"}, {
+				name : _f.msg.close,
+				callbackFunc : _f.hideEditorAndMainArea
+			}));
 		},
 		makeFormEditor : function( formList ) {
 			var formObj ; 
@@ -161,7 +172,7 @@ define(['mngEvent', 'basicValid', 'wgHelper',
 		
 		_f.setEditorCss(isBottom);
 		_f.setTitle(param.title);
-		_f.setTitleIcon('edit');
+		_f.setTitleIcon('U');
 		_f.setClearEditBody();
 		if ( param.showToolbar && param.buttons != null) {
 			_f.addToolbarButton(param.buttons);
@@ -185,11 +196,12 @@ define(['mngEvent', 'basicValid', 'wgHelper',
 				if ( showParam.title != null )
 					_f.setTitle(showParam.title);
 				
-				if ( showParam.isInputMode  )
+				if ( showParam.isInputMode  ) {
 					_f.setTitleIcon('I');
-				else
+				} else {
 					_f.setTitleIcon('U');
-				
+				}
+
 				_f.setValues(param.formList, showParam.data);
 			},
 			hideEditor : function() {
@@ -223,6 +235,7 @@ define(['mngEvent', 'basicValid', 'wgHelper',
 	
 	return {
 		initialize : _f.init,
+		initMsg : _f.initMsg,
 		render : function(paramObj ) {
 			var param = $.extend(true, {}, _f.options, paramObj);
 			var editor = new mainEditor(param );

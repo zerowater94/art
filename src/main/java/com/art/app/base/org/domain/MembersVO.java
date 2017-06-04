@@ -7,7 +7,7 @@ public class MembersVO extends DeptVO
 	private String memberCode = "";
 	private String memberName = "";
 	private String parentMemberId = "";
-	private String nickName = "";
+	private String userNickName = "";
 	private String userStatus = "";
 	private boolean groupBln = false;
 	
@@ -18,7 +18,7 @@ public class MembersVO extends DeptVO
 	public String getMemberCode() { return memberCode; }
 	public String getMemberName() { return memberName; }
 	public String getParentMemberId() { return parentMemberId; }
-	public String getNickName() { return nickName; }
+	public String getUserNickName() { return userNickName; }
 	public String getUserStatus() { return userStatus; }
 	public boolean isGroup() { return groupBln; }
 	
@@ -45,10 +45,10 @@ public class MembersVO extends DeptVO
 		if (parentMemberId != null )
 			this.parentMemberId = parentMemberId;
 	}
-	public void setNickName(String nickName) 
+	public void setUserNickName(String nickName) 
 	{
 		if (nickName != null)
-			this.nickName = nickName;
+			this.userNickName = nickName;
 	}
 	
 	public void setUserStatus(String userStatus)

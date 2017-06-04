@@ -6,7 +6,7 @@ import com.art.app.base.org.domain.DeptUserVO;
 import com.art.app.base.org.domain.MembersVO;
 import com.art.app.common.basic.service.CommonService;
 
-public interface MembersService extends CommonService<DeptUserVO>
+public interface DeptUserService extends CommonService<DeptUserVO>
 {
 	public List<MembersVO> getDeptUserList(MembersVO param) throws Exception;
 }

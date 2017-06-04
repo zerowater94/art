@@ -2,10 +2,10 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
  
-<mapper namespace="com.art.app.base.org.dao.MembersDao">
+<mapper namespace="com.art.app.base.org.dao.DeptUserDao">
  	
  	<sql id="columns">
- 		a.dept_id, a.user_id, a.grade_code, a.position_code, a.dept_type_code, a.etc_info,
+ 		a.dept_id, a.user_id, a.grade_code, a.position_code, a.dept_type_code, a.dept_order,
         a.reg_user_id, a.reg_dtm, a.upd_user_id, a.upd_dtm
  	</sql>
  	
@@ -31,16 +31,19 @@
     
     <select id="selectList" resultType="com.art.app.base.org.domain.DeptUserVO">
     	SELECT <include refid="columns" />
-    	      , b.user_name  
+    	      , b.user_name ,b.user_name, b.etc_info, b.user_nick_name
+    	      , c.dept_name
 		FROM   tco_dept_user a
 			   INNER JOIN tco_user b
 			     ON a.user_id = b.user_id
+			   INNER JOIN tco_dept c
+			     ON a.dept_id = c.dept_id
 		WHERE  1 = 1
 		<if test="deptId != null and deptId != ''  "><![CDATA[
             AND    a.dept_id = #{deptId}
         ]]></if>
 		<if test="userId != null and userId != ''  "><![CDATA[
-            AND    a.user_id = #{deptTypeCode}
+            AND    a.user_id = #{userId}
         ]]></if>
 		<if test="deptTypeCode != null and deptTypeCode != ''  "><![CDATA[
             AND    a.dept_type_code = #{deptTypeCode}
@@ -48,7 +51,15 @@
         <if test="userName != null and userName != ''  "><![CDATA[
             AND    b.user_name like CONCAT('%', #{userName}, '%') 
         ]]></if>
-        ORDER BY a.position_code, a.grade_code, b.user_name
+        ORDER BY a.dept_order, a.position_code, a.grade_code, b.user_name
+    </select>
+    
+    <select id="selectData" resultType="com.art.app.base.org.domain.DeptUserVO">
+    	SELECT <include refid="columns" />
+		FROM   tco_dept_user a
+		WHERE  1 = 1
+		AND    a.dept_id = #{deptId}
+		AND    a.user_id = #{userId}
     </select>
     
     <select id="selectMultiDeptMemberList" resultType="com.art.app.base.org.domain.DeptUserVO">
@@ -65,12 +76,28 @@
         ORDER BY a.position_code, a.grade_code, b.user_name
     </select>
     
+    <select id="selectNextOrderDept" resultType="com.art.app.base.org.domain.DeptUserVO">
+    	SELECT <include refid="columns" />
+		FROM   tco_dept_user a
+		WHERE  1 = 1
+		AND    a.user_id = #{userId}
+		AND    a.dept_order > #{deptOrder}
+        ORDER BY a.dept_order
+    </select>
+    
+    <select id="selectMaxOrder" resultType="java.lang.Integer">
+        SELECT COALESCE(MAX(dept_order),0) dept_order
+		FROM   tco_dept_user
+        WHERE  1 = 1
+        AND    user_id = #{userId}
+    </select>
+    
     <insert id="insert" parameterType="com.art.app.base.org.domain.DeptUserVO">
         INSERT INTO tco_dept_user (
-        	dept_id, user_id, grade_code, position_code, dept_type_code,
+        	dept_id, user_id, grade_code, position_code, dept_type_code,dept_order,
         	reg_user_id, reg_dtm, upd_user_id, upd_dtm 
         )VALUES(
-        	#{deptId}, #{userId}, #{gradeCode}, #{positionCode}, #{deptTypeCode}, 
+        	#{deptId}, #{userId}, #{gradeCode}, #{positionCode}, #{deptTypeCode}, #{deptOrder},
         	#{currUserId}, #{currDateTime},#{currUserId}, #{currDateTime}
         )
     </insert>
@@ -79,16 +106,38 @@
         UPDATE tco_dept_user
         SET    grade_code = #{gradeCode},
         	   position_code = #{positionCode},
-        	   dept_type_code = #{dept_type_code},
+        	   dept_type_code = #{deptTypeCode},
         	   upd_user_id = #{currUserId},
         	   upd_dtm = #{currDateTime}
         WHERE  dept_id = #{deptId}
         AND    user_id = #{userId}
     </update>
     
-    <delete id="delete" parameterType="com.art.app.base.org.domain.MembersVO">
+    <update id="updateOrder" parameterType="com.art.app.base.org.domain.DeptUserVO">
+        UPDATE tco_dept_user
+        SET    dept_order = #{deptOrder},
+        	   dept_type_code = #{deptTypeCode},
+        	   upd_user_id = #{currUserId},
+        	   upd_dtm = #{currDateTime}
+        WHERE  dept_id = #{deptId}
+        AND    user_id = #{userId}
+    </update>
+    
+    <delete id="delete" parameterType="com.art.app.base.org.domain.DeptUserVO">
         DELETE FROM tco_dept_user
         WHERE  dept_id = #{deptId}
+        AND    user_id = #{userId}
+    </delete>
+    
+    <delete id="deleteRemovedDept" parameterType="com.art.app.base.org.domain.UserVO">
+        DELETE FROM tco_dept_user
+        WHERE  user_id = #{userId}
+        <if test="userDeptList.size() > 0 ">
+            AND    dept_id NOT IN
+	        <foreach item="item" index="index" collection="userDeptList" open="(" separator="," close=")">
+				#{item.deptId}
+			</foreach>
+        </if>
     </delete>
     
 </mapper> 

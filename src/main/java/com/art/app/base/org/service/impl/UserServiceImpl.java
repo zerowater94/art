@@ -5,7 +5,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.art.app.base.org.dao.DeptUserDao;
 import com.art.app.base.org.dao.UserDao;
+import com.art.app.base.org.domain.DeptUserVO;
 import com.art.app.base.org.domain.UserVO;
 import com.art.app.base.org.service.UserService;
 import com.art.app.common.basic.service.AbstractService;
@@ -18,6 +20,9 @@ public class UserServiceImpl extends AbstractService<UserVO> implements UserServ
 {
 	@Autowired
 	private UserDao dao ;
+	
+	@Autowired
+	private DeptUserDao deptUserDao;
 
 	@Override
 	public List<UserVO> getList(UserVO param) throws Exception {
@@ -26,7 +31,11 @@ public class UserServiceImpl extends AbstractService<UserVO> implements UserServ
 
 	@Override
 	public UserVO getData(UserVO param) throws Exception {
-		return dao.selectData(param);
+		UserVO userVO = dao.selectData(param);
+		DeptUserVO deptUserVO = new DeptUserVO();
+		deptUserVO.setUserId(param.getUserId());
+		userVO.setUserDeptList(deptUserDao.selectList(deptUserVO));
+		return userVO;
 	}
 	
 	@Override
@@ -47,11 +56,16 @@ public class UserServiceImpl extends AbstractService<UserVO> implements UserServ
 
 	@Override
 	public ResultVO update(UserVO param) throws Exception {
-		ResultVO rstVO = new ResultVO();
-		rstVO.setExecCnt(dao.update(param));
-		if( rstVO.getExecCnt() > 0 )
-			rstVO.setResult(true);
-		return rstVO;
+		int execCnt = dao.update(param);
+		if( execCnt == 0 ) {
+			return ResultVO.getExecResultVO(execCnt);
+		}
+		
+		boolean resultBln = this.updateUserDepts(param);
+		if (!resultBln ) {
+			return ResultVO.getExecResultVO(0);
+		}
+		return ResultVO.getExecResultVO(execCnt);
 	}
 
 	@Override
@@ -62,6 +76,23 @@ public class UserServiceImpl extends AbstractService<UserVO> implements UserServ
 			rstVO.setResult(true);
 		return rstVO;
 	}
-
-
+	
+	private boolean updateUserDepts(UserVO param) throws Exception {
+		int maxOrder = 0 ;
+		if (param.isExistUserDept() ) {
+			for(DeptUserVO vo : param.getUserDeptList()) {
+				vo.copyExecuteUser(param);
+				vo.setUserId(param.getUserId());
+				vo.setDeptOrder(++maxOrder);
+				if (maxOrder == 1 ) {
+					vo.setDeptTypeCode(BasicConstants.USER_DEPT_TYPE.ORIGINAL.code);
+				} else {
+					vo.setDeptTypeCode(BasicConstants.USER_DEPT_TYPE.ADDITIONAL.code);
+				}
+				deptUserDao.updateOrder(vo);
+			}
+		}
+		deptUserDao.deleteRemovedDept(param);
+		return true;
+	}
 }

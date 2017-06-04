@@ -1,5 +1,6 @@
 package com.art.app.common.basic.domain;
 
+import java.lang.reflect.Field;
 import java.sql.Timestamp;
 
 import org.slf4j.Logger;
@@ -152,4 +153,18 @@ public abstract class AbstractVO
 	public String getUpdUserId() { return this.updUserId; }
 	public Timestamp getRegDtm() { return regDtm; }
 	public Timestamp getUpdDtm() { return updDtm; }
+	
+	/********************************************************************************
+	 * 
+	 * transfer.
+	 * @throws SecurityException 
+	 * @throws NoSuchFieldException 
+	 * @throws IllegalAccessException 
+	 * @throws IllegalArgumentException 
+	 * 
+	********************************************************************************/
+	public void copyExecuteUser(Object _obj) throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException
+	{
+		this.setCurrUserId(((AbstractVO)_obj).getCurrUserId());
+	}
 }

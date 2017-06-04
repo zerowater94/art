@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.art.app.base.org.domain.DeptUserVO;
 import com.art.app.base.org.domain.MembersVO;
-import com.art.app.base.org.service.MembersService;
+import com.art.app.base.org.service.DeptUserService;
 import com.art.app.common.basic.ctl.AbstractCtl;
 import com.art.fw.domain.ResultVO;
 import com.art.fw.exception.ArtException;
@@ -19,10 +19,10 @@ import com.art.fw.util.CommonUtil;
 
 @RestController
 @RequestMapping("/base/org/members")
-public class MembersCtl extends AbstractCtl
+public class DeptUserCtl extends AbstractCtl
 {
 	@Autowired
-	private MembersService service;
+	private DeptUserService service;
 	
 	@RequestMapping(value="/list", method = RequestMethod.GET)
 	public List<DeptUserVO> getList( DeptUserVO param ) throws Exception
@@ -66,7 +66,7 @@ public class MembersCtl extends AbstractCtl
 	@RequestMapping(value="", method = RequestMethod.DELETE)
 	public ResultVO delete(@RequestBody DeptUserVO param ) throws Exception
 	{
-		logger.debug("call delete : " +param.getCompId());
+		logger.debug("call delete : " +param.getDeptId() +", "+param.getUserId());
 		if( CommonUtil.isNull(param.getDeptId()) )
 			throw new BadRequestException();
 		ResultVO rstVO = service.delete(param);

@@ -48,6 +48,7 @@ define(['jquery','mngEvent',
 						
 			_this.mainBar.initialize();
 			_this.mainEditor.initialize();
+			_this.mainEditor.initMsg(msg);
 			_this.mainDetail.initialize();
 			_this.search.initMsg(msg);
 			_this.mainMembers.initialize();

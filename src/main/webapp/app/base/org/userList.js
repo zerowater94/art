@@ -52,7 +52,7 @@ define([ 'basicInfo'
 				             render:_self.gridRender.userStatus} ],
 				rowClick : function( event, ui ) {
 					var rowData = ui.rowData;
-					_self.showEditor(rowData);
+					_self.searchUserDetail(rowData);
 				},
 				rowSelect: function( event, ui ) {
 					
@@ -97,7 +97,7 @@ define([ 'basicInfo'
 		                		rows : 5
 		                	},
 		                  },
-		                  { id:"deptList", type:"sortable", label:$a.getMsg("lbl.ownDept"), typeOpt : {
+		                  { id:"userDeptList", type:"sortable", label:$a.getMsg("lbl.ownDept"), typeOpt : {
 		                	  jsonReader : {
 		                		  id : "deptId",
 		                		  value : "deptName"
@@ -111,6 +111,16 @@ define([ 'basicInfo'
 			_self.editorForms = _self.editor.getForms();
 			_self.btnCheckLoginId = _self.editorForms.loginId.area.find("#check-loginid");
 			_self.formLoginId = _self.editorForms.loginId.area.find("#loginId");
+		},
+		searchUserDetail : function(userObj) {
+			var _self = this;
+			$a.send({
+				url : $a.getDefaultUrl()+"/base/org/user/userId/"+ userObj.userId,
+				type : "get",
+				success : function(data) {
+					_self.showEditor(data); 
+				}
+			});
 		},
 		showEditor : function(userObj) {
 			var _self = this;
@@ -192,7 +202,6 @@ define([ 'basicInfo'
 			if (isUpdate) {
 				formData.userId = _self.selectedUserData.userId;
 			}
-
 			$a.send({
 				url : $a.getDefaultUrl()+"/base/org/user",
 				type : isUpdate?"put":"post",

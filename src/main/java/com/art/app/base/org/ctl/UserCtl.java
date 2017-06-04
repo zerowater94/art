@@ -37,6 +37,13 @@ public class UserCtl extends AbstractCtl
 		return service.getDataByLoginId(param);
 	}
 	
+	@RequestMapping(value="/userId/{userId}", method = RequestMethod.GET)
+	public UserVO getDataByUerId(UserVO param ) throws Exception
+	{
+		logger.debug("call getDataByUerId : " + param.getUserId());
+		return service.getData(param);
+	}
+	
 	@RequestMapping(value="", method = RequestMethod.POST)
 	public ResultVO insert(@RequestBody UserVO param ) throws Exception
 	{

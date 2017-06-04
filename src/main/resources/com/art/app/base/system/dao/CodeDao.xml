@@ -30,7 +30,7 @@
     </select>
     
     <select id="selectMaxOrder" resultType="com.art.app.base.system.domain.CodeVO">
-        SELECT MAX(COALESCE(code_ord,0)) code_ord
+        SELECT COALESCE(MAX(code_ord),0) code_ord
 		FROM   tco_code
         WHERE  1 = 1
         AND    code_type = #{codeType}

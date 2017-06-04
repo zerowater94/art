@@ -14,7 +14,7 @@ public class UserVO extends AbstractVO
 	private String userStatus = "";
 	private String gradeCode = "";
 	private String description = "";
-	private List<MembersVO> userDeptList = null;
+	private List<DeptUserVO> userDeptList = null;
 	
 	
 	/****************************************************
@@ -28,7 +28,10 @@ public class UserVO extends AbstractVO
 	public String getUserStatus() { return userStatus; }
 	public String getGradeCode() { return gradeCode; }
 	public String getDescription() { return description; }
-	public List<MembersVO> getUserDeptList() { return userDeptList; }
+	public List<DeptUserVO> getUserDeptList() { return userDeptList; }
+	public boolean isExistUserDept() {
+		return (this.userDeptList != null && this.userDeptList.size() > 0 );
+	}
 	
 	/****************************************************
 	 * getter
@@ -76,7 +79,7 @@ public class UserVO extends AbstractVO
 			this.description = description;
 	}
 	
-	public void setUserDeptList(List<MembersVO> userDeptList)
+	public void setUserDeptList(List<DeptUserVO> userDeptList)
 	{
 		this.userDeptList = userDeptList;
 	}
