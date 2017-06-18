@@ -1,73 +1,62 @@
 define([ 'basicInfo'
-         , 'text!app/base/system/menuList.html'
+         , 'text!app/base/org/authList.html'
        ], function ( $a, _tmpl) {
 	
 	'use strict';
 	
 	var app = {};
+	var authGroupTypeObj = $a.getConstants("AUTH_GROUP_TYPE");
 	
-	var menuApp = $a.ctl({
+	var authGroupApp = $a.ctl({
 		render : function(obj) {
 			$.extend(true, this.pm, obj);
-			this.setupArea();
-			this.setupMenuArea();
+			this.setupAuthGroup();
+			this.searchAuthGroupListAndMakeTree();
 			this.makeEditor();
-			this.searchMenuListAndMakeTree();
 		},
-		setupArea : function() {
-			this.areaMenus	  = this.$el.find("#area-menu-list");
-			this.areaMenuDetail = this.$el.find("#area-menu-detail");
-		},
-		setupMenuArea : function() {
+		setupAuthGroup : function() {
+			
 			var _self = this;
-			_self.rowBoxMenus = $a.t.rowBox.render(_self.areaMenus, {
-				title : $a.getMsg("lbl.menuMng"),
+			_self.rowBoxAuthGroups = $a.t.rowBox.render(_self.$el, {
+				title : $a.getMsg("lbl.authGroup"),
 				buttons : [{
 					name : $a.getMsg("lbl.add"),
 					callbackFunc : function() {
-						_self.showMenuEditor();
+						_self.showEditor();
 					},
 				}]
 			});
-			_self.areaMenuTree = _self.rowBoxMenus.elBoxBody;
+			_self.areaAuthGroupTree = _self.rowBoxAuthGroups.elBoxBody;
 		},
-		searchMenuListAndMakeTree : function() {
+		searchAuthGroupListAndMakeTree : function() {
 			var _self = this;
 			$a.send({
-				url : $a.getDefaultUrl() + "/base/system/menu/list",
+				url : $a.getDefaultUrl() + "/base/org/auth/group/list",
 				type : "get",
-				data : {},
+				data : {
+					compId : "PUBLIC"
+				},
 				success : function(data) {
-					_self.makeTreeMenu(data);
+					console.log(data);
+					_self.makeTreeAuthGroup(data);
 				}
 			});
 		},
-		convertManuDisplayName : function(treeData) {
-			var obj;
-			for (var idx = 0; idx < treeData.length; idx++) {
-				obj = treeData[idx];
-				obj.menuDisplayName = obj.menuName
-				if (!$a.u.isNull(obj.menuUrl) ) {
-					obj.menuDisplayName += " - [ "+obj.menuUrl+" ]";
-				}
-			}
-		},
-		makeTreeMenu : function(data) {
+		makeTreeAuthGroup : function(data) {
 			var _self = this;
-			_self.convertManuDisplayName(data);
-			_self.treeMenu = $a.t.tree.render(this.areaMenuTree, {
+			_self.treeAuthGroup = $a.t.tree.render(_self.areaAuthGroupTree, {
 				data : data,
 				height : 100,
 				jsonKey : {
-					id : "menuId",
-					name : "menuDisplayName",
-					parentId : "parentMenuId",
+					id : "authGroupId",
+					name : "authGroupName",
+					parentId : "parentAuthGroupId"
 				},
 				clickAction : function(treeDeptObj) {
 					_self.selectedTreeMenu(treeDeptObj);
 				},
 				rootAddAction : function() {
-					_self.showMenuEditor();
+					_self.showEditor();
 				},
 				rightActions : {
 					addItem : {
@@ -95,68 +84,85 @@ define([ 'basicInfo'
 				},
 			});
 		},
+		toArrayAuthGroupType : function() {
+			
+			return  [{
+				code : authGroupTypeObj.AUTH_GROUP_DIRECTORY,
+				value : $a.getMsg("AUTH_GROUP_TYPE_"+authGroupTypeObj.AUTH_GROUP_DIRECTORY)
+			},{
+				code : authGroupTypeObj.AUTH_GROUP,
+				value : $a.getMsg("AUTH_GROUP_TYPE_"+authGroupTypeObj.AUTH_GROUP)
+				
+			}];
+		},
 		makeEditor : function() {
 			var _self = this;
+			var authGroupTypeList = _self.toArrayAuthGroupType();
 			_self.editor = $a.t.mainEditor.render({
-				title : $a.getMsg("lbl.orgUserMng"),
+				title : $a.getMsg("lbl.authGroup"),
 				buttons :[{
 					name :$a.getMsg("lbl.save"), 
 					callbackFunc : function() {
-						_self.saveMenu();
+						_self.save();
 					}
 				}],
 				formList:[{ 
-					id:"menuId",  type:"text", label:$a.getMsg("lbl.menuId"), 
+					id:"authGroupId",  type:"text", label:$a.getMsg("lbl.authGroupId"), 
 		            validation : {
 		            	readOnly : true
 					},
 		        },{ 
-		        	id:"parentMenuId",  type:"text", label:$a.getMsg("lbl.parentMenuId"), 
+		        	id:"parentAuthGroupId",  type:"text", label:$a.getMsg("lbl.parentAuthGroupId"), 
 		        	validation : {
 		        		readOnly : true
 		        	},
 		        },{ 
-		        	id:"menuName", type:"text", label:$a.getMsg("lbl.menuName"), 
+		        	id:"authGroupName", type:"text", label:$a.getMsg("lbl.authGroupName"), 
 		        	validation : {
 			      		required   : true,
 			      		maxLength  : 100,
 			      		minLength  : 6
 			      	},
 				},{ 
-					id:"menuUrl", type:"text", label:$a.getMsg("lbl.menuUrl")
+					id:"authGroupType", type:"select", label:$a.getMsg("lbl.authGroupType"),
+					typeOpt : {
+						optionList : authGroupTypeList
+					}
 				},{ 
-					id:"menuOrder", type:"seelct", label:$a.getMsg("lbl.order")
+					id:"description", type:"textarea", label:$a.getMsg("lbl.description")
 				}],
 			});
 		},
-		selectedTreeMenu : function(treeData) {
-			this.selectedMenuData = treeData;
-			this.showMenuEditor(treeData);
-		},
-		showMenuEditor : function(paramData) {
+		showEditor : function(paramData) {
 			var _self = this;
 			var isInput = false;
-			if ($a.u.isNull(paramData) || $a.u.isNull(paramData.menuId)) {
+			if ($a.u.isNull(paramData) || $a.u.isNull(paramData.authGroupId)) {
 				isInput = true;
 			}
-			console.log(paramData);
 			_self.editor.showEditor({
 				data : paramData,
 				isInputMode : isInput
 			});
 		},
-		saveMenu : function(){
+		save : function(){
 			var _self = this;
 			var formData = _self.editor.getValues();
 			$a.send({
-				url : $a.getDefaultUrl() + "/base/system/menu",
-				method : (formData.menuId == "")?"post":"put",
+				url : $a.getDefaultUrl() + "/base/org/auth/group",
+				method : (formData.authGroupId == "")?"post":"put",
 				data : formData,
 				success : function(data){
 					$a.show.success($a.getMsg("msg.success.insert"));
-					_self.searchMenuListAndMakeTree();
+					_self.searchAuthGroupListAndMakeTree();
 				}		
 			});
+		},
+	});
+	
+	var authGrantApp = $a.ctl({
+		render : function(obj) {
+			$.extend(true, this.pm, obj);
+			console.log("this is auth grant.");
 		},
 	});
 	
@@ -173,11 +179,15 @@ define([ 'basicInfo'
 		setupMainContents : function() {
 			var tmpl = _.template(_tmpl);
 			this.$el.html(tmpl());
+			this.areaAuthGroup = this.$el.find("#area-auth-group-list");
+			this.areaAuthGrant = this.$el.find("#area-auth-grant-list"); 
 		},
 		setupApplication : function() {
 			app = {};
-			app.menu = new menuApp(this.$el);
-			app.menu.render(this.pm);
+			app.authGroup = new authGroupApp(this.areaAuthGroup);
+			app.authGrant = new authGrantApp(this.areaAuthGrant);
+			app.authGroup.render(this.pm);
+			app.authGrant.render(this.pm);
 		},
 	});
 

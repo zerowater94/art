@@ -177,7 +177,8 @@ define([ 'basicInfo' , 'app/main/mainHelper'
 					            {iconCss  : "fa fa-h-square",menuName : "코드", maneId : "menu-4-2", menuLvl  : 2, url:"app/base/system/codeList"},
 					            {iconCss  : "fa fa-h-square",menuName : "메뉴관리", maneId : "menu-4-3", menuLvl  : 2, url:"app/base/system/menuList"},
 					            {iconCss  : "fa fa-h-square",menuName : "조직관리", maneId : "menu-4-4", menuLvl  : 2, url:"app/base/org/orgList"},
-					            {iconCss  : "fa fa-h-square",menuName : "사용자관리", maneId : "menu-4-5", menuLvl  : 2, url:"app/base/org/userList"}
+					            {iconCss  : "fa fa-h-square",menuName : "사용자관리", maneId : "menu-4-5", menuLvl  : 2, url:"app/base/org/userList"},
+					            {iconCss  : "fa fa-h-square",menuName : "권한관리", maneId : "menu-4-6", menuLvl  : 2, url:"app/base/org/authList"}
 					,]
 				}];
 				

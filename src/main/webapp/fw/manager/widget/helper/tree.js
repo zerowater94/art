@@ -1,5 +1,7 @@
-define(['mngEvent', 'fw/manager/widget/helper/contextMenuBs',
-        ], function ($aEvent, $aWgContextMenu) {
+define(['mngEvent', 
+        'fw/manager/widget/helper/contextMenuBs', 
+        'fw/manager/widget/helper/button'
+        ], function ($aEvent, $aWgContextMenu, $aWgButton) {
 	
 	'use strict';
 	
@@ -25,6 +27,7 @@ define(['mngEvent', 'fw/manager/widget/helper/contextMenuBs',
 			resizeHeight : true,
 			clickAction : null,
 			dblClickAction : null,
+			rootAddAction : null
 		},
 		els : {
 			areaBody : null,
@@ -159,7 +162,7 @@ define(['mngEvent', 'fw/manager/widget/helper/contextMenuBs',
 					return "<i class='indicator glyphicon "+_f.iconClass.open+"'></i>";
 				},
 				emptyli : function() {
-					return '<li><label>No Tree Data</label></li>';
+					return '<li><label>No Tree Data</label><div class="btn-group pull-right"></div></li>';
 				},
 			},
 			makeTopUl : function() {
@@ -180,6 +183,15 @@ define(['mngEvent', 'fw/manager/widget/helper/contextMenuBs',
 			},
 			makeEmptyTree : function() {
 				this.topUl.append(this.html.emptyli());
+				var blankLi = this.topUl.find("li");
+				if (param.rootAddAction != null ) {
+					$aWgButton.render(blankLi.find(".btn-group"), {
+						name : "add",
+						btnCls:"btn-default btn-sm",
+						callbackFunc : param.rootAddAction
+					});
+				}
+				
 			},
 			isRootElement : function( parentId ) {
 				return (parentId == null || parentId == '' || parentId == this.keys.rootId );

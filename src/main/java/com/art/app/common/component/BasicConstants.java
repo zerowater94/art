@@ -153,4 +153,20 @@ public class BasicConstants
         	this.description = description;
         }
 	}
+	
+	/***************************************************************
+	 *  권한 그룹 형태
+	 ****************************************************************/
+	public enum AUTH_GROUP_TYPE
+	{
+		AUTH_GROUP_DIRECTORY("DIRECTORY", "디렉토리"),
+		AUTH_GROUP("AUTHGROUP", "권한그룹");
+		public String code;
+		public String description;
+        private AUTH_GROUP_TYPE(String code, String description) 
+        { 
+        	this.code = code; 
+        	this.description = description;
+        }
+	}
 }
