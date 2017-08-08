@@ -2,38 +2,45 @@ package com.art.app.base.org.domain;
 
 import com.art.app.common.basic.domain.AbstractVO;
 
-public class AuthGrantVO extends AbstractVO 
+public class AuthAssignVO extends AbstractVO 
 {
-	private String authGrantId = "";
 	private String authAssignId = "";
-	private String authGrantType = "";
+	private String authGroupId = "";
+	private String authMemberId = "";
+	private String authAssignType = "";
 	private String description = "";
 	
 	/****************************************************
 	 * getter
 	 *****************************************************/
-	public String getAuthGrantId() { return authGrantId; }
 	public String getAuthAssignId() { return authAssignId; }
-	public String getAuthGrantType() { return authGrantType; }
+	public String getAuthGroupId() { return authGroupId; }
+	public String getAuthMemberId() { return authMemberId; }
+	public String getAuthAssignType() { return authAssignType; }
 	public String getDescription() { return description; }
 	
 	/****************************************************
 	 * setter
 	 *****************************************************/
-	public void setAuthGrantId(String str)
-	{
-		if (str != null)
-			this.authGrantId = str;
-	}
 	public void setAuthAssignId(String str)
 	{
 		if (str != null)
-			this.authGrantId = str;
+			this.authAssignId = str;
 	}
-	public void setAuthGrantType(String str)
+	public void setAuthGroupId(String str) 
 	{
 		if (str != null )
-			this.authGrantType = str;
+			this.authGroupId = str;
+	}
+	public void setAuthMemberId(String str)
+	{
+		if (str != null)
+			this.authMemberId = str;
+	}
+	public void setAuthAssignType(String str)
+	{
+		if (str != null )
+			this.authAssignType = str;
 	}
 	public void setDescription(String str) 
 	{

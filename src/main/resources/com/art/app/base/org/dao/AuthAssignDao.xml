@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="com.art.app.base.org.dao.AuthAssignDao">
+ 	<sql id="columns">
+ 		a.auth_assign_id, a.auth_group_id, a.auth_member_id, 
+ 		a.auth_assign_type, a.description,
+   		a.reg_user_id, a.reg_dtm, a.upd_user_id, a.upd_dtm
+ 	</sql>
+    <select id="selectList" resultType="com.art.app.base.org.domain.AuthAssignVO">
+        SELECT  <include refid="columns" /> 
+		FROM    tco_auth_assign a
+        WHERE   1 = 1
+        AND     a.auth_group_id = #{authGroupId}
+		ORDER BY a.auth_assign_id
+    </select>
+    
+    <select id="selectData" resultType="com.art.app.base.org.domain.AuthAssignVO">
+        SELECT  <include refid="columns" />
+		FROM    tco_auth_assign a
+        WHERE   1 = 1
+        AND     a.auth_group_id = #{authGroupId}
+    </select>
+    
+    <insert id="insert" parameterType="com.art.app.base.org.domain.AuthAssignVO">
+        INSERT INTO tco_auth_assign (
+        	auth_assign_id, auth_group_id, auth_member_id, 
+        	auth_assign_type, description,
+	   		reg_user_id, reg_dtm, upd_user_id, upd_dtm 
+        )VALUES(
+        	#{authAssignId}, #{authGroupId}, #{authMemberId}, 
+        	#{authAssignType},#{description},
+        	#{currUserId}, #{currDateTime},#{currUserId}, #{currDateTime}
+        )
+    </insert>
+    
+    <update id="update" parameterType="com.art.app.base.org.domain.AuthAssignVO">
+        UPDATE tco_auth_assign 
+        SET    auth_member_id = #{authMemberId},
+        	   auth_assign_type = #{authAssignType},
+        	   description  = #{description},
+        	   upd_user_id  = #{currUserId},
+        	   upd_dtm      = #{currDateTime}
+        WHERE  auth_assign_id = #{authAssignId}
+    </update>
+    
+    <delete id="delete" parameterType="com.art.app.base.org.domain.AuthAssignVO">
+        DELETE FROM tco_auth_assign
+        WHERE  auth_assign_id = #{authAssignId}
+    </delete>
+    
+</mapper> 

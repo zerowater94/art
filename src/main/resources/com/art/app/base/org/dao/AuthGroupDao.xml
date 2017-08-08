@@ -37,8 +37,8 @@
     
     <update id="update" parameterType="com.art.app.base.org.domain.AuthGroupVO">
         UPDATE tco_auth_group 
-        SET    auth_group_name = #{deptCode},
-        	   auth_group_type = #{authGroupType}
+        SET    auth_group_name = #{authGroupName},
+        	   auth_group_type = #{authGroupType},
         	   description  = #{description},
         	   upd_user_id  = #{currUserId},
         	   upd_dtm      = #{currDateTime}

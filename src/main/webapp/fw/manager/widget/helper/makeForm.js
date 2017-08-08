@@ -130,6 +130,9 @@ define(['mngEvent', 'basicUtil' ,
 				html += '</div>';
 				return html;
 			},
+			search : function(obj) {
+				
+			},
 			sortable : function(obj) {
 				return "<div class='area-color'><ul id='"+obj.id+"' class='sortable'></ul></div>";
 			},
@@ -142,6 +145,21 @@ define(['mngEvent', 'basicUtil' ,
 			}
 		}	
 	};
+	
+	var _returnForms = function (formArea, formEl, etc) {
+		return $.extend(true,etc, {
+			area : formArea,
+			formEl : formEl,
+			readOnly : function( bln ) {
+				if (bln) {
+					formEl.attr("readOnly","true").attr("disabled", true).addClass("disabled");
+				} else {
+
+					formEl.attr("readOnly",false).attr("disabled", false).removeClass("disabled");
+				}
+			}
+		});
+	}
 	
 	var _forms = {
 		text : function( el, obj ) {
@@ -161,14 +179,12 @@ define(['mngEvent', 'basicUtil' ,
 			}
 			
 			if (_typeObj.enterAction != null) {
-				$aEvent.addEvent(elInput, "keypress", _typeObj.enterAction);
+				$aEvent.addEnterEvent(elInput, _typeObj.enterAction);
 			}
 			
 			_f.setValidAttr(obj, elInput);
 			
-			return {
-				area : el,
-			};
+			return _returnForms(el, elInput);
 		},
 		select : function( el, obj ) {
 
@@ -222,10 +238,9 @@ define(['mngEvent', 'basicUtil' ,
 			
 			_f.setValidAttr(obj, elSelect);
 			
-			return {
-				area : el,
+			return _returnForms(el, elSelect, {
 				reloadOptions : _reloadOptions
-			};
+			});
 		},
 		radio : function(el, obj) {
 			var _radioOptions = {
@@ -258,9 +273,7 @@ define(['mngEvent', 'basicUtil' ,
 			
 			_f.setValidAttr(obj, elRadio);
 			
-			return {
-				area : el,
-			};
+			return _returnForms(el, elRadio);
 		},
 		checkbox : function(el, obj) {
 			var _chkboxOptions = {
@@ -298,9 +311,7 @@ define(['mngEvent', 'basicUtil' ,
 			
 			_f.setValidAttr(obj, elCheckbox);
 			
-			return {
-				area : el,
-			};
+			return _returnForms(el, elCheckbox);
 		},
 		textarea : function( el, obj ) {
 			
@@ -314,17 +325,38 @@ define(['mngEvent', 'basicUtil' ,
 			elInput.attr("rows",_typeObj.rows);
 			_f.setValidAttr(obj, elInput);
 			
-			return {
-				area : el,
-			};
+			return _returnForms(el, elInput);
 		},
 		date : function( el, obj ) {
 			
 			el.append(_html.form.date(obj));
 			
-			return {
-				area : el,
+			return _returnForms(el);
+		},
+		search : function( el, obj ) {
+			var _searchOption = {
+				searchFunc : null,
+				callbackFunc : null,
+				btnSearchName : '<i class="fa fa-search"></i>'
 			};
+			
+			var _typeObj = $.extend(true,{}, _searchOption, obj.typeOpt );
+			
+			el.append(_html.form.text(obj));
+			
+			var elInput = el.find("input");
+			el.append(_html.addBtnGroup());
+			$aWgButton.render(el.find(".input-group-btn"), {
+				name : _typeObj.btnSearchName,
+				btnCls : "btn-default btn-xs m-l-10 btn-search"
+			});
+
+			$aEvent.addEvent(el.find(".btn-search"), "click", _typeObj.searchFunc);
+			$aEvent.addEnterEvent(elInput, _typeObj.searchFunc);
+			
+			_f.setValidAttr(obj, elInput);
+			
+			return _returnForms(el, elInput);
 		},
 		sortable : function(el, obj) {
 			var _sortableOptions = {
@@ -340,9 +372,7 @@ define(['mngEvent', 'basicUtil' ,
 			elInput.sortable();
 			_f.setValidAttr(obj, elInput);
 
-			return {
-				area : el,
-			};
+			return _returnForms(el, elInput);
 		},
 		etcInfo : function( el, obj ) {
 			el.append(_html.form.text(obj));
@@ -362,17 +392,13 @@ define(['mngEvent', 'basicUtil' ,
 			obj.validation.readOnly = true;
 			_f.setValidAttr(obj, elInput);
 			
-			return {
-				area : el,
-			};
+			return _returnForms(el, elInput);
 		},
 		custom : function(el, obj ) {
 			
 			el.append(_html.addDiv(obj));
 			
-			return {
-				area : el,
-			};
+			return _returnForms(el);
 		},
 	};
 	
@@ -403,22 +429,26 @@ define(['mngEvent', 'basicUtil' ,
 		getNewFormObj : function( obj ) {
 			return $.extend(true,{}, _pm, obj);
 		},
-		addNewForm : function( el, obj ) {
-			
-			var _areaForm, _rtnFormInfo;  
-			var _opt = $.extend(true,{}, _pm, obj );
-			if ( _opt.type == 'etc-info' ) {
-				el.append(_html.formInputArea(_opt));
-				el = el.find('#area-'+_opt.id);
+		appendNewFormGroup : function(el, obj) {
+			if ( obj.type == 'etc-info' ) {
+				el.append(_html.formInputArea(obj));
+				el = el.find('#area-'+obj.id);
 			}
-			el.append(_html.formInputGroup(_opt));
-			var areaForm = el.children(".form-group").last(); //.addClass("form-inline");
-			
+			el.append(_html.formInputGroup(obj));
+			return el.children(".form-group").last(); //.addClass("form-inline");
+		},
+		appendFormLabelAndForm : function(areaForm, obj) {
 			// add label
 			if( obj.label != null ) {
-				areaForm.html(_html.addLabel(_opt));
+				areaForm.html(_html.addLabel(obj));
 			}
-			_rtnFormInfo = _f.appendFormEl(areaForm, _opt);
+			return _f.appendFormEl(areaForm, obj);
+		},
+		addNewForm : function( el, obj ) {
+			
+			var _opt = $.extend(true,{}, _pm, obj );
+			var areaForm = _f.appendNewFormGroup(el, _opt); 
+			var _rtnFormInfo = _f.appendFormLabelAndForm(areaForm, _opt);
 			
 			// etc info일 경우( 가변코드 관리 )
 			if ( _opt.type == 'etc-info') {
@@ -428,6 +458,11 @@ define(['mngEvent', 'basicUtil' ,
 			}
 			
 			return _rtnFormInfo;
+		},
+		changeFormEl : function(areaForm , obj ) {
+			areaForm.empty();
+			var _opt = $.extend(true,{}, _pm, obj );
+			return _f.appendFormLabelAndForm(areaForm, _opt);
 		},
 		appendFormEl : function( elFormGroup, obj ) {
 			
@@ -441,6 +476,8 @@ define(['mngEvent', 'basicUtil' ,
 				return _forms.textarea(elFormGroup, obj);
 			} else if ( obj.type == 'date' ) {
 				return _forms.date(elFormGroup, obj);
+			} else if (obj.type == 'search' ) {
+				return _forms.search(elFormGroup, obj);
 			} else if ( obj.type == 'etc-info' ) {
 				return _forms.etcInfo(elFormGroup, obj);
 			} else if ( obj.type == 'custom' ) {
@@ -491,7 +528,7 @@ define(['mngEvent', 'basicUtil' ,
 			
 			if( _objValid.required != undefined && _objValid.readOnly ) {
 				_elInput.attr("readOnly","true");
-				_elInput.attr("disabled", true);;
+				_elInput.attr("disabled", true);
 				_elInput.addClass("disabled");
 			} 
 			if( _objValid.required != undefined && _objValid.required ) {
@@ -519,8 +556,6 @@ define(['mngEvent', 'basicUtil' ,
 				_elInput.attr("not-kor",true);
 			}
 		},
-		
-		
 		execBatch : function( el, formList ) {
 			
 			var _rtnElObj = {};
@@ -541,7 +576,6 @@ define(['mngEvent', 'basicUtil' ,
 			var obj;
 			for( var idx = 0 ; idx < formList.length; idx++ ) {
 				obj = formList[idx];
-				
 				if ( obj.type == 'custom' )
 					continue;
 					
@@ -576,76 +610,93 @@ define(['mngEvent', 'basicUtil' ,
 				   });
 					
 					rtnObj[obj.id] = arrayVal;
+				} else if (obj.type == 'search') {
+					rtnObj[obj.id] = el.find("#"+obj.id).attr("data-value");
 				} else {
 					rtnObj[obj.id] = el.find("#"+obj.id).val(); //text , textarea, select
 				}	
 			}
 			return rtnObj;
 		},
+		setFormValue : function(formEl, formObj, formValue) {
+
+			if ( formObj.type == 'custom' ) {
+				return;
+			}
+
+			if ( formObj.type == 'date' ){
+				formEl.find("#"+formObj.id).val(_f.null2Str(formValue));
+			} else if( formObj.type == 'radio') {
+				formEl.find(':radio[name="'+formObj.id+'"]:radio[value="'+_f.null2Str(formValue)+'"]').attr("checked",true);
+			} else if( formObj.type == 'checkbox') {
+				var inVal ;
+				try {
+					inVal = $.parseJSON(_f.null2Str(formValue));
+				}catch ( exception ) {
+					inVal = [];
+				}
+
+				for( var jdx = 0 ; jdx < inVal.length; jdx++ ) {
+					formEl.find(':checkbox[name="'+formObj.id+'"]:checkbox[value="'+inVal[jdx]+'"]').attr("checked",true);
+				}
+			} else if( formObj.type == 'etc-info') {
+				var inVal ;
+				try {
+					inVal = $.parseJSON(_f.null2Str(formValue));
+				}catch ( exception ) {
+					inVal = [];
+				}
+				var elEtcInfo = formEl.find("#"+formObj.id+"-keyValue");
+				elEtcInfo.empty();
+				for( var jdx = 0 ; jdx < inVal.length; jdx++ ) {
+					_f.addNewEtcInfo(elEtcInfo, inVal[jdx], formObj);
+				}
+			} else if ( formObj.type == 'sortable') {
+				var arrayVal = formValue;
+				
+				if ($aUtil.isNull(arrayVal)) {
+					arrayVal = [];
+				}
+				var elSortable = formEl.find("#"+formObj.id);
+				elSortable.empty();
+				var _paramData = formObj.typeOpt;
+				for( var jdx = 0 ; jdx < arrayVal.length; jdx++ ) {
+					elSortable.append(_html.form.sortableEl(arrayVal[jdx], _paramData));
+				}
+
+				if (formObj.validation !== undefined && formObj.validation.readOnly ) {
+					elSortable.addClass("disabled");
+					elSortable.find("li").find("span").remove();
+					elSortable.find("li").find("button.close").remove();
+				} else {
+					elSortable.find("li").addClass("pointers");
+					elSortable.find("li").find("button.close").click(function(e){
+						$(this).closest("li").remove();
+					});
+				}
+			} else if ( formObj.type == 'search') {
+				var objVal = formValue;
+				if (typeof formValue != 'object' ) {
+					objVal = {
+						value : formValue,
+						text  : formValue
+					};
+				}
+				formEl.find("#"+formObj.id).attr("data-value", _f.null2Str(objVal.value, "") );
+				formEl.find("#"+formObj.id).val(_f.null2Str(objVal.text, "") ); //text , textarea, select
+			} else {
+				var defaultValue;
+				if( formObj.typeOpt !== undefined && formObj.typeOpt !== null )
+					defaultValue = formObj.typeOpt.defaultParam;
+
+				formEl.find("#"+formObj.id).val(_f.null2Str(formValue, defaultValue) ); //text , textarea, select
+			}
+		},
 		setFormValues : function(el,formList, obj) {
 			var fObj;
 			for( var idx = 0 ; idx < formList.length; idx++ ) {
 				fObj = formList[idx];
-				if ( fObj.type == 'custom' )
-					continue;
-				if ( fObj.type == 'date' ){
-					el.find("#"+fObj.id).val(_f.null2Str(obj[fObj.id]));
-				} else if( fObj.type == 'radio') {
-					el.find(':radio[name="'+fObj.id+'"]:radio[value="'+_f.null2Str(obj[fObj.id])+'"]').attr("checked",true);
-				} else if( fObj.type == 'checkbox') {
-					var inVal ;
-					try {
-						inVal = $.parseJSON(_f.null2Str(obj[fObj.id]));
-					}catch ( exception ) {
-						inVal = [];
-					}
-
-					for( var jdx = 0 ; jdx < inVal.length; jdx++ ) {
-						el.find(':checkbox[name="'+fObj.id+'"]:checkbox[value="'+inVal[jdx]+'"]').attr("checked",true);
-					}
-				} else if( fObj.type == 'etc-info') {
-					var inVal ;
-					try {
-						inVal = $.parseJSON(_f.null2Str(obj[fObj.id]));
-					}catch ( exception ) {
-						inVal = [];
-					}
-					var elEtcInfo = el.find("#"+fObj.id+"-keyValue");
-					elEtcInfo.empty();
-					for( var jdx = 0 ; jdx < inVal.length; jdx++ ) {
-						_f.addNewEtcInfo(elEtcInfo, inVal[jdx], fObj);
-					}
-				} else if ( fObj.type == 'sortable') {
-					var arrayVal = obj[fObj.id];
-					
-					if ($aUtil.isNull(arrayVal)) {
-						arrayVal = [];
-					}
-					var elSortable = el.find("#"+fObj.id);
-					elSortable.empty();
-					var _paramData = fObj.typeOpt;
-					for( var jdx = 0 ; jdx < arrayVal.length; jdx++ ) {
-						elSortable.append(_html.form.sortableEl(arrayVal[jdx], _paramData));
-					}
-
-					if (fObj.validation !== undefined && fObj.validation.readOnly ) {
-						elSortable.addClass("disabled");
-						elSortable.find("li").find("span").remove();
-						elSortable.find("li").find("button.close").remove();
-					} else {
-						elSortable.find("li").addClass("pointers");
-						elSortable.find("li").find("button.close").click(function(e){
-							$(this).closest("li").remove();
-						});
-					}
-					
-				} else {
-					var defaultValue;
-					if( fObj.typeOpt !== undefined && fObj.typeOpt !== null )
-						defaultValue = fObj.typeOpt.defaultParam;
-
-					el.find("#"+fObj.id).val(_f.null2Str(obj[fObj.id], defaultValue) ); //text , textarea, select
-				}
+				_f.setFormValue(el, fObj, obj[fObj.id]);
 			}
 		}
 	};
@@ -656,8 +707,10 @@ define(['mngEvent', 'basicUtil' ,
 		getNewFormObj : _f.getNewFormObj,
 		appendFormEl  : _f.appendFormEl,
 		addNewForm    : _f.addNewForm,
+		changeFormEl  : _f.changeFormEl, 
 		execBatch     : _f.execBatch,
 		getFormValues : _f.getFormValues,
+		setFormValue  : _f.setFormValue,
 		setFormValues : _f.setFormValues,
 		addNewEtcInfo : _f.addNewEtcInfo,
 	};

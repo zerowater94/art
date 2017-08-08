@@ -7,7 +7,7 @@ public class CodeVO extends AbstractVO
 	private String codeId = "";
 	private String codeGroup = "";
 	private String code = "";
-	private String codeValue = "";
+	private String value = "";
 	private int codeOrd = 0;
 	private String codeType = "";
 	private String useYn = "";
@@ -19,7 +19,7 @@ public class CodeVO extends AbstractVO
 	public String getCodeId() { return codeId; }
 	public String getCodeGroup() { return codeGroup; }
 	public String getCode() { return code; }
-	public String getCodeValue() { return codeValue; }
+	public String getValue() { return value; }
 	public int getCodeOrd() { return codeOrd; }
 	public String getCodeType() { return this.codeType; }
 	public String getUseYn() { return useYn; }
@@ -43,10 +43,10 @@ public class CodeVO extends AbstractVO
 		if( str != null) 
 			this.code = str;
 	}
-	public void setCodeValue(String str) 
+	public void setValue(String str) 
 	{
 		if( str != null) 
-			this.codeValue = str;
+			this.value = str;
 	}
 	public void setCodeOrd(int order) 
 	{

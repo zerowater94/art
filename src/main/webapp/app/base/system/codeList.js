@@ -52,7 +52,7 @@ define([ 'basicInfo'
 									id   : 'btn-group-delete',
 									callbackFunc : _f.deleteCodeGroup,
 								},],
-					formList   : [{ id:"codeValue",    type:"text", label:$a.getMsg("lbl.codeValue")}],
+					formList   : [{ id:"value",    type:"text", label:$a.getMsg("lbl.codeValue")}],
 					searchFunc : _f.searchGroupCodeList
 				});
 				
@@ -90,7 +90,7 @@ define([ 'basicInfo'
 									},
 								}],
 					formList   : [{ id:"code",     type:"text", label:$a.getMsg("lbl.code")},
-						  		  { id:"codeValue",type:"text", label:$a.getMsg("lbl.codeValue")}],
+						  		  { id:"value",type:"text", label:$a.getMsg("lbl.codeValue")}],
 					searchFunc : _f.searchCodeList
 				});
 				_els.btnAddCode   = _els.areaSearchCode.find("#btn-code-add");
@@ -158,7 +158,7 @@ define([ 'basicInfo'
 				_vws.gridGroup = $a.t.grid.render(_els.areaGridGroup, {
 					height:150,
 					colModel : [{ dataIndx : "code",     title: $a.getMsg("lbl.code"),     width: '30%', editable: false   },
-					            { dataIndx : "codeValue",title: $a.getMsg("lbl.codeValue"), width: '70%', editable: false  }],
+					            { dataIndx : "value",title: $a.getMsg("lbl.codeValue"), width: '70%', editable: false  }],
 					rowClick : function( event, ui ) {
 						var rowData = ui.rowData;
 						// include rowSelect function.
@@ -176,7 +176,7 @@ define([ 'basicInfo'
 				_vws.gridCode = $a.t.grid.render(_els.areaGridCode, {
 					height:150,
 					colModel : [{ dataIndx : "code",     title: $a.getMsg("lbl.code"),     width: '30%', editable: false   },
-					            { dataIndx : "codeValue",title: $a.getMsg("lbl.codeValue"), width: '70%', editable: false  },
+					            { dataIndx : "value",title: $a.getMsg("lbl.codeValue"), width: '70%', editable: false  },
 					            { dataIndx : "codeId"   ,title: $a.getMsg("lbl.codeId")    , hidden: true  }],
 					rowClick : function( event, ui ) {
 						var rowData = ui.rowData;
@@ -235,7 +235,7 @@ define([ 'basicInfo'
 						        	maxLength : 100,
 						        }
 		                      },
-		                      { id:"codeValue",   type:"text",   label:$a.getMsg("lbl.codeValue"), 
+		                      { id:"value",   type:"text",   label:$a.getMsg("lbl.codeValue"), 
 						    	validation : {
 						    		required  : true,
 						    		maxLength : 200,
@@ -300,7 +300,7 @@ define([ 'basicInfo'
 					return;
 				
 				_els.btnAddCode.show();
-				_vws.searchCode.changeTitle(_dts.selectedData.group.codeValue);
+				_vws.searchCode.changeTitle(_dts.selectedData.group.value);
 				_f.searchCodeList();
 				
 				_vws.editor.setTitle($a.getMsg("lbl.codeGroup"));

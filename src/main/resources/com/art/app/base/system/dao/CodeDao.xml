@@ -5,7 +5,7 @@
 <mapper namespace="com.art.app.base.system.dao.CodeDao">
  
     <select id="selectList" resultType="com.art.app.base.system.domain.CodeVO">
-        SELECT  code_id, site_id, comp_id, code_group, code, code_value, 
+        SELECT  code_id, site_id, comp_id, code_group, code, value, 
         		code_type, use_yn, code_ord, description, etc_info,
         	    reg_user_id, reg_dtm, upd_user_id, upd_dtm
 		FROM    tco_code
@@ -14,14 +14,14 @@
         <if test="codeGroup != null and codeGroup != '' ">
         	AND   code_group = #{codeGroup}
         </if>
-        <if test="codeValue != null and codeValue != '' ">
-        	AND   code_value like CONCAT('%',#{codeValue},'%') 
+        <if test="value != null and value != '' ">
+        	AND   value like CONCAT('%',#{value},'%') 
         </if>
 		ORDER BY code_group, code_ord
     </select>
     
     <select id="selectData" resultType="com.art.app.base.system.domain.CodeVO">
-        SELECT  code_id, site_id, comp_id, code_group, code, code_value, 
+        SELECT  code_id, site_id, comp_id, code_group, code, value, 
         		code_type, use_yn, code_ord, description, etc_info,
         	    reg_user_id, reg_dtm, upd_user_id, upd_dtm
 		FROM    tco_code
@@ -49,11 +49,11 @@
     
     <insert id="insert" parameterType="com.art.app.base.system.domain.CodeVO">
         INSERT INTO tco_code (
-        	code_id, site_id, comp_id, code_group, code, code_value, 
+        	code_id, site_id, comp_id, code_group, code, value, 
        		code_type, use_yn, code_ord, description, etc_info,
        	    reg_user_id, reg_dtm, upd_user_id, upd_dtm
         )VALUES(
-        	#{codeId}, #{siteId}, #{compId}, #{codeGroup}, #{code}, #{codeValue}, 
+        	#{codeId}, #{siteId}, #{compId}, #{codeGroup}, #{code}, #{value}, 
         	#{codeType}, #{useYn}, #{codeOrd}, #{description}, #{etcInfo},
         	#{currUserId}, #{currDateTime},#{currUserId}, #{currDateTime}
         )
@@ -63,7 +63,7 @@
         UPDATE tco_code 
         SET    code        = #{code},
 		       code_group  = #{codeGroup},
-		       code_value  = #{codeValue},
+		       value       = #{value},
         	   use_yn      = #{useYn},
         	   code_ord    = #{codeOrd},
         	   etc_info    = #{etcInfo},

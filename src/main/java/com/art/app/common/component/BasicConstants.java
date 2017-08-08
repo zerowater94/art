@@ -169,4 +169,27 @@ public class BasicConstants
         	this.description = description;
         }
 	}
+	
+	/***************************************************************
+	 *  권한 부여 형태
+	 ****************************************************************/
+	public enum AUTH_ASSIGN_TYPE
+	{
+		AUTH_ASSIGN_USER("USER", "사용자"),
+		AUTH_ASSIGN_DEPT("DEPT", "부서"),
+		AUTH_ASSIGN_ROLE("ROLE", "직책"),
+		AUTH_ASSIGN_GRADE("GRADE", "직급");
+		public String code;
+		public String description;
+        private AUTH_ASSIGN_TYPE(String code, String description) 
+        { 
+        	this.code = code; 
+        	this.description = description;
+        }
+        
+        public static boolean isUser(String code) {
+        	return code.equals(AUTH_ASSIGN_USER.code);
+        }
+	}
+	
 }

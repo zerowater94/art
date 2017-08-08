@@ -1,6 +1,6 @@
-define(['mngEvent', 'basicValid', 'wgHelper',
+define(['mngEvent', 'basicUtil', 'basicValid', 'wgHelper',
         'text!fw/manager/tmpl/mainEditor.html'
-        ], function ($aEvent, $aValid, $aWg, _tmpl) {
+        ], function ($aEvent, $aUtil, $aValid, $aWg, _tmpl) {
 	
 	'use strict';
 	
@@ -112,6 +112,9 @@ define(['mngEvent', 'basicValid', 'wgHelper',
 		setValues : function( formList, obj ) {
 			$aWg.makeForm.setFormValues(_f.els.editBody, formList, obj);
 		},
+		setValue : function( formObj, formValue) {
+			$aWg.makeForm.setFormValue(_f.els.editBody, formObj, formValue);
+		},
 		isBottom : function( bottomBln ) {
 			if( bottomBln == undefined )
 				return _f.els.areaEditor.hasClass("panel-bottom");
@@ -166,10 +169,8 @@ define(['mngEvent', 'basicValid', 'wgHelper',
 	};
 
 	var mainEditor = function( param ) {
-		
 		var isBottom = (param.direction == 'bottom');
 		var formObj ; 
-		
 		_f.setEditorCss(isBottom);
 		_f.setTitle(param.title);
 		_f.setTitleIcon('U');
@@ -177,16 +178,14 @@ define(['mngEvent', 'basicValid', 'wgHelper',
 		if ( param.showToolbar && param.buttons != null) {
 			_f.addToolbarButton(param.buttons);
 		}
-		
 		formObj = _f.makeFormEditor(param.formList);
 		_f.hideEditorAndMainArea(isBottom);
-		
+
 		return {
 			showEditor : function ( paramObj ){
 				
 				if( !$aWg.styleSwitcher.isActive() )
 					return;
-				
 				var showParam =$.extend(true, {}, _f.showOptions, paramObj );
 				_f.showEditorAndMainArea();
 				
@@ -220,6 +219,10 @@ define(['mngEvent', 'basicValid', 'wgHelper',
 			setValues   : function( obj ) {
 				_f.setValues(param.formList, obj);
 			},
+			setValue    : function(formObj, formValue) {
+				_f.setValue(formObj, formValue);
+			},
+
 			getValues   : function() {
 				return $aWg.makeForm.getFormValues(_f.els.editBody, param.formList);
 			},
@@ -228,6 +231,10 @@ define(['mngEvent', 'basicValid', 'wgHelper',
 			},
 			isValidFormData : function() {
 				return $aValid.isValidBatchData(_f.els.editBody); 
+			},
+			changeFormObj : function(formId, formObj) {
+				var toChangeIndex = $aUtil.findIndex(param.formList, {id : formId});
+				param.formList[toChangeIndex] = formObj;
 			}
 		};
 	};
@@ -237,8 +244,9 @@ define(['mngEvent', 'basicValid', 'wgHelper',
 		initialize : _f.init,
 		initMsg : _f.initMsg,
 		render : function(paramObj ) {
-			var param = $.extend(true, {}, _f.options, paramObj);
-			var editor = new mainEditor(param );
+
+			var _param = $.extend(true, {}, _f.options, paramObj);
+			var editor = new mainEditor(_param );
 			return editor;
 		},
 		hideEditor : function() {

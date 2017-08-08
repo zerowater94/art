@@ -129,6 +129,7 @@ define([ 'basicInfo'
 	return $a.ctl({
 		render : function(obj) {
 			var _self = this;
+			$a.setLocale('ko');
 			$a.initializeResource('ko');
 			$a.initializeApp();
 			$.extend(true, _self.pm, obj);

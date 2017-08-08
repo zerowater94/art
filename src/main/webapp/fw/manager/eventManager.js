@@ -58,5 +58,13 @@ define(['jquery'], function ($) {
 		el.off().on(type, func);
 	};
 	
+	_this.addEnterEvent = function(el, func) {
+		el.off().on("keypress", function(e) {
+			if (e.keyCode == 13) {
+				func();
+			} 
+		})
+	};
+	
 	return _this;
 });

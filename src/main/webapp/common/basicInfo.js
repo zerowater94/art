@@ -35,6 +35,7 @@ define(['alertify', 'blockUi',  'basicUtil', 'basicValid',
 		cssUrl     : "/css",
 		locales    : [],
 		defaultLocale : 'ko',
+		locale     : null,
 		theme      : 'basic',
 		mainArea   : null,
 		mainEditor : null,
@@ -120,17 +121,15 @@ define(['alertify', 'blockUi',  'basicUtil', 'basicValid',
 	var _f = {
 			
 		initialSearch : function(locale) {
-			
+			_pm.locale = locale;
 			var param = {
 				url : _this.getDefaultUrl()+"/common/initialize/reload/resource/"+locale,
 				type : "GET",
 				success : function(data) {
 
-					_dts.code = null;
 					_dts.config = null;
 					_dts.constant = data.CONSTANTS;
 					_dts.msg.common = data.MSG;
-					_dts.option = null;
 					_dts.properties = data.PROPERTIES;
 				}
 			};
@@ -165,8 +164,14 @@ define(['alertify', 'blockUi',  'basicUtil', 'basicValid',
 			}
 		},
 		reloadCode : function( group ) {
-			
-			_dts.code[group] = null;
+			var param = {
+				url : _this.getDefaultUrl()+"/common/initialize/code/"+_this.getLocale()+"/code-group/"+group,
+				type : "GET",
+				success : function(data) {
+					_dts.code[group] = data;
+				}
+			};
+			_this.send(param);
 		},
 		reloadConfig : function( group ) {
 			
@@ -235,6 +240,10 @@ define(['alertify', 'blockUi',  'basicUtil', 'basicValid',
 		return _pm.mainArea;
 	};
 	
+	_this.getLocale = function() {
+		return _pm.locale;
+	};
+	
 	_this.setMainArea = function( el ) {
 		_pm.mainArea = el;
 		_pm.pageParm.el = el;
@@ -247,6 +256,10 @@ define(['alertify', 'blockUi',  'basicUtil', 'basicValid',
 	_this.setMainEditor = function( el ) {
 		_pm.mainEditor = el;
 	};
+	
+	_this.setLocale = function(locale) {
+		_pm.locale = locale;
+	},
 	
 	_this.goHome = function() {
 		parent.top.location.href = _pm.domain;
@@ -352,56 +365,31 @@ define(['alertify', 'blockUi',  'basicUtil', 'basicValid',
 	};
 	
 	_this.code = {
-		get : function( codeId, group ) {
-			
-			if( group == undefined || group == '' )
-				group = "common";
-			
-			if( _dts.code[group] == undefined ) {
-				
-				_f.reloadCode(group);
+		get : function( group ) {
+			var codes = _this.code.list(group);
+			var len = code.length;
+			var obj;
+			var rtnObj = {};
+			for( var idx = 0; idx < len; idx++ ) {
+				var obj = codes[idx];
+				rtnObj[obj.code] = obj;
 			}
-			
-			if( _dts.code[group][codeId] == undefined  )
-				return "";
-			
-			return _dts.code[group][codeId];
+			return rtnObj;
 		},
 		getValue : function( codeId, group ) {
 			
-			return _this.code.get(codeId, group).value;
+			return _this.code.get(group)[codeId].value;
+		},
+		list : function(group) {
+			if( _dts.code[group] == undefined ) {
+				_f.reloadCode(group);
+			}
+			return _dts.code[group];
 		},
 		reset : function( group ) {
 			
 			if( _dts.code[group] != undefined )
 				delete _dts.code[group];
-		}
-	};
-	
-	_this.option = {
-		get : function( optionId, group ) {
-			
-			if( group == undefined || group == '' )
-				group = "common";
-			
-			if( _dts.option[group] == undefined ) {
-				
-				_f.reloadOptions(group);
-			}
-			
-			if( _dts.option[group][optionId] == undefined  )
-				return "";
-			
-			return _dts.option[group][optionId];
-		},
-		getValue : function( optionId, group ) {
-			
-			return _this.option.get(optionId, group).value;
-		},
-		reset : function( group ) {
-			
-			if( _dts.option[group] != undefined )
-				delete _dts.option[group];
 		}
 	};
 	
