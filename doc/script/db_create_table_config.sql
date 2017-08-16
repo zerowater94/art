@@ -189,6 +189,7 @@ COMMENT='권한 그룹 정보'
 COLLATE='utf8_general_ci'
 ENGINE=InnoDB
 ROW_FORMAT=DEFAULT
+;
 
 
 CREATE TABLE `tco_auth_assign` (
