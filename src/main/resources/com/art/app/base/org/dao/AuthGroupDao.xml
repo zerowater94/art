@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="com.art.app.base.org.dao.AuthGroupDao">
+ 	<sql id="columns">
+ 		a.auth_group_id, a.auth_group_name, a.auth_group_type, a.comp_id,  
+ 		a.parent_auth_group_id, a.description,
+   		a.reg_user_id, a.reg_dtm, a.upd_user_id, a.upd_dtm
+ 	</sql>
+    <select id="selectList" resultType="com.art.app.base.org.domain.AuthGroupVO">
+        SELECT  <include refid="columns" /> 
+		FROM    tco_auth_group a
+        WHERE   1 = 1
+        AND     comp_id = #{compId}
+		ORDER BY a.auth_group_id
+    </select>
+    
+    <select id="selectData" resultType="com.art.app.base.org.domain.AuthGroupVO">
+        SELECT  <include refid="columns" />
+		FROM    tco_auth_group a
+        WHERE   1 = 1
+        AND     a.auth_group_id = #{authGroupId}
+    </select>
+    
+    <insert id="insert" parameterType="com.art.app.base.org.domain.AuthGroupVO">
+        INSERT INTO tco_auth_group (
+        	auth_group_id, auth_group_name, auth_group_type, comp_id,
+ 			parent_auth_group_id, description,
+	   		reg_user_id, reg_dtm, upd_user_id, upd_dtm 
+        )VALUES(
+        	#{authGroupId}, #{authGroupName}, #{authGroupType}, #{compId},
+        	#{parentAuthGroupId}, #{description},
+        	#{currUserId}, #{currDateTime},#{currUserId}, #{currDateTime}
+        )
+    </insert>
+    
+    <update id="update" parameterType="com.art.app.base.org.domain.AuthGroupVO">
+        UPDATE tco_auth_group 
+        SET    auth_group_name = #{authGroupName},
+        	   auth_group_type = #{authGroupType},
+        	   description  = #{description},
+        	   upd_user_id  = #{currUserId},
+        	   upd_dtm      = #{currDateTime}
+        WHERE  auth_group_id = #{authGroupId}
+    </update>
+    
+    <delete id="delete" parameterType="com.art.app.base.org.domain.AuthGroupVO">
+        DELETE FROM tco_auth_group
+        WHERE  auth_group_id = #{authGroupId}
+    </delete>
+    
+</mapper> 

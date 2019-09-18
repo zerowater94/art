@@ -1,12 +1,12 @@
-define([ 'abstractView', 'basicInfo', 'basicUtil', 'basicValid'
-         ,'text!base/login/login.html'
-         , '../../../libs/security/aes'
-       ], function ( AbstractView , BasicInfo, BasicUtil, BasicValid,  Tmpl) {
+define([ 'basicInfo',
+         'text!app/base/login/login.html',
+          'libs/security/aes'
+       ], function ( $a, Tmpl) {
 	
 
 	'use strict';
 		
-	var _funcs = function( thisEl ) {
+	return function( thisEl ) {
 		
 		var _this = this;
 		
@@ -17,11 +17,35 @@ define([ 'abstractView', 'basicInfo', 'basicUtil', 'basicValid'
 		var _els  = {} ; // elements
 		var _dts = {};
 		var _f   = {
+			createPage : function() {
+				
+				thisEl.addClass("login");
+				var tmpl = _.template(Tmpl);
+				thisEl.html(tmpl({
+					lbl_saveUserID : "id기억하기", //아이디 기억하기
+					lbl_login      : "로그인",  //로그인
+					lbl_forgetPwd  : "비밀번호찾기"  //비밀번호 찾기
+				}));
+				
+				// setElment.
+				_els.btnLogin  = thisEl.find("#btn-login");
+				_els.fmLoginId = thisEl.find("#fm-login");
+				_els.fmPassword = thisEl.find("#fm-password");
+				_els.fmLoginId.focus();
+				thisEl.find("#login").find("label").addClass("text-temp-css");
+			},
+			addEvent : function() {
+				
+				$a.e.addEvent(_els.btnLogin, "click", _f.executeLogin);
+				$a.e.addEvent(_els.fmLoginId, "keypress", _f.addEnterId);
+				$a.e.addEvent(_els.fmPassword, "keypress", _f.addEnterPwd);
+				
+			},
 			// 암호화를 위한 Key를 요청한다.
 			reqEncKey : function( paramData ) {
 				var encData;
-				BasicInfo.send({
-					url : BasicInfo.getDefaultUrl()+"/base/login/encrypt/getKey",
+				$a.send({
+					url : $a.getDefaultUrl()+"/base/login/encrypt/getKey",
 					type : "get",
 					success : function(data) {
 						var encKey = CryptoJS.enc.Base64.parse(data.secureKey).toString(CryptoJS.enc.Utf8);
@@ -65,12 +89,12 @@ define([ 'abstractView', 'basicInfo', 'basicUtil', 'basicValid'
 					chkMinLength:4
 				};
 
-				if( !BasicValid.isValidParam(_p))
+				if( !$a.v.isValidParam(_p))
 					return;
 				
 				_p.selector = _els.fmPassword;
 				_p.chkMinLength = 8;
-				if( !BasicValid.isValidParam(_p))
+				if( !$a.v.isValidParam(_p))
 					return;
 				
 				// 암호화..
@@ -80,8 +104,8 @@ define([ 'abstractView', 'basicInfo', 'basicUtil', 'basicValid'
 					loginType : _pm.type 
 				}));
 				
-				BasicInfo.send({
-					url : BasicInfo.getDefaultUrl()+"/base/login/execute/login",
+				$a.send({
+					url : $a.getDefaultUrl()+"/base/login/execute/login",
 					data : {
 						encData : encodeURI(encData.toString())
 					},
@@ -92,10 +116,10 @@ define([ 'abstractView', 'basicInfo', 'basicUtil', 'basicValid'
 							_pm.callbackFunc();
 						}else {
 
-							if ( data.resultCode == BasicInfo.getConstants("RESULT", "NO_AUTH") ) {
-								BasicInfo.print.alert("fail..");
+							if ( data.resultCode == $a.getConstants("RESULT", "NO_AUTH") ) {
+								$a.print.alert("fail..");
 							} else  {
-								BasicInfo.print.alert(data.resultMessage);
+								$a.print.alert(data.resultMessage);
 							}
 							
 						}
@@ -105,58 +129,13 @@ define([ 'abstractView', 'basicInfo', 'basicUtil', 'basicValid'
 			},
 		}; // functions..
 		
+		// return method...
+		_this.render = function( obj ) {
+			$.extend( true, _pm ,obj);
+			_f.createPage();
+			_f.addEvent();
+		}
 		
-		/*************************************************
-		 * common structure
-		 *************************************************/
-		 _this.setParam = function(obj) {
-			
-			_pm = $.extend( true, _pm ,obj);
-		};
-		
-		_this.createPage = function() {
-			
-			thisEl.addClass("login");
-			var tmpl = _.template(Tmpl);
-			thisEl.html(tmpl({
-				lbl_saveUserID : "id기억하기", //아이디 기억하기
-				lbl_login      : "로그인",  //로그인
-				lbl_forgetPwd  : "비밀번호찾기"  //비밀번호 찾기
-			}));
-		};
-		
-		_this.setElVariable = function() {
-			
-			// setElment.
-			_els.btnLogin  = thisEl.find("#btn-login");
-			_els.fmLoginId = thisEl.find("#fm-login");
-			_els.fmPassword = thisEl.find("#fm-password");
-			
-		};
-		
-		_this.setEvent = function() {
-			
-			BasicInfo.addEvent(_els.btnLogin, "click", _f.executeLogin);
-			BasicInfo.addEvent(_els.fmLoginId, "keypress", _f.addEnterId);
-			BasicInfo.addEvent(_els.fmPassword, "keypress", _f.addEnterPwd);
-		};
-		
-		_this.reloadContents = function() {
-			
-			
-			_els.fmLoginId.focus();
-			
-			thisEl.find("#login").find("label").addClass("text-temp-css");
-		};
-		
-		_this.returns = {
-			
-		};
 		return _this;
 	};
-	
-	return AbstractView.extend({
-		executor : _funcs
-	});
-
 });

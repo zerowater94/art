@@ -165,10 +165,13 @@ define(['basicInfo', 'basicUtil'
 		        }, 500 );
 				
 				setTimeout(function(){
-					if ( _this.callBackShow != null )
-						_this.callBackShow();
-				}, 500);
 
+					if ( _this.options.callBackShow != null )
+						_this.options.callBackShow();
+					
+					BasicInfo.winResize();
+				}, 500);
+				
 			},
 			hideEditor : function() {
 				var _this = basicTemplate.mainEditor;
@@ -187,14 +190,29 @@ define(['basicInfo', 'basicUtil'
 					if ( _this.options.callBackHide != null )
 						_this.options.callBackHide();
 					_this.$el.hide();
-					
+					BasicInfo.winResize();
 				}, 500);
 				
-				BasicInfo.removeWinResizeEvent("window-resize_"+_this.$el.selector);
 			},
 			getContents : function() {
 				return basicTemplate.mainEditor.els.editBody;
 			},
+		},
+		addRow : {
+			options : {
+				id : null,
+			},
+			getHtml : function( obj ) {
+				var _h  = '<div class="row">';
+				_h += '<div class="col-lg-12" id="'+obj.id+'"></div>';
+				_h += '</div>';
+				return _h;
+			},
+			render : function( el, obj ) {
+				
+				var _opt = $.extend(true, {}, this.options, obj );
+				el.append(this.getHtml(_opt));
+			}
 		},
 		dropDown : {
 			options : {
@@ -258,6 +276,60 @@ define(['basicInfo', 'basicUtil'
 				});
 			}
 		},
+		formHtml : {
+			options : {
+				id : null,
+				name : null, // 검색 일경우 text field에 보여줄 데이터의 Key
+				label : {
+					text : null,
+					css : "",
+				},
+				jsonReader : {
+					code : "code",
+					value : "value"
+				},
+				optionList : null,
+				blankOption : false,
+				blankStr   : "::::::",
+				placeholder : "",
+				searchModalView : null, // search 일 경우 modal View ( 필히 callbackfunc 정의 되어야 함. dblCallbackFunc, callParentElement는 옵션 
+				paramObj : null
+			},
+			initialize : function( obj ) {
+				
+				$.extend(true, this.options, obj );
+			},
+			text : function( el, obj ) {
+				var _opt = $.extend(true,{},this.options, obj );
+				var html = '';
+				
+				if( _opt.label.text != null ) 
+					html += '<label class="input-group-addon col-form-label '+_opt.label.css+'">'+_opt.label.text+'</label>';
+				html    += '<input type="text" class="" placeholder="'+_opt.placeholder+'">';
+				el.append(html);
+			},
+			select : function(el, obj) {
+				
+				var _opt = $.extend(true,{},this.options, obj );
+				var html = "", elSelect;
+				if( _opt.label.text != null ) 
+					html += '<label class="input-group-addon col-form-label '+_opt.label.css+'">'+_opt.label.text+'</label>';
+				html += '<select></select>';
+				el.append(html);
+				elSelect = el.find("select");
+				if( _opt.blankOption ) {
+					elSelect.append("<option value=''>"+_opt.blankStr+"</option>");
+				}
+				if( _opt.optionList != null ) {
+					var _obj;
+					for( var idx = 0 ; idx < _opt.optionList.length; idx++ ) {
+						_obj = _opt.optionList[idx];
+						elSelect.append("<option value='"+_obj[_opt.jsonReader.code]+"'>"+_obj[_opt.jsonReader.value]+"</option>");
+					}
+				}
+			}
+			
+		},
 		date : {
 			options : {
 				
@@ -268,7 +340,7 @@ define(['basicInfo', 'basicUtil'
 				_h += '<span class="input-group-addon"> ~ </span>';
 				_h += '<input type="text" id="agentEndDate" class="form-control">';
 				_h += '</div>';
-				return getHtml ();
+				return _h;
 			},
 			render : function(el, obj){
 				
@@ -277,20 +349,36 @@ define(['basicInfo', 'basicUtil'
 		},
 		rowBox : {
 			options : {
-				colClass : 'col-lg-12',
 				boxClass : null,
 				title : null,
-				id    : $.guid, 
+				buttons : []
 			},
 			render : function(el, obj) {
 				
 				var _opt = $.extend(true,{},this.options, obj );
-				el.html('<div class="row"><div class="'+_opt.colClass+'" id="'+_opt.id+'"> <div class="box"><header><h5>'+_opt.title+'</h5></header><div class="body"></div><div><div></div>');
-				if( _opt.title == null )
-					el.find("#"+_opt.id).find("header").remove();
+				var _elHeader, _elBtnGroup, _elBody;
+				el.html('<div class="box"><header><div class="pull-left"><h5></h5></div><div class="pull-right"></div></header><div class="body"></div><div>');
+				
+				_elHeader = el.find(".box").find("header");
+				_elBtnGroup = _elHeader.find(".pull-right");
+				_elBody = el.find(".box").find(".body");
 				
 				if( _opt.boxClass != null )
 					el.find(".box").addClass(_opt.boxClass);
+				
+				if( _opt.title == null && _opt.buttons.length == 0 )
+					_elHeader.remove();
+				else {
+					
+					if( _opt.title != null )
+						_elHeader.find("h5").html(_opt.title);
+					
+					for( var idx = 0; idx < _opt.buttons.length; idx++ ) {
+						basicTemplate.button.render(_elBtnGroup, $.extend(true, {btnCls:"btn-default btn-xs"}, _opt.buttons[idx]));
+					}
+				}
+
+				return _elBody;
 			}
 		},
 		toolbar : {
@@ -318,29 +406,76 @@ define(['basicInfo', 'basicUtil'
 				resizable:false,
 				draggable:false,
 				scrollModel: { autoFit: true },
-		        collapsible: { on: true, collapsed: false },	
+		        collapsible: { on: true, collapsed: false },
 			},
-			els : {},
 			initialize : function() {
+				var _this = this;
 				
+				requirejs(['grid', '../common/view/basicGrid'] , function(grid, BasicGrid) {
+					_this.BasicGrid = BasicGrid;
+	            });
 			},
-			render : {
-
-				var _opt =  $.extend(true, {}, options, paramObj );
+			render : function(el, obj) {
+				var _this = this;
+				var grid = new _this.BasicGrid({el:el});
+				grid.render($.extend(true, {}, this.options, obj));
 				
-				thisEl.html("<div></div>");
-				_els.grid = thisEl.find("div");
+				return grid;
+			},
+		},
+		search : {
+			options : {
+				formList     : null,
+				callbackFunc : null
+			},
+			formObj : {
+				id   : null,
+				type : "text" // text / select / checkbox, radio , 
+			},
+			render : function(thisEl, obj){
 				
-				var _g = _els.grid.pqGrid(_pm);
+				var _pm = $.extend(true,{},this.options, obj );
+				var _els = {};
 				
-				_els.grid.on( "pqpagerchange", function( event, ui ) {
-					if( ui.rPP != undefined  ) {
-						_els.grid.pqGrid( "option", "pageModel.curPage", 1 );
+				var _f = {
+					execute : function() {
+						
+						thisEl.empty();
+						thisEl.append("<div class='form-body'></div>");
+						_els.areaBody = thisEl.find(".form-body");
+						
+						var obj, areaForm;
+						for( var idx = 0 ; idx < _pm.formList.length; idx++ ) {
+							obj = _pm.formList[idx];
+							_els.areaBody.append("<div id='"+obj.id+"' class='form-group input-group'></div>");
+							areaForm = _els.areaBody.children(".form-group").last();
+							if ( obj.type == 'select' )
+								basicTemplate.formHtml.select(areaForm, obj);
+							else
+								basicTemplate.formHtml.text(areaForm, obj);
+						}
+						
+					},
+					searchData : function() {
+						var rtnObj = {};
+						var obj;
+						for( var idx = 0 ; idx < _pm.formList.length; idx++ ) {
+							obj = _pm.formList[idx];
+							if ( obj.type == 'select' )
+								rtnObj[obj.id] = _els.areaBody.find("#"+obj.id).find("select").val();
+							else
+								rtnObj[obj.id] = _els.areaBody.find("#"+obj.id).find("input").val();
+						}
+						return rtnObj;
 					}
-				} );
-				return _g;
-			},
-			
+				};
+				
+				_f.execute();
+				
+				return {
+					searchData : _f.searchData
+				};
+			}
 		},
 	}
 	

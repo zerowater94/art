@@ -25,6 +25,8 @@ public class BasicConfig extends AbstractBasic
 	private static String defaultLocale = "";
 	
 	public static final String DEF_MSG_MODULE = "common";
+	public static final String DEF_PUBLIC_ID = "PUBLIC";
+	
 	
 	/**********************************************************************
 	 * 
@@ -120,19 +122,50 @@ public class BasicConfig extends AbstractBasic
 			BasicConfig.basicMsg = new BasicMsg(); 
 		BasicConfig.basicMsg.setMsgFilePath(path);
 		
-		BasicConfig.basicMsg.reloadMessage(BasicConfig.DEF_MSG_MODULE, BasicConfig.getDefaultLocale());
+		for( String locale : BasicConfig.locales)
+			BasicConfig.basicMsg.reloadMessage(BasicConfig.DEF_MSG_MODULE, locale);
 	}
 	
-//	public static Properties getMessageObj(String module) 
-//	{
-//		return BasicConfigure.getMessageObj(module, BasicConfigure.getDefaultLocale());
-//	}
+	public static String getMsg(String key)
+	{
+		return BasicConfig.getMsg(key, BasicConfig.DEF_MSG_MODULE, BasicConfig.defaultLocale);
+	}
 	
-//	public static Map<String,Properties> getMessageObj() throws Exception
-//	{
-//		return BasicConfigure.getMessageObj(BasicConfigure.getDefaultLocale());
-//	}
-	public static Properties getMessageObj(String module, String locale) throws Exception
+	public static String getMsg(String key, String module)
+	{
+		return BasicConfig.getMsg(key, module, BasicConfig.defaultLocale);
+	}
+	
+	public static String getDefaultMsg(String key, String locale)
+	{
+		return BasicConfig.getMsg(key, BasicConfig.DEF_MSG_MODULE, locale);
+	}
+	
+	public static String getMsg(String key, String module, String locale)
+	{
+		String value = BasicConfig.getMessageObj(module, locale).getProperty(key);
+		if( value == null )
+			return "";
+		else
+			return value;
+	}
+	
+	
+	public static Properties getMessageDefaultObj() 
+	{
+		return BasicConfig.getMessageObj(BasicConfig.DEF_MSG_MODULE, BasicConfig.getDefaultLocale());
+	}
+	
+	public static Properties getMessageDefaultObj(String locale) 
+	{
+		return BasicConfig.getMessageObj(BasicConfig.DEF_MSG_MODULE, locale);
+	}
+	
+	public static Properties getMessageObj(String module) 
+	{
+		return BasicConfig.getMessageObj(module, BasicConfig.defaultLocale);
+	}
+	public static Properties getMessageObj(String module, String locale) 
 	{
 		Map<String,Properties> rtnMap = BasicMsg.getMessageMap(locale);
 		
@@ -143,5 +176,26 @@ public class BasicConfig extends AbstractBasic
 		}
 			
 		return rtnMap.get(module);
+	}
+	
+	/**********************************************************************
+	 * 
+	 *  Result Code Message...
+	 * 
+	 ***********************************************************************/
+	public void setLoadResultCode(boolean bln) 
+	{
+		BasicResultCode.reloadResultCode();
+	}
+	
+	
+	public static String getResultCode(String key, String locale)
+	{
+		return BasicResultCode.getResultCodeMap(locale).get(key).getCode();
+	}
+	
+	public static String getResultMsg(String key, String locale)
+	{
+		return BasicResultCode.getResultCodeMap(locale).get(key).getValue();
 	}
 }

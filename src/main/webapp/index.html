@@ -14,13 +14,10 @@
 		<link rel="stylesheet" type="text/css" media="screen" href="libs/font-awesome/css/font-awesome.min.css">
         <link rel="stylesheet" type="text/css" media="screen" href="libs/metis/css/main.min.css">
 		
-		
 		<link rel="stylesheet" type="text/css" media="screen" href="libs/alertify/css/alertify.core.css">
 		<link rel="stylesheet" type="text/css" media="screen" href="libs/alertify/css/alertify.default.css">
 		
-		
         <link rel="stylesheet" type="text/css" media="screen" href="libs/pq-grid/pqgrid.min.css">
-        <link rel="stylesheet" type="text/css" media="screen" href="libs/jquery/ui-light/jquery-ui.css" />
 		
         <link rel="stylesheet" type="text/css" media="screen" href="css/art-common.css">
         <link rel="stylesheet" type="text/css" media="screen" href="css/art-contents.css">
@@ -32,12 +29,16 @@
 		<script>
 			requirejs(['common/config/base'], function(){
 	            
-	            requirejs(['jquery','bootstrap', 'jquery-ui','underscore', 'text', 'moment', 'bootstrap-dialog','index']
-	             , function($, bootstrap, _, $UI, text, moment, bs_dialog, _index){
+	            requirejs(['jquery','bootstrap', 'jquery-ui','underscore', 'text', 'moment', 'bootstrap-dialog','app/index']
+	             , function($, bootstrap, _, $UI, text, moment, bs_dialog, index){
 	            	
-	            	 new _index().render({});
+	            	new index().render({});
 	            });
 	        });
 		</script>
+		
+		this is commit test
+		this is changed....
+		this is confilit....
 	</body>
 </html>

@@ -17,10 +17,13 @@ abstract class AbstractBasic
 	protected Properties getProperties(String filePath)
 	{
 		Properties prop = null;
+		InputStream inputStram = null;
 		try
 		{
 			prop = new Properties();
-			prop.load(AbstractBasic.getResourceStream(filePath));
+			inputStram = AbstractBasic.getResourceStream(filePath);
+			if( inputStram != null)
+				prop.load(inputStram);
 		}catch ( Exception ex )
 		{
 			ex.printStackTrace();

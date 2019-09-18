@@ -1,42 +1,70 @@
 define(['jquery'], function ($) {
+	
+	var _this = {};
+	var _winResizeMain = {};
 	var _winResize = {};
 	var _timeOut = 500;
 	var _isVaidWindResize = false;
 	
-	var _addWinResize = function(name, callbackFunc) {
+	_this.addWinResizeEvent = function(name, callbackFunc) {
 		
-		_winResize[name] = callbackFunc;
+		if ( name.startsWith("WIN-MAIN") )
+			_winResizeMain[name] = callbackFunc;
+		else
+			_winResize[name] = callbackFunc;
 			
 	};
 	
-	var _rmResizeEvent = function(name) {
+	_this.removeWinResizeEvent = function(name) {
 		
-		delete _winResize[name];
+		if ( name.startsWith("WIN-MAIN") )
+			delete _winResizeMain[name];
+		else
+			delete _winResize[name];
 	};
 	
-	var _execWinResize = function() {
-
+	_this.execWinResize= function() {
+		
+		$.each(_winResizeMain, function(key, func) {
+		    func();
+		});
+		
 		$.each(_winResize, function(key, func) {
 		    func();
 		});
 	};
 	
-	var _startWinResize = function() {
+	_this.clearWinResize = function() {
+		
+		$.each(_winResize, function(key, func) {
+		    delete _winResize[key];
+		});
+	};
+	
+	_this.startWinResize = function() {
 		
 		$(window).resize(function()
 		{	
 			clearTimeout(window.resizedFinished);
 		    window.resizedFinished = setTimeout(function(){
-		    	_execWinResize();
+		    	_this.execWinResize();
 		    }, _timeOut);
 
 		});
 	};
 	
-	return {
-		addWinResizeEvent : _addWinResize,
-		removeWinResizeEvent : _rmResizeEvent,
-		execWinResize : _execWinResize,
-		startWindResize : _startWinResize
-	}
+	_this.addEvent = function(el, type, func) {
+		
+		el.off().on(type, func);
+	};
+	
+	_this.addEnterEvent = function(el, func) {
+		el.off().on("keypress", function(e) {
+			if (e.keyCode == 13) {
+				func();
+			} 
+		})
+	};
+	
+	return _this;
 });

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="com.art.app.base.system.dao.CodeDao">
+ 
+    <select id="selectList" resultType="com.art.app.base.system.domain.CodeVO">
+        SELECT  code_id, site_id, comp_id, code_group, code, value, 
+        		code_type, use_yn, code_ord, description, etc_info,
+        	    reg_user_id, reg_dtm, upd_user_id, upd_dtm
+		FROM    tco_code
+        WHERE   1 = 1
+        AND     code_type = #{codeType}
+        <if test="codeGroup != null and codeGroup != '' ">
+        	AND   code_group = #{codeGroup}
+        </if>
+        <if test="value != null and value != '' ">
+        	AND   value like CONCAT('%',#{value},'%') 
+        </if>
+		ORDER BY code_group, code_ord
+    </select>
+    
+    <select id="selectData" resultType="com.art.app.base.system.domain.CodeVO">
+        SELECT  code_id, site_id, comp_id, code_group, code, value, 
+        		code_type, use_yn, code_ord, description, etc_info,
+        	    reg_user_id, reg_dtm, upd_user_id, upd_dtm
+		FROM    tco_code
+        WHERE   1 = 1
+        AND     code_id = #{codeId}
+    </select>
+    
+    <select id="selectMaxOrder" resultType="com.art.app.base.system.domain.CodeVO">
+        SELECT COALESCE(MAX(code_ord),0) code_ord
+		FROM   tco_code
+        WHERE  1 = 1
+        AND    code_type = #{codeType}
+        AND    code_group = #{codeGroup}
+        GROUP BY code_group
+    </select>
+    
+    <select id="selectCodeGroupCount" resultType="com.art.app.base.system.domain.CodeVO">
+        SELECT COUNT(1) count
+		FROM   tco_code
+        WHERE  1 = 1
+        AND    code_type = #{codeType}
+        AND    code_group = #{codeGroup}
+    </select>
+    
+    
+    <insert id="insert" parameterType="com.art.app.base.system.domain.CodeVO">
+        INSERT INTO tco_code (
+        	code_id, site_id, comp_id, code_group, code, value, 
+       		code_type, use_yn, code_ord, description, etc_info,
+       	    reg_user_id, reg_dtm, upd_user_id, upd_dtm
+        )VALUES(
+        	#{codeId}, #{siteId}, #{compId}, #{codeGroup}, #{code}, #{value}, 
+        	#{codeType}, #{useYn}, #{codeOrd}, #{description}, #{etcInfo},
+        	#{currUserId}, #{currDateTime},#{currUserId}, #{currDateTime}
+        )
+    </insert>
+    
+    <update id="update" parameterType="com.art.app.base.system.domain.CodeVO">
+        UPDATE tco_code 
+        SET    code        = #{code},
+		       code_group  = #{codeGroup},
+		       value       = #{value},
+        	   use_yn      = #{useYn},
+        	   code_ord    = #{codeOrd},
+        	   etc_info    = #{etcInfo},
+        	   description = #{description},
+        	   upd_user_id = #{currUserId},
+        	   upd_dtm     = #{currDateTime}
+        WHERE  code_id     = #{codeId}
+    </update>
+    
+    <update id="updateOrder" parameterType="com.art.app.base.system.domain.CodeVO">
+        UPDATE tco_code 
+        SET    code_ord    = #{codeOrd} ,
+        	   upd_user_id = #{currUserId},
+        	   upd_dtm     = #{currDateTime}
+        WHERE  code_id     = #{codeId}
+    </update>
+    
+    <update id="updateOrderGap" parameterType="com.art.app.base.system.domain.CodeVO">
+        UPDATE tco_code 
+        SET    code_ord    = code_ord ${gap} ,
+        	   upd_user_id = #{currUserId},
+        	   upd_dtm     = #{currDateTime}
+        WHERE  code_group  = #{codeGroup}
+        AND    code_ord   >= #{sIndex}
+        <if test="eIndex > 0"><![CDATA[
+        	AND    code_ord   <= #{eIndex}
+        ]]> </if>
+        
+    </update>
+    
+    <delete id="delete" parameterType="com.art.app.base.system.domain.CodeVO">
+        DELETE FROM tco_code
+        WHERE  code_id     = #{codeId}
+    </delete>
+    
+    <delete id="deleteGroup" parameterType="com.art.app.base.system.domain.CodeVO">
+        DELETE FROM tco_code
+        WHERE  code_group  = #{codeGroup}
+    </delete>
+    
+</mapper> 

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="com.art.app.base.system.dao.OptionDao">
+ 
+    <select id="selectList" resultType="com.art.app.base.system.domain.OptionVO">
+        SELECT  option_id, site_id, comp_id, category, option_code, option_value, option_builder, use_yn, description
+		FROM    tco_option
+        WHERE   1 = 1
+        <if test="category != null and category != '' ">
+        	AND   category = #{category}
+        </if>
+		ORDER BY category, option_id
+    </select>
+    
+    <select id="selectCategoryList" resultType="com.art.app.base.system.domain.OptionVO">
+        SELECT category
+		FROM   tco_option
+		GROUP BY category
+		ORDER BY category
+    </select>
+    
+    
+    <insert id="insert" parameterType="com.art.app.base.system.domain.OptionVO">
+        INSERT INTO tco_option (
+        	option_id, site_id, comp_id, category, option_code, option_value, 
+        	option_builder, use_yn, description
+        )VALUES(
+        	#{optionId}, #{siteId}, #{compId}, #{category}, #{optionCode}, #{optionValue}, 
+        	#{optionBuilder}, #{useYn}, #{description}
+        )
+    </insert>
+    
+    <update id="update" parameterType="com.art.app.base.system.domain.OptionVO">
+        UPDATE tco_option 
+        SET    option_code    = #{optionCode},
+        	   option_builder = #{optionBuilder},
+        	   use_yn         = #{useYn},
+        	   description    = #{description}
+        WHERE  option_id      = #{optionId}
+    </update>
+    
+    <update id="updateValue" parameterType="com.art.app.base.system.domain.OptionVO">
+        UPDATE tco_option 
+        SET    option_value   = #{optionValue},
+        	   use_yn         = #{useYn}
+        WHERE  option_id      = #{optionId}
+    </update>
+    
+    <delete id="delete" parameterType="com.art.app.base.system.domain.OptionVO">
+        DELETE FROM tco_option
+        WHERE  option_id      = #{optionId}
+    </delete>
+    
+</mapper> 

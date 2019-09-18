@@ -6,6 +6,8 @@ import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -19,6 +21,7 @@ import com.art.fw.domain.SessionInfoVO;
 import com.art.fw.exception.ArtException;
 import com.art.fw.exception.AuthException;
 import com.art.fw.exception.BadRequestException;
+import com.art.fw.resource.BasicResultCode;
 
 public abstract class AbstractCtl 
 {
@@ -66,10 +69,37 @@ public abstract class AbstractCtl
 			return null;
 	}
 	
+	protected String getSessionLocale()
+	{
+		if( this.getSessionInfo() != null )
+			return this.getSessionInfo().getLocale();
+		else
+			return BasicInfo.getDefaultLocale();
+	}
+	
 	@InitBinder
 	public void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception 
 	{
-		
+		try 
+		{
+			if (binder.getTarget() == null) 
+				return;
+			
+			if (this.getSessionInfo() == null)
+				return;
+			
+			BeanWrapper beanWrapper = new BeanWrapperImpl(binder.getTarget());
+			
+			if (beanWrapper.isReadableProperty("currUserId"))
+				beanWrapper.setPropertyValue("currUserId", this.getSessionInfo().getUserId());
+			if (beanWrapper.isReadableProperty("siteId"))
+				beanWrapper.setPropertyValue("siteId", this.getSessionInfo().getSiteId());
+			
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+			//throw new Exception(BaseUtils.printStackTrace(e));
+		}
 	}
 	
 	
@@ -83,30 +113,55 @@ public abstract class AbstractCtl
 	@ExceptionHandler({Exception.class, ArtException.class, AuthException.class, BadRequestException.class})
 	public ResultVO fail(HttpServletRequest request, HttpServletResponse response, Exception exception) 
 	{
-		ResultVO error = new ResultVO();
-		
-	    error.setResultMessage( exception.getMessage());
-	    error.setUrl(request.getRequestURL().toString() +" \n"+exception.getClass().getName());
-	    if( exception.getClass().getName().equals(AuthException.class.getName()) )
+		ResultVO error = null;
+	    if( exception.getClass().getName().equals(ArtException.class.getName()) )
 	    {
-	    	response.setStatus(HttpStatus.FORBIDDEN.value());
-	    }else if( exception.getClass().getName().equals(BadRequestException.class.getName()) )
-	    {
-	    	response.setStatus(HttpStatus.BAD_REQUEST.value());
+	    	error = ((ArtException)exception).getResultVO();
+	    	if( error == null )
+	    	{
+	    		response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+	    		error = new ResultVO();
+	    		error.setResultMessage( BasicInfo.getResultMsg(BasicResultCode.UNKNOWN_ERROR, this.getSessionLocale()));	
+	    	} else 
+	    	{
+	    		response.setStatus(HttpStatus.BAD_REQUEST.value());
+	    		error.setResultMessage(BasicInfo.getResultMsg(error.getResultCode(), this.getSessionLocale()));
+	    	}
 	    }else
 	    {
-	    	if( exception.getClass().getName().equals(NullPointerException.class.getName()) )
-	    		error.setResultMessage( NullPointerException.class.getName() );
-	    	response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+	    	error = new ResultVO();
+		    
+	    	if( exception.getClass().getName().equals(AuthException.class.getName()) )
+		    {
+		    	response.setStatus(HttpStatus.FORBIDDEN.value());
+		    	error.setResultMessage( BasicInfo.getResultMsg(BasicResultCode.NO_AUTH, this.getSessionLocale()));
+		    }else if( exception.getClass().getName().equals(BadRequestException.class.getName()) )
+		    {
+		    	response.setStatus(HttpStatus.BAD_REQUEST.value());
+		    	error.setResultMessage( BasicInfo.getResultMsg(BasicResultCode.INSUFFICIENT_PARAM, this.getSessionLocale()));
+		    }else
+		    {
+		    	if( exception.getClass().getName().equals(NullPointerException.class.getName()) )
+		    		error.setResultMessage( NullPointerException.class.getName() );
+		    	else if ( exception.getClass().getName().indexOf("org.springframework.dao") > -1) 
+		    		error.setResultMessage( BasicInfo.getResultMsg(BasicResultCode.SQL_ERROR, this.getSessionLocale()));
+		    	else if ( exception.getClass().getName().indexOf("org.springframework.http") > -1) 
+		    		error.setResultMessage( BasicInfo.getResultMsg(BasicResultCode.FAIL_HTTP_CONVERTER, this.getSessionLocale()));
+		    	response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+		    }
 	    }
+
+	    error.setUrl(request.getRequestURL().toString() +" \n"+exception.getClass().getName());
+	    this.logger.error("Exeption Trace====================> "+ exception.getClass().getName());
+	    this.logger.error(exception.getLocalizedMessage());
 	    StackTraceElement[] errors = exception.getStackTrace();
-	    this.logger.error(""+ exception);
+	    this.logger.error("["+error.getResultCode()+"]"+ error.getResultMessage() );
 	    for( StackTraceElement trace : errors )
 	    {
 	    	if( trace.getClassName().indexOf("com.art") > -1 )
 	    		this.logger.error(trace.getClassName() +":"+trace.getLineNumber());
 	    }
-	    
+	    this.logger.error("<======================================Exeption");
 	    return error;
 	}
 }

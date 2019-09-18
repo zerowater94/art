@@ -7,10 +7,11 @@ import com.art.app.base.login.service.LoginService;
 import com.art.app.base.user.domain.UserBasicVO;
 import com.art.app.common.basic.service.AbstractService;
 import com.art.app.common.component.BasicConstants;
+import com.art.app.common.component.BasicInfo;
 import com.art.fw.exception.AuthException;
 
 @Service("loginService")
-public class LoginServiceImpl extends AbstractService implements LoginService
+public class LoginServiceImpl extends AbstractService<LoginVO> implements LoginService
 {
 	private final String SETUP_LOGIN_ID  = "setupAdmin";
 	private final String SETUP_LOGIN_PWD = "art@setup!2016";
@@ -24,6 +25,7 @@ public class LoginServiceImpl extends AbstractService implements LoginService
 		UserBasicVO rtnVO = null;
 		try
 		{
+			logger.debug("--> " + param.getLoginType());
 			if( param.getLoginType().equals(BasicConstants.LOGIN_TYPE.SETUP.code) )
 			{
 				if( !( param.getLoginId().equals(this.SETUP_LOGIN_ID)
@@ -34,7 +36,12 @@ public class LoginServiceImpl extends AbstractService implements LoginService
 					
 			}else 
 			{
-				
+				rtnVO = new UserBasicVO();
+				rtnVO.setSiteId(BasicInfo.DEF_PUBLIC_ID);
+				rtnVO.setUserId("general-user");
+				rtnVO.setLoginId(param.getLoginId());
+				rtnVO.setUserName("general-user");
+				rtnVO.setLocale(BasicInfo.getDefaultLocale());
 			}
 		}catch ( Exception ex )
 		{
@@ -47,9 +54,11 @@ public class LoginServiceImpl extends AbstractService implements LoginService
 	private UserBasicVO getSetupUserInfo() 
 	{
 		UserBasicVO rtnVO = new UserBasicVO();
+		rtnVO.setSiteId(BasicInfo.DEF_PUBLIC_ID);
 		rtnVO.setUserId(this.SETUP_LOGIN_ID);
-		rtnVO.setUserUid(this.SETUP_LOGIN_ID);
+		rtnVO.setLoginId(this.SETUP_LOGIN_ID);
 		rtnVO.setUserName("Setup Admin");
+		rtnVO.setLocale(BasicInfo.getDefaultLocale());
 		rtnVO.setSystemRole(BasicConstants.SYS_ROLE.SYSTEM_ADMIN.code);
 		return rtnVO;
 	}

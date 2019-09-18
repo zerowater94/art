@@ -7,10 +7,27 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import org.apache.commons.lang.RandomStringUtils;
+
 
 public class CommonUtil 
 {
-
+	/*======================================================================================================
+	 * 
+	 * Guid 리턴
+	 * 
+	 ======================================================================================================*/
+	
+	public static String getGuid()
+	{
+		return CommonUtil.getGuid("");
+	}
+	
+	
+	public static String getGuid(String prefix)
+	{
+		return prefix+System.nanoTime()+RandomStringUtils.randomAlphanumeric(5);
+	}
 	/*======================================================================================================
 	 * 
 	 * Null 처리  

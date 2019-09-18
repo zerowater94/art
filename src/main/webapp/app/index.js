@@ -1,179 +1,141 @@
-define([ 'abstractView', 'basicInfo', 'basicUtil'
-       ], function ( AbstractView , BasicInfo, BasicUtil) {
+define([ 'basicInfo'
+       ], function ( $a ){
 	
-
 	'use strict';
-		
-	var _funcs = function( thisEl ) {
-		
-		var _this = this;
-		
-		var _pm = {
-			
-		} ; // param	
-		var _els = {
-				
-		} ; // elements
-		var _dts = {
-			isCallSetup : false,
-			callParam   : {
-				hash : null,
-				search : null
-			}
-		} ; // elements
-		var _f = {
-			initialize : function() {
-				
-				$(document).attr("title", BasicInfo.getMsg("document.title"));
-				
-				$(document.body).css({
-					minWidth : "770px"
-				});
-			},
-			// 세션을 체크 한다.
-			chkSessionInfo : function() {
-				var _param = {
-					url:BasicInfo.getDefaultUrl() + "/base/login/session",
-					type : "GET",
-					success : function(data) {
-						if( typeof data == 'object' ) {
-							BasicInfo.setSessionInfo(data);
-						}
-					}
-				};
-				BasicInfo.send(_param);
-			},
-			parseLocation : function() {
-				
-				var wl = window.location;
-				_dts.callParam.hash = wl.hash;
-				_dts.callParam.search = BasicUtil.getUrlParams(wl.search);
-				// hash url 삭제
-				history.replaceState({}, document.title, wl.pathname);
-				
-			},
-			// page 이동에 대한 listener 등록
-			setupContentLoad : function() {
-				
-				window.addEventListener('popstate', function(event){
-
-					  if( event.state != null )
-						  Backbone.trigger('historyLocation', event);
-				});
-				// window.history.
-				Backbone.on("historyLocation", function(event){
-					
-					if (event.state && _.keys(event.state).length > 0) {
-						BasicInfo.goPage(event.state);
-					}
-				} );
-				
-				// Main Page로 이동한다. 
-				Backbone.on("contentsLoad", function(data) {
-					var wl = window.location;
-					history.replaceState({}, document.title, wl.pathname);
-					history.pushState(data, data.viewName, '');
-					_f.goMainPage(data);
-				} );
-			},
-			goLoginPage : function() {
-				
-				var _p = $.extend(true, {}, _dts.callParam.search);
-				if( _dts.isCallSetup ) {
-					
-					_p.callbackFunc = _f.goSetupPage; 
-				} else {
-					_p.callbackFunc = _f.goMainPage;
+	
+	var app = {};
+	
+	var indexApp = $a.ctl({
+		render : function(obj) {
+			var _self = this;
+			$.extend(true, this.pm, obj);
+			_self.initialize();
+			_self.parseLocation();
+			_self.setupContentLoad();
+			_self.chkSessionInfo();
+			_self.loadCustomCss();
+			_self.goPage();
+		},
+		callParam : {
+			hash : null,
+			search : null
+		},
+		initialize : function() {
+			$(document).attr("title", $a.getMsg("document.title"));
+			$(document.body).css({
+				minWidth : "770px"
+			});
+		},
+		parseLocation : function() {
+			var _self = this;
+			var wl = window.location;
+			_self.callParam.hash = wl.hash;
+			_self.callParam.search = $a.u.getUrlParams(wl.search);
+			// hash url 삭제
+			history.replaceState({}, document.title, wl.pathname);
+		},
+		setupContentLoad : function() {
+			var _self = this;
+			window.addEventListener('popstate', function(event){
+				if( event.state != null )
+					Backbone.trigger('historyLocation', event);
+			});
+			// window.history.
+			Backbone.on("historyLocation", function(event){
+				if (event.state && _.keys(event.state).length > 0) {
+					$a.goPage(event.state);
 				}
-				BasicInfo.goPage({
-					viewName : 'base/login/login',
-					el       : $(document.body)  ,
-					paramData : _p
-				});
-			},
-			goSetupPage : function() {
-
-				BasicInfo.goPage({
-					viewName : 'base/setup/setupApp',
-					el       : $(document.body)  ,
-				});
-				
-			},
-			goMainPage : function( param ) {
-				BasicInfo.goPage({
-					viewName  : 'main/main',
-					paramData : param ,
-					el        : $(document.body)  ,
-				});
-			},
-			loadCustomCss : function() {
-				
-				var customCss = BasicInfo.getDefaultUrl()+'/common/initialize/getCustomCss/'+BasicInfo.getTheme()+'/art-custom.css';
-				$('head').append('<link rel="stylesheet" href="'+customCss+'" type="text/css" />');
-			},
-		}; // functions..
-		
-		/*************************************************
-		 * common structure
-		 *************************************************/
-		 _this.setParam = function(obj) {
+			} );
 			
-			_pm = $.extend( true, _pm ,obj);
-		 };
-		
-		 _this.createPage = function() {};
-
-		 _this.setElVariable = function() {};
-		 
-		 _this.setEvent = function() {};
-		
-		 _this.reloadContents = function() {
-
-			_f.initialize();
-			_f.parseLocation();
-			_f.setupContentLoad();
-			_f.chkSessionInfo();
-			_f.loadCustomCss();
+			// Main Page로 이동한다. 
+			Backbone.on("contentsLoad", function(data) {
+				var wl = window.location;
+				history.replaceState({}, document.title, wl.pathname);
+				history.pushState(data, data.viewName, '');
+				_self.goMainPage(data);
+			} );
 			
 			$(document).bind("contextmenu",function(e){
 				e.preventDefault();
-		        console.log(e);
-		        console.log(event.which );
-		        e.target.innerHTML ="AAA";
-		        console.log(e.target.textContent);
+				console.log("Not arrowed...right click..");
 		    });
+		},
+		chkSessionInfo : function() {
+			var _param = {
+				url:$a.getDefaultUrl() + "/base/login/session",
+				type : "GET",
+				success : function(data) {
+					if( typeof data == 'object' ) {
+						$a.setSessionInfo(data);
+					}
+				}
+			};
+			$a.send(_param);
+		},
+		loadCustomCss : function() {
+			var customCss = $a.getDefaultUrl()+'/common/initialize/getCustomCss/'+$a.getTheme()+'/art-custom.css';
+			$('head').append('<link rel="stylesheet" href="'+customCss+'" type="text/css" />');
+		},
+		goPage : function() {
+			var _self = this;
 			
-			if(_dts.callParam.search.type ==  BasicInfo.getConstants("LOGIN_TYPE","SETUP")  ) {
-				_dts.isCallSetup = true;
+			if (_self.callParam.search.type ==  $a.getConstants("LOGIN_TYPE","SETUP")  ) {
+				_self.isCallSetup = true;
 			}
 
-			if( BasicInfo.getSessionInfo() == null ) {
-				
-//				_f.goLoginPage();
-				_f.goMainPage();
+			if( $a.getSessionInfo() == null ) {
+				_self.goLoginPage();
 			} else {
 				
-				if ( _dts.isCallSetup && BasicInfo.getSessionInfo("SYS_ROLE") == BasicInfo.getConstants("SYS_ROLE","SETUPADM") ) {
-					_f.goSetupPage();
+				if ( _self.isCallSetup && $a.getSessionInfo("SYS_ROLE") == $a.getConstants("SYS_ROLE","SETUPADM") ) {
+					_self.goSetupPage();
 				} else {
-					_f.goMainPage();
+					_self.goMainPage();
 				}
 			}
-		 };
-		
-		 _this.returns = {
-			
-		 };
-		
-		return _this;
-	};
-	
-	return AbstractView.extend({
-		initialize : function(){
-			BasicInfo.initializeResource('ko');
-			BasicInfo.initializeApp();
 		},
-		executor : _funcs
-	});
+		goLoginPage : function() {
+			var _self = this;
 
+			var _p = $.extend(true, {}, _self.callParam.search);
+			if( _self.isCallSetup ) {
+				
+				_p.callbackFunc = _self.goSetupPage; 
+			} else {
+				_p.callbackFunc = _self.goMainPage;
+			}
+			
+			$a.goPage({
+				viewName : 'app/base/login/login',
+				el       : $(document.body)  ,
+				paramData : _p
+			});
+		},
+		goSetupPage : function() {
+			$a.goPage({
+				viewName : 'app/base/setup/setupApp',
+				el       : $(document.body)  ,
+			});
+		},
+		goMainPage : function( param ) {
+			$a.goPage({
+				viewName  : 'app/main/main',
+				paramData : param ,
+				el        : $(document.body)  ,
+			});
+		},
+	});
+	
+	return $a.ctl({
+		render : function(obj) {
+			var _self = this;
+			$a.setLocale('ko');
+			$a.initializeResource('ko');
+			$a.initializeApp();
+			$.extend(true, _self.pm, obj);
+			app = {};
+			app.index = new indexApp(); 
+			app.index.render();
+		},
+	});
 });

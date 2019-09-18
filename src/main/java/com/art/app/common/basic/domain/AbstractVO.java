@@ -1,5 +1,6 @@
 package com.art.app.common.basic.domain;
 
+import java.lang.reflect.Field;
 import java.sql.Timestamp;
 
 import org.slf4j.Logger;
@@ -15,21 +16,27 @@ public abstract class AbstractVO
 	// server name 
 	private String serverName = "";
 	private int serverPort = 0;
+	
 	// portal 기본 변수
 	private String siteId = "";
 	private String compId = "";
 	
-	// 등록일/등록자/등록부서/변경일/변경자
-	private String creatorUid = "";
-	private String creatorName = "";
-	private String creatorDeptId = "";
-	private String creatorDeptName = "";
-	private Timestamp createDate = null;
-	private String updaterUid = "";
-	private String updaterName = "";
-	private String updaterDeptId = "";
-	private String updaterDeptName = "";
-    private Timestamp updateDate = null;
+	private int count = 0;
+	
+	// order 변경 관련
+	private String gap = "";
+	private int sIndex = 0 ;
+	private int eIndex = 0 ;
+	
+	// 기타 Json string형태의 정보
+	private String etcInfo  = "";
+	
+	// 등록일/등록자/변경일/변경자
+	private String currUserId = "";
+	private String regUserId = "";
+	private Timestamp regDtm = null;
+	private String updUserId = "";
+    private Timestamp updDtm = null;
     
 	
 	/********************************************************************************
@@ -59,65 +66,62 @@ public abstract class AbstractVO
 			this.compId = str;
 	}
 	
-	/******************************************************************************
-	 * 등록일/등록자/변경일/변경일자
-	 ******************************************************************************/
-	public void setCreatorUid(String str)
+	public void setCount(int cnt)
 	{
-		if( str != null )
-			this.creatorUid = str;
+		this.count = cnt;
 	}
 	
-	public void setCreatorName(String str)
+	public void setGap(String str)
 	{
 		if( str != null )
-			this.creatorName = str;
+			this.gap = str;
 	}
 	
-	public void setCreatorDeptId(String str)
+	public void setSIndex(int inx)
 	{
-		if( str != null )
-			this.creatorDeptId = str;
+		this.sIndex = inx;
 	}
 	
-	public void setCreatorDeptName(String str)
+	public void setEIndex(int inx)
+	{
+		this.eIndex = inx;
+	}
+	
+	public void setEtcInfo(String str)
 	{
 		if( str != null )
-			this.creatorDeptName = str;
+			this.etcInfo = str;
 	}
+	
+	// 현재 사용자 / 등록일/등록자/변경일/변경일자
+	public void setCurrUserId(String str)
+	{
+		if( str != null )
+			this.currUserId = str;
+	}
+	
+	public void setRegUserId(String str)
+	{
+		if( str != null )
+			this.regUserId = str;
+	}
+	
 
-	public void setCreateDate(Timestamp tm )
+	public void setRegDtm(Timestamp tm )
 	{
-		this.createDate = tm;
+		this.regDtm = tm;
 	}
 	
-	public void setUpdaterUid(String str)
+	public void setUpdUserId(String str)
 	{
 		if( str != null )
-			this.updaterUid = str;
+			this.updUserId = str;
 	}
 	
-	public void setUpdaterName(String str)
-	{
-		if( str != null )
-			this.updaterName = str;
-	}
 	
-	public void setUpdaterDeptId(String str)
+	public void setUpdDtm(Timestamp tm )
 	{
-		if( str != null )
-			this.updaterDeptId = str;
-	}
-	
-	public void setUpdaterDeptName(String str)
-	{
-		if( str != null )
-			this.updaterDeptName = str;
-	}
-	
-	public void setUpdateDate(Timestamp tm )
-	{
-		this.updateDate = tm;
+		this.updDtm = tm;
 	}
 	
 	/********************************************************************************
@@ -132,77 +136,35 @@ public abstract class AbstractVO
 	public String getSiteId() { return this.siteId; }
 	public String getCompId() { return this.compId; }
 	
-	/******************************************************************************
-	 * 등록일/등록자/변경일/변경자
-	 ******************************************************************************/
-//	@JsonIgnore
-	public String getCreatorUid() { return this.creatorUid; }
-//	@JsonIgnore
-	public String getCreatorName() { return this.creatorName; }
-//	@JsonIgnore
-	public String getCreatorDeptId() { return this.creatorDeptId; }
-//	@JsonIgnore
-	public String getCreatorDeptName() { return this.creatorDeptName; }
-//	@JsonIgnore
-	public String getUpdaterUid() { return this.updaterUid; }
-//	@JsonIgnore
-	public String getUpdaterName() { return this.updaterName; }
-//	@JsonIgnore
-	public String getUpdaterDeptId() { return this.updaterDeptId; }
-//	@JsonIgnore
-	public String getUpdaterDeptName() { return this.updaterDeptName; }
+	public int getCount() { return this.count; }
+	@JsonIgnore
+	public String getGap() { return this.gap; }
+	@JsonIgnore
+	public int getSIndex() { return this.sIndex; }
+	@JsonIgnore
+	public int getEIndex() { return this.eIndex; }
+	public String getEtcInfo() { return this.etcInfo; }
 	
 	
-	/**
-	 * 등록일은 Default format 또는 특정 포맷으로 리턴한다.
-	 * @return
-	 */
-//	@JsonIgnore
-	public Timestamp getCreateDateTimestamp() 
-	{ 
-		if( this.createDate == null )
-			return null;
-		else
-			return createDate;
-	}
-//	@JsonIgnore
-	public String getCreateDate() 
-	{ 
-		return getCreateDate("");
-	}
-//	@JsonIgnore
-	public String getCreateDate(String dateFormat) 
-	{ 
-		if( this.createDate == null )
-			return null;
-		else
-			return DateUtil.getDate(this.createDate, dateFormat);
-	}
+	// 현재 시간 및 사용자/등록일/등록자/변경일/변경자
+	public String getCurrUserId() { return this.currUserId; }
+	public Timestamp getCurrDateTime() { return DateUtil.getCurrentTimestamp(); }
+	public String getRegUserId() { return this.regUserId; }
+	public String getUpdUserId() { return this.updUserId; }
+	public Timestamp getRegDtm() { return regDtm; }
+	public Timestamp getUpdDtm() { return updDtm; }
 	
-	/**
-	 * 변경일은 Default format 또는 특정 포맷으로 리턴한다.
-	 * @return
-	 */
-//	@JsonIgnore
-	public Timestamp getUpdateDateTimestamp() 
-	{ 
-		if( this.updateDate == null )
-			return null;
-		else
-			return updateDate;
+	/********************************************************************************
+	 * 
+	 * transfer.
+	 * @throws SecurityException 
+	 * @throws NoSuchFieldException 
+	 * @throws IllegalAccessException 
+	 * @throws IllegalArgumentException 
+	 * 
+	********************************************************************************/
+	public void copyExecuteUser(Object _obj) throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException
+	{
+		this.setCurrUserId(((AbstractVO)_obj).getCurrUserId());
 	}
-//	@JsonIgnore
-	public String getUpdateDate() 
-	{ 
-		return getUpdateDate("");
-	}
-//	@JsonIgnore
-	public String getUpdateDate(String dateFormat) 
-	{ 
-		if( this.updateDate == null )
-			return null;
-		else
-			return DateUtil.getDate(this.updateDate, dateFormat);
-	}
-	
 }

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="com.art.app.base.org.dao.UserDao">
+
+	<sql id="columns">
+		site_id, user_id, user_name, user_nick_name, login_id, login_pwd, user_status, grade_code,
+        etc_info, description, reg_user_id, reg_dtm, upd_user_id, upd_dtm
+	</sql>
+ 
+    <select id="selectList" resultType="com.art.app.base.org.domain.UserVO">
+        SELECT  <include refid="columns" />
+		FROM    tco_user
+        WHERE   1 = 1
+        AND     site_id = #{siteId}
+		ORDER BY user_id
+    </select>
+    
+    <select id="selectData" resultType="com.art.app.base.org.domain.UserVO">
+        SELECT  <include refid="columns" />
+		FROM    tco_user
+        WHERE   1 = 1
+        AND     user_id = #{userId}
+    </select>
+    
+    <select id="selectDataByLoginId" resultType="com.art.app.base.org.domain.UserVO">
+        SELECT  <include refid="columns" />
+		FROM    tco_user
+        WHERE   1 = 1
+        AND     site_id  = #{siteId}
+        AND     login_id = #{loginId}
+    </select>
+    
+    
+    <insert id="insert" parameterType="com.art.app.base.org.domain.UserVO">
+        INSERT INTO tco_user (
+        	<include refid="columns" />
+        )VALUES(
+        	#{siteId}, #{userId}, #{userName}, #{userNickName}, #{loginId}, #{loginPwd}, #{userStatus}, #{gradeCode},
+        	#{etcInfo}, #{description},
+        	#{currUserId}, #{currDateTime},#{currUserId}, #{currDateTime}
+        )
+    </insert>
+    
+    <update id="update" parameterType="com.art.app.base.org.domain.UserVO">
+        UPDATE tco_user 
+        SET    user_name    = #{userName},
+        	   user_nick_name= #{userNickName},
+        	   grade_code   = #{gradeCode},
+        	   etc_info     = #{etcInfo},
+        	   description  = #{description},
+        	   upd_user_id  = #{currUserId},
+        	   upd_dtm      = #{currDateTime}
+        WHERE  user_id      = #{userId}
+    </update>
+    
+    
+    <delete id="delete" parameterType="com.art.app.base.org.domain.UserVO">
+        DELETE FROM tco_user
+        WHERE  user_id = #{userId}
+    </delete>
+    
+</mapper> 

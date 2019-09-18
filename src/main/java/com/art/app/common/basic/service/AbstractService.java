@@ -1,5 +1,7 @@
 package com.art.app.common.basic.service;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +11,9 @@ import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
-public abstract class AbstractService 
+import com.art.fw.domain.ResultVO;
+
+public abstract class AbstractService<T>
 {
 	protected Logger logger = LoggerFactory.getLogger(this.getClass()) ;
 	
@@ -17,8 +21,9 @@ public abstract class AbstractService
 	@Qualifier("txManager-basic")
 	protected PlatformTransactionManager  txManager;
 	
+	protected TransactionStatus tx = null;
 	
-	protected TransactionStatus startTransaction( TransactionStatus txStatus )
+	protected TransactionStatus startTransaction()
 	{
 		DefaultTransactionDefinition def = new DefaultTransactionDefinition();
 		def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
@@ -33,5 +38,31 @@ public abstract class AbstractService
 	protected void rollback(TransactionStatus txStatus)
 	{
 		txManager.rollback(txStatus);
+	}
+	
+	
+	public List<T> getList(T param) throws Exception
+	{
+		return null;
+	}
+	
+	public T getData(T param) throws Exception
+	{
+		return null;
+	}
+	
+	public ResultVO insert(T param) throws Exception
+	{
+		return null;
+	}
+	
+	public ResultVO update(T param) throws Exception
+	{
+		return null;
+	}
+	
+	public ResultVO delete(T param) throws Exception
+	{
+		return null;
 	}
 }

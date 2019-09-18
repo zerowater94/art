@@ -3,6 +3,8 @@ package com.art.app.common.component;
 import java.util.Hashtable;
 import java.util.Map;
 
+import com.art.fw.resource.BasicResultCode;
+
 /**
  * 공통 상수 처리 클래스 ( enum 활용 )
  * @author zerowater
@@ -10,49 +12,53 @@ import java.util.Map;
  */
 public class BasicConstants 
 {
+	private static Map<String,Map<String,Object>> constantsMap = null;
+	
 	/***************************************************************
 	 * return constants..
 	 ****************************************************************/
-	public static Map<String,Map<String,Object>> getConstantsMap()
+	public static void reloadConstantsMap()
 	{
-		Map<String,Map<String,Object>> constantMap = null;
+		constantsMap = new Hashtable<String, Map<String,Object>>();
+		
 		Class<?>[] enums = null;
 		String enumName = "";
 		try
 		{
-			constantMap = new Hashtable<String, Map<String,Object>>();
+			constantsMap = new Hashtable<String, Map<String,Object>>();
 			enums = BasicConstants.class.getClasses();
 			for( Class<?> enumCls : enums )
 			{
 				enumName = enumCls.getSimpleName();
-				constantMap.put(enumName, new Hashtable<String,Object>());
+				constantsMap.put(enumName, new Hashtable<String,Object>());
 				for(Object obj : enumCls.getEnumConstants()) 
 				{
-					constantMap.get(enumName).put(obj+"", obj.getClass().getDeclaredField("code").get(obj));
+					constantsMap.get(enumName).put(obj+"", obj.getClass().getDeclaredField("code").get(obj));
 				}
 			}
+			
+			constantsMap.put("RESULT", BasicResultCode.getResultCodes());
 
 		}catch ( Exception ex )
 		{
 			ex.printStackTrace();
 		}
 		
-		return constantMap;
+	}
+	public static Map<String,Map<String,Object>> getConstantsMap()
+	{
+		if( BasicConstants.constantsMap == null )
+		{
+			BasicConstants.reloadConstantsMap();
+		}
+		return BasicConstants.constantsMap ;
 	}
 	
+	
 	/***************************************************************
-	  * 결과 코드 정리
+	  * 결과 코드 정리 --> BasicConfig  로 이동
 	 ****************************************************************/
-	public enum RESULT 
-	{
-		SUCCESS("00"), 
-		NO_AUTH("11"), INSUFFICIENT_PARAM("12"), 
-		NO_LOGIN_ID("21"), INCOLLECT_PWD("22"), EXPIRED_CHG_PWD("23"),
-		UNKNOWN_ERROR("99");
-		
-		public String code;
-       private RESULT(String value) { this.code = value; }
-	} 
+	
 	
 	/***************************************************************
 	  * 시스템 역할
@@ -65,7 +71,7 @@ public class BasicConstants
 		GENERAL_USER("GENERAL");
 		
 		public String code;
-       private SYS_ROLE(String value) { this.code = value; }
+        private SYS_ROLE(String value) { this.code = value; }
 	} 
 	
 	
@@ -79,7 +85,111 @@ public class BasicConstants
         private LOGIN_TYPE(String value) { this.code = value; }
 	}
 	
+	/***************************************************************
+	 * 사용자 Status 
+	 ****************************************************************/
+	public enum USER_STATUS
+	{
+		NORMAR("101","재직"), 
+		RETIREMENT("999","퇴직" );
+		public String code;
+		public String description;
+        private USER_STATUS(String code, String description) 
+        { 
+        	this.code = code; 
+        	this.description = description;
+        }
+	}
+	/***************************************************************
+	 * 멤버 형태
+	 ****************************************************************/
+	public enum MEMBER_TYPE
+	{
+		GROUP("G","그룹"), 
+		USER("U","사용자" );
+		public String code;
+		public String description;
+        private MEMBER_TYPE(String code, String description) 
+        { 
+        	this.code = code; 
+        	this.description = description;
+        }
+	}
 	
 	
+	/***************************************************************
+	 * 구분자 
+	 ****************************************************************/
+	public enum DELIMITER
+	{
+		D1("~|_"), D2("-|_"), D3("=|_");
+		public String code ; 
+        private DELIMITER(String value) {this.code = value; }
+	}
+	
+	/***************************************************************
+	 * 코드 그룹
+	 ****************************************************************/
+	public enum CODE_TYPE
+	{
+		GROUP("G"), CODE("C");
+		public String code ; 
+        private CODE_TYPE(String value) {this.code = value; }
+	}
+	
+	/***************************************************************
+	 * 부서 형태 
+	 ****************************************************************/
+	public enum USER_DEPT_TYPE
+	{
+		ORIGINAL("O","원부서"), 
+		ADDITIONAL("A","겸직부서" ),
+		DISPATCHED("D","파견부서");
+		public String code;
+		public String description;
+        private USER_DEPT_TYPE(String code, String description) 
+        { 
+        	this.code = code; 
+        	this.description = description;
+        }
+	}
+	
+	/***************************************************************
+	 *  권한 그룹 형태
+	 ****************************************************************/
+	public enum AUTH_GROUP_TYPE
+	{
+		AUTH_GROUP_DIRECTORY("DIRECTORY", "디렉토리"),
+		AUTH_GROUP("AUTHGROUP", "권한그룹");
+		public String code;
+		public String description;
+        private AUTH_GROUP_TYPE(String code, String description) 
+        { 
+        	this.code = code; 
+        	this.description = description;
+        }
+	}
+	
+	/***************************************************************
+	 *  권한 부여 형태
+	 ****************************************************************/
+	public enum AUTH_ASSIGN_TYPE
+	{
+		AUTH_ASSIGN_USER("USER", "사용자"),
+		AUTH_ASSIGN_DEPT("DEPT", "부서"),
+		AUTH_ASSIGN_ROLE("ROLE", "직책"),
+		AUTH_ASSIGN_GRADE("GRADE", "직급");
+		public String code;
+		public String description;
+        private AUTH_ASSIGN_TYPE(String code, String description) 
+        { 
+        	this.code = code; 
+        	this.description = description;
+        }
+        
+        public static boolean isUser(String code) {
+        	return code.equals(AUTH_ASSIGN_USER.code);
+        }
+	}
 	
 }

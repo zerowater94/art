@@ -1,6 +1,7 @@
 package com.art.app.common.basic.ctl;
 
 import java.io.ByteArrayInputStream;
+import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -10,6 +11,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.art.app.base.system.domain.CodeVO;
+import com.art.app.base.system.domain.OptionVO;
+import com.art.app.common.component.BasicCodeOptions;
 import com.art.app.common.component.BasicConstants;
 import com.art.app.common.component.BasicInfo;
 import com.art.fw.annota.NoSession;
@@ -28,7 +32,7 @@ public class InitailizeCtl extends AbstractCtl
 		{
 			rtnObj = new JSONObj();
 			rtnObj.put("PROPERTIES", BasicInfo.getProperties());
-			rtnObj.put("MSG", BasicInfo.getMessageObj("common", langType)); // 최초에 common_module resource를 load 한다.
+			rtnObj.put("MSG", BasicInfo.getMessageDefaultObj(langType)); // 최초에 common_module resource를 load 한다.
 			rtnObj.put("CONSTANTS", BasicConstants.getConstantsMap());
 			
 		}catch ( Exception ex )
@@ -43,7 +47,6 @@ public class InitailizeCtl extends AbstractCtl
 	@RequestMapping(value = "/getCustomCss/{theme}/{fileName:.+}", method = RequestMethod.GET)
 	public void getCssFile(HttpServletResponse response, @PathVariable String theme, @PathVariable String fileName ) throws Exception
 	{
-	    // Set the content-type
 		try
 		{
 		    response.setHeader("Content-Type", "text/css");
@@ -53,5 +56,17 @@ public class InitailizeCtl extends AbstractCtl
 			logger.error(ex.getMessage());
 			FileCopyUtils.copy(new ByteArrayInputStream("".getBytes()), response.getOutputStream());
 		}
+	}
+	
+	@RequestMapping(value = "/code/{locale}/code-group/{codeGroup}", method = RequestMethod.GET)
+	public List<CodeVO> getCodeList(HttpServletResponse response, @PathVariable String locale, @PathVariable String codeGroup ) throws Exception
+	{
+		return BasicCodeOptions.getCodeList(codeGroup, locale);
+	}
+	
+	@RequestMapping(value = "/option/category/{category}", method = RequestMethod.GET)
+	public List<OptionVO> getOptionList(HttpServletResponse response, @PathVariable String category ) throws Exception
+	{
+		return BasicCodeOptions.getOptionList(category);
 	}
 }

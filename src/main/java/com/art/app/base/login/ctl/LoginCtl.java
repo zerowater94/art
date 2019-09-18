@@ -19,8 +19,9 @@ import com.art.fw.domain.JSONObj;
 import com.art.fw.domain.RequestVO;
 import com.art.fw.domain.ResultVO;
 import com.art.fw.domain.SessionInfoVO;
-import com.art.fw.exception.AuthException;
+import com.art.fw.exception.ArtException;
 import com.art.fw.exception.BadRequestException;
+import com.art.fw.resource.BasicResultCode;
 import com.art.fw.security.EncryptUtil;
 import com.art.fw.session.SessionManager;
 import com.art.fw.util.CommonUtil;
@@ -104,25 +105,18 @@ public class LoginCtl extends AbstractCtl
 			
 			// 로그인 정보 체크
 			sessionInfo = this.loginService.loginProcess(loginVO);
-			if( sessionInfo != null )
-			{
-				SessionManager.getInstance().createSession(req, sessionInfo);
-				rtnVO.setResult(true);
-			}else 
+			if ( sessionInfo == null )
 			{
 				rtnVO.setResult(false);
+				rtnVO.setResultCode(BasicResultCode.NO_LOGIN_ID);
+				throw new ArtException(rtnVO);
 			}
-		}catch ( AuthException aex )
-		{
-			rtnVO.setResult(false);
-			rtnVO.setResultCode(BasicConstants.RESULT.NO_AUTH.code);
-			rtnVO.setResultMessage(aex.toString());
-			return rtnVO;
+			
+			SessionManager.getInstance().createSession(req, sessionInfo);
+			rtnVO.setResult(true);
 		}catch ( Exception ex )
 		{
-			ex.printStackTrace();
-			super.logger.error(ex.toString());
-			throw ex;
+			throw new ArtException(rtnVO);
 		}
 		return rtnVO;
 	}
