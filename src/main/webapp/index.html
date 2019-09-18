@@ -39,5 +39,50 @@
 		
 		this is commit test
 		this is changed....
+		this is changed  2 ----
+	</body>
+=======
+<!DOCTYPE html>
+<html lang="ko">
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="description" content="">
+		<meta name="author" content="">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		
+        <link rel="stylesheet" type="text/css" media="screen" href="libs/jquery/jquery-ui.min.css" />
+		<link rel="stylesheet" type="text/css" media="screen" href="libs/bootstrap/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" media="screen" href="libs/bootstrap/css/bootstrap-dialog.css">
+		<link rel="stylesheet" type="text/css" media="screen" href="libs/font-awesome/css/font-awesome.min.css">
+        <link rel="stylesheet" type="text/css" media="screen" href="libs/metis/css/main.min.css">
+		
+		<link rel="stylesheet" type="text/css" media="screen" href="libs/alertify/css/alertify.core.css">
+		<link rel="stylesheet" type="text/css" media="screen" href="libs/alertify/css/alertify.default.css">
+		
+        <link rel="stylesheet" type="text/css" media="screen" href="libs/pq-grid/pqgrid.min.css">
+		
+        <link rel="stylesheet" type="text/css" media="screen" href="css/art-common.css">
+        <link rel="stylesheet" type="text/css" media="screen" href="css/art-contents.css">
+		
+	</head>
+
+	<body>
+		<script src="libs/require/require.js"></script>
+		<script>
+			requirejs(['common/config/base'], function(){
+	            
+	            requirejs(['jquery','bootstrap', 'jquery-ui','underscore', 'text', 'moment', 'bootstrap-dialog','app/index']
+	             , function($, bootstrap, _, $UI, text, moment, bs_dialog, index){
+	            	
+	            	new index().render({});
+	            });
+	        });
+		</script>
+		
+		this is commit test
+		this is changed....
+		this is third changed...
 	</body>
 </html>
